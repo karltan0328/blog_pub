@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Karl的博客</title>
+    <link>https://blog.karltan.com/</link>
+    
+    <atom:link href="https://blog.karltan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    
+    <description>不积跬步无以至千里</description>
+    <pubDate>Wed, 01 Jan 2025 10:13:08 GMT</pubDate>
+    <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>还是测试文章</title>
+      <link>https://blog.karltan.com/test_again.html</link>
+      <guid>https://blog.karltan.com/test_again.html</guid>
+      <pubDate>Wed, 01 Jan 2025 10:10:00 GMT</pubDate>
+      
+      <description>这还是一篇测试文章</description>
+      
+      
+      
+      <content:encoded><![CDATA[<h1 id="一级标题">一级标题</h1><p>主要是测试一下多文章置顶功能，所以需要两篇测试文章。</p>]]></content:encoded>
+      
+      
+      <category domain="https://blog.karltan.com/categories/%E6%B5%8B%E8%AF%95/">测试</category>
+      
+      
+      <category domain="https://blog.karltan.com/tags/%E6%B5%8B%E8%AF%95/">测试</category>
+      
+      
+      <comments>https://blog.karltan.com/test_again.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>测试文章</title>
+      <link>https://blog.karltan.com/test.html</link>
+      <guid>https://blog.karltan.com/test.html</guid>
+      <pubDate>Wed, 01 Jan 2025 10:00:00 GMT</pubDate>
+      
+      <description>这是一篇测试文章</description>
+      
+      
+      
+      <content:encoded><![CDATA[<h1 id="一级标题">一级标题</h1><p>测试</p><h2 id="二级标题">二级标题</h2><p>测试测试</p><h3id="三级标题三级标题三级标题三级标题三级标题三级标题三级标题三级标题三级标题">三级标题三级标题三级标题三级标题三级标题三级标题三级标题三级标题三级标题</h3><p>测试测试测试</p><div class="tabs" id="first-unique-name"><ul class="nav-tabs"><li class="tab active"><a href="#first-unique-name-1">First unique name 1</a></li><li class="tab"><a href="#first-unique-name-2">First unique name 2</a></li><li class="tab"><a href="#first-unique-name-3">First unique name 3</a></li></ul><div class="tab-content"><div class="tab-pane active" id="first-unique-name-1"><p><strong>This is Tab 1.</strong></p></div><div class="tab-pane" id="first-unique-name-2"><p><strong>This is Tab 2.</strong></p></div><div class="tab-pane" id="first-unique-name-3"><p><strong>This is Tab 3.</strong></p></div></div></div><div class="note warning"><h4 id="warning-header">Warning Header</h4><p><strong>Welcome</strong> to <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo!<i class="fa fa-external-link-alt"></i></span></p></div><p>代码：</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&#x27;hello&#x27;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>行内代码：<code>int main()</code></p><p>流程图：</p><pre><code class="highlight mermaid">graph TDA[Hard] --&gt;|Text| B(Round)B --&gt; C&#123;Decision&#125;C --&gt;|One| D[Result 1]C --&gt;|Two| E[Result 2]</code></pre><p>一些不好的回忆...：</p><div class="wavedrom"><script type="WaveDrom">{ signal : [  { name: "clk",  wave: "p......" },  { name: "bus",  wave: "x.34.5x",   data: "head body tail" },  { name: "wire", wave: "0.1..0." },]}</script></div><p>公式1：</p><p><span class="math display">\[\begin{equation}\sum_{i = 1}^N = \sum_{i = 1}^N\end{equation}\]</span></p><p>需要注意的是，添加编号会使长公式的拖动条失效，下面不加编号的公式则不会。</p><p><span class="math display">\[\sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N =\sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N =\sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N =\sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N =\sum_{i = 1}^N = \sum_{i = 1}^N = \sum_{i = 1}^N\]</span></p><p>公式2：</p><p><span class="math display">\[\begin{equation}\hat{x}_{k}=\hat{x}_{k}^{-}+K_{t}\left(y_{k}\right)\end{equation}\]</span></p><p>行内公式：<spanclass="math inline">\(\hat{x}_{k}=\hat{x}_{k}^{-}+K_{t}\left(y_{k}\right)\)</span></p><p>表格：</p><table><thead><tr><th style="text-align: left;">表格</th><th style="text-align: left;">表格</th><th style="text-align: left;">表格</th><th style="text-align: left;">表格</th><th style="text-align: left;">表格</th></tr></thead><tbody><tr><td style="text-align: left;">1</td><td style="text-align: left;">2</td><td style="text-align: left;">3</td><td style="text-align: left;">4</td><td style="text-align: left;">5</td></tr><tr><td style="text-align: left;">6</td><td style="text-align: left;">7</td><td style="text-align: left;">8</td><td style="text-align: left;">9</td><td style="text-align: left;">10</td></tr></tbody></table><p>HTML表格：</p><table><tr><th>Model</th><th>BLEU</th><th>BLEU</th><th>Training Cost (FLOPs)</th><th>Training Cost (FLOPs)</th></tr><tr><th></th><th>EN-DE</th><th>EN-FR</th><th>EN-DE</th><th>EN-FR</th></tr><tr><td>ByteNet [18]</td><td>23.75</td><td>39.2</td><td>1.0 · 10<sup>20</sup></td><td>1.0 · 10<sup>20</sup></td></tr><tr><td>Deep-Att + PosUnk [39]</td><td>24.6</td><td>39.92</td><td>2.3 · 10<sup>19</sup></td><td>1.4 · 10<sup>20</sup></td></tr><tr><td>GNMT + RL [38]</td><td>25.16</td><td>40.46</td><td>9.6 · 10<sup>18</sup></td><td>1.5 · 10<sup>20</sup></td></tr><tr><td>MoE [32]</td><td>26.03</td><td>40.56</td><td>2.0 · 10<sup>19</sup></td><td>1.2 · 10<sup>20</sup></td></tr><tr><td>Deep-Att + PosUnk Ensemble [39]</td><td>40.4</td><td></td><td>8.0 · 10<sup>20</sup></td><td></td></tr><tr><td>GNMT + RL Ensemble [38]</td><td>26.30</td><td>41.16</td><td>1.8 · 10<sup>20</sup></td><td>1.1 · 10<sup>21</sup></td></tr><tr><td>ConvS2S Ensemble [9]</td><td>26.36</td><td>41.29</td><td>7.7 · 10<sup>19</sup></td><td>1.2 · 10<sup>21</sup></td></tr><tr><td>Transformer (base model)</td><td>27.3</td><td>38.1</td><td>3.3 · 10<sup>18</sup></td><td></td></tr><tr><td>Transformer (big)</td><td>28.4</td><td>41.8</td><td></td><td>2.3 · 10<sup>19</sup></td></tr></table><p>引用：</p><blockquote><p>这是引用</p></blockquote><p>有序列表：</p><ol type="1"><li>这是列表</li><li>列表</li></ol><p>无序列表：</p><ul><li>这是列表</li><li>这也是列表</li></ul><p>这是待办：</p><ul class="task-list"><li><label><input type="checkbox" />待办1</label></li><li><label><input type="checkbox" checked="" />待办2</label></li></ul><p>好吧不支持这个语法</p><p>测试一下图片：</p><figure><img data-src="https://img.karltan.com/background.webp"alt="background.webp" /><figcaption aria-hidden="true">background.webp</figcaption></figure><p>amazing，可以直接浏览pdf：</p><div class="pdf-container" data-target="https://arxiv.org/pdf/1706.03762" data-height="500px"></div>]]></content:encoded>
+      
+      
+      <category domain="https://blog.karltan.com/categories/%E6%B5%8B%E8%AF%95/">测试</category>
+      
+      
+      <category domain="https://blog.karltan.com/tags/%E6%B5%8B%E8%AF%95/">测试</category>
+      
+      
+      <comments>https://blog.karltan.com/test.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>Hello World</title>
+      <link>https://blog.karltan.com/hello-world.html</link>
+      <guid>https://blog.karltan.com/hello-world.html</guid>
+      <pubDate>Wed, 01 Jan 2025 04:00:00 GMT</pubDate>
+      
+      <description>Hello World</description>
+      
+      
+      
+      <content:encoded><![CDATA[<p>Welcome to <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvLw==">Hexo<i class="fa fa-external-link-alt"></i></span>! This is your veryfirst post. Check <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mv">documentation<i class="fa fa-external-link-alt"></i></span> formore info. If you get any problems when using Hexo, you can find theanswer in <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvdHJvdWJsZXNob290aW5nLmh0bWw=">troubleshooting<i class="fa fa-external-link-alt"></i></span> oryou can ask me on <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hleG9qcy9oZXhvL2lzc3Vlcw==">GitHub<i class="fa fa-external-link-alt"></i></span>.</p><h2 id="quick-start">Quick Start</h2><h3 id="create-a-new-post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvd3JpdGluZy5odG1s">Writing<i class="fa fa-external-link-alt"></i></span></p><h3 id="run-server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvc2VydmVyLmh0bWw=">Server<i class="fa fa-external-link-alt"></i></span></p><h3 id="generate-static-files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvZ2VuZXJhdGluZy5odG1s">Generating<i class="fa fa-external-link-alt"></i></span></p><h3 id="deploy-to-remote-sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvb25lLWNvbW1hbmQtZGVwbG95bWVudC5odG1s">Deployment<i class="fa fa-external-link-alt"></i></span></p>]]></content:encoded>
+      
+      
+      
+      
+      <comments>https://blog.karltan.com/hello-world.html#disqus_thread</comments>
+      
+    </item>
+    
+  </channel>
+</rss>
