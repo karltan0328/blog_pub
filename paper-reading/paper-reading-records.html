@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="记录读过的论文。">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="论文阅读记录">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/paper-reading-records.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="记录读过的论文。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-22T08:55:15.000Z">
+<meta property="article:modified_time" content="2025-04-21T09:55:15.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="2025CVPR">
+<meta property="article:tag" content="2017NIPS">
+<meta property="article:tag" content="2021ICLR">
+<meta property="article:tag" content="2021ICCV">
+<meta property="article:tag" content="2022CVPR">
+<meta property="article:tag" content="2023ICCV">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/paper-reading-records.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/paper-reading-records.html","path":"paper-reading/paper-reading-records.html","title":"论文阅读记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>论文阅读记录 | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93"><span class="nav-text">论文总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#section"><span class="nav-text">2017</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nips"><span class="nav-text">NIPS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#attention-is-all-you-need"><span class="nav-text">1. Attention Is All You Need</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1"><span class="nav-text">2021</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iclr"><span class="nav-text">ICLR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale"><span class="nav-text">1.
+An Image is Worth 16x16 Words: Transformers for Image Recognition at
+Scale</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iccv"><span class="nav-text">ICCV</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#emerging-properties-in-self-supervised-vision-transformers"><span class="nav-text">1.
+Emerging Properties in Self-Supervised Vision Transformers</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2"><span class="nav-text">2022</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cvpr"><span class="nav-text">CVPR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework"><span class="nav-text">1.
+ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression
+Framework</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-3"><span class="nav-text">2023</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iccv-1"><span class="nav-text">ICCV</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations"><span class="nav-text">1.
+VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning
+Decoupled Rotations on the Spherical Representations</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-4"><span class="nav-text">2024</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cvpr-1"><span class="nav-text">CVPR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation"><span class="nav-text">1.
+Instance-Adaptive and Geometric-Aware Keypoint Learning for
+Category-Level 6D Object Pose Estimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation"><span class="nav-text">2.
+MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation"><span class="nav-text">3.
+6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose
+Estimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#secondpose-se3-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation"><span class="nav-text">4.
+SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for
+Category-Level Pose Estimation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-5"><span class="nav-text">2025</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cvpr-2"><span class="nav-text">CVPR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#any6d-model-free-6d-pose-estimation-of-novel-objects"><span class="nav-text">1. Any6D:
+Model-free 6D Pose Estimation of Novel Objects</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#co-op-correspondence-based-novel-object-pose-estimation"><span class="nav-text">2.
+Co-op: Correspondence-based Novel Object Pose Estimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#one2any-one-reference-6d-pose-estimation-for-any-object"><span class="nav-text">3.
+One2Any: One-Reference 6D Pose Estimation for Any Object</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image"><span class="nav-text">4.
+UNOPose: Unseen Object Pose Estimation with an Unposed RGB-D Reference
+Image</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-list/2025cvpr-ope.html" rel="bookmark">
+        <time class="popular-posts-time">2025-03-30</time>
+        <br>
+      2025 CVPR Object Pose Estimation论文列表
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/paper-reading-records.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="论文阅读记录 | Karl的博客">
+      <meta itemprop="description" content="记录读过的论文。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文阅读记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span style="display:inline-block; border-radius:5px; padding:0px 8px; background-color:#f04f50; color:#fff;">置顶</span>
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-22 16:55:15" itemprop="dateCreated datePublished" datetime="2025-02-22T16:55:15+08:00">2025-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-04-21 17:55:15" itemprop="dateModified" datetime="2025-04-21T17:55:15+08:00">2025-04-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/paper-reading-records.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/paper-reading-records.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">记录读过的论文。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="论文总结">论文总结</h1>
+<h2 id="section">2017</h2>
+<h3 id="nips">NIPS</h3>
+<h4 id="attention-is-all-you-need">1. Attention Is All You Need</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html">【论文笔记】Attention
+Is All You Need</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/ModalNet-21.webp"
+alt="The Transformer - model architecture." />
+<figcaption aria-hidden="true">The Transformer - model
+architecture.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/fig2.webp"
+alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel." />
+<figcaption aria-hidden="true">(left) Scaled Dot-Product Attention.
+(right) Multi-Head Attention consists of several attention layers
+running in parallel.</figcaption>
+</figure>
+<h2 id="section-1">2021</h2>
+<h3 id="iclr">ICLR</h3>
+<h4
+id="an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale">1.
+An Image is Worth 16x16 Words: Transformers for Image Recognition at
+Scale</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html">【论文笔记】An
+Image is Worth 16x16 Words: Transformers for Image Recognition at
+Scale</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/model_scheme.webp"
+alt="Model overview. We split an image into fixed-size patches, linearly embed each of them, add position embeddings, and feed the resulting sequence of vectors to a standard Transformer encoder. In order to perform classification, we use the standard approach of adding an extra learnable &quot;classification token&quot; to the sequence. The illustration of the Transformer encoder was inspired by Vaswani et al. (2017)." />
+<figcaption aria-hidden="true">Model overview. We split an image into
+fixed-size patches, linearly embed each of them, add position
+embeddings, and feed the resulting sequence of vectors to a standard
+Transformer encoder. In order to perform classification, we use the
+standard approach of adding an extra learnable "classification token" to
+the sequence. The illustration of the Transformer encoder was inspired
+by Vaswani et al. (2017).</figcaption>
+</figure>
+<h3 id="iccv">ICCV</h3>
+<h4 id="emerging-properties-in-self-supervised-vision-transformers">1.
+Emerging Properties in Self-Supervised Vision Transformers</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron.html">【论文笔记】Emerging
+Properties in Self-Supervised Vision Transformers</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron/attn6.webp"
+alt="Self-attention from a Vision Transformer with 8 \times 8 patches trained with no supervision. We look at the self-attention of the [CLS] token on the heads of the last layer. This token is not attached to any label nor supervision. These maps show that the model automatically learns class-specific features leading to unsupervised object segmentations." />
+<figcaption aria-hidden="true">Self-attention from a Vision Transformer
+with <span class="math inline">\(8 \times 8\)</span> patches trained
+with no supervision. We look at the self-attention of the [CLS] token on
+the heads of the last layer. This token is not attached to any label nor
+supervision. These maps show that the model automatically learns
+class-specific features leading to unsupervised object
+segmentations.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron/test.webp"
+alt="Self-distillation with no labels. We illustrate DINO in the case of one single pair of views (x_1, x_2) for simplicity. The model passes two different random transformations of an input image to the student and teacher networks. Both networks have the same architecture but different parameters. The output of the teacher network is centered with a mean computed over the batch. Each networks outputs a K dimensional feature that is normalized with a temperature softmax over the feature dimension. Their similarity is then measured with a cross-entropy loss. We apply a stop-gradient (sg) operator on the teacher to propagate gradients only through the student. The teacher parameters are updated with an exponential moving average (ema) of the student parameters." />
+<figcaption aria-hidden="true">Self-distillation with no labels. We
+illustrate DINO in the case of one single pair of views <span
+class="math inline">\((x_1, x_2)\)</span> for simplicity. The model
+passes two different random transformations of an input image to the
+student and teacher networks. Both networks have the same architecture
+but different parameters. The output of the teacher network is centered
+with a mean computed over the batch. Each networks outputs a <span
+class="math inline">\(K\)</span> dimensional feature that is normalized
+with a temperature softmax over the feature dimension. Their similarity
+is then measured with a cross-entropy loss. We apply a stop-gradient
+(sg) operator on the teacher to propagate gradients only through the
+student. The teacher parameters are updated with an exponential moving
+average (ema) of the student parameters.</figcaption>
+</figure>
+<h2 id="section-2">2022</h2>
+<h3 id="cvpr">CVPR</h3>
+<h4
+id="es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework">1.
+ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression
+Framework</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html">【论文笔记】ES6D:
+A Computation Efficient and Symmetry-Aware 6D Pose Regression
+Framework</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/Figure1.webp"
+alt="Comparison of A(M)GPD and ADD-S. Axis X shows the rotation angle of the object (from 0° to 360°). Axis Y shows the calculated distance. We set the initial pose as the ground truth. As we can see, all minima are mapped to correct poses in the A(M)GPD curve and several minima point to incorrect poses in the ADD-S curve." />
+<figcaption aria-hidden="true">Comparison of A(M)GPD and ADD-S. Axis X
+shows the rotation angle of the object (from 0° to 360°). Axis Y shows
+the calculated distance. We set the initial pose as the ground truth. As
+we can see, all minima are mapped to correct poses in the A(M)GPD curve
+and several minima point to incorrect poses in the ADD-S
+curve.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/Figure2.webp"
+alt="Network overview. First, the RGB-XYZ data is generated from the RGB-D image. The RGB-XYZ data is fed into a CNN module to extract local features, which encode color and geometry information. Second, the point cloud features are obtained by a PointNet-like CNN module and padded to the same size as the local features. Then, the local features and point cloud features are concatenated as the point-wise features for poses estimation. Finally, the pose with the maximum confidence is chosen as the final result." />
+<figcaption aria-hidden="true">Network overview. First, the RGB-XYZ data
+is generated from the RGB-D image. The RGB-XYZ data is fed into a CNN
+module to extract local features, which encode color and geometry
+information. Second, the point cloud features are obtained by a
+PointNet-like CNN module and padded to the same size as the local
+features. Then, the local features and point cloud features are
+concatenated as the point-wise features for poses estimation. Finally,
+the pose with the maximum confidence is chosen as the final
+result.</figcaption>
+</figure>
+<h2 id="section-3">2023</h2>
+<h3 id="iccv-1">ICCV</h3>
+<h4
+id="vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations">1.
+VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning
+Decoupled Rotations on the Spherical Representations</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html">【论文笔记】VI-Net:
+Boosting Category-level 6D Object Pose Estimation via Learning Decoupled
+Rotations on the Spherical Representations</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/intro.webp"
+alt="An illustration of the factorization of rotation \mathbf{R} into a viewpoint (out-of-plane) rotation \mathbf{R}_{vp} and an in-plane rotation \mathbf{R}_{ip} (around Z-axis). Notations are explained in Sec. 3." />
+<figcaption aria-hidden="true">An illustration of the factorization of
+rotation <span class="math inline">\(\mathbf{R}\)</span> into a
+viewpoint (out-of-plane) rotation <span
+class="math inline">\(\mathbf{R}_{vp}\)</span> and an in-plane rotation
+<span class="math inline">\(\mathbf{R}_{ip}\)</span> (around Z-axis).
+Notations are explained in Sec. 3.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/vi-net.webp"
+alt="An illustration of VI-Net for rotation estimation. We firstly construct a Spherical Feature Pyramid Network based on spatial spherical convolutions (SPA-SConv) to exact the high-level spherical feature map \mathcal{S}. On top of \mathcal{S}, a V-Branch is employed to search the canonical zenith direction on the sphere via binary classification for the generation of the viewpoint rotation \mathbf{R}_{vp}, while another I-Branch is used to estimate the in-plane rotation \mathbf{R}_{ip} by transforming \mathcal{S} to view the object from the canonical zenith direction. Finally we have \mathbf{R} = \mathbf{R}_{vp}\mathbf{R}_{ip}. Best view in the electronic version." />
+<figcaption aria-hidden="true">An illustration of VI-Net for rotation
+estimation. We firstly construct a Spherical Feature Pyramid Network
+based on spatial spherical convolutions (SPA-SConv) to exact the
+high-level spherical feature map <span
+class="math inline">\(\mathcal{S}\)</span>. On top of <span
+class="math inline">\(\mathcal{S}\)</span>, a V-Branch is employed to
+search the canonical zenith direction on the sphere via binary
+classification for the generation of the viewpoint rotation <span
+class="math inline">\(\mathbf{R}_{vp}\)</span>, while another I-Branch
+is used to estimate the in-plane rotation <span
+class="math inline">\(\mathbf{R}_{ip}\)</span> by transforming <span
+class="math inline">\(\mathcal{S}\)</span> to view the object from the
+canonical zenith direction. Finally we have <span
+class="math inline">\(\mathbf{R} =
+\mathbf{R}_{vp}\mathbf{R}_{ip}\)</span>. Best view in the electronic
+version.</figcaption>
+</figure>
+<h2 id="section-4">2024</h2>
+<h3 id="cvpr-1">CVPR</h3>
+<h4
+id="instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation">1.
+Instance-Adaptive and Geometric-Aware Keypoint Learning for
+Category-Level 6D Object Pose Estimation</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html">【论文笔记】Instance-Adaptive
+and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose
+Estimation</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/motivation_v7.webp"
+alt="a) The visualization for the correspondence error map and final pose estimation of the dense correspondence-based method, DPDN [17]. Green/red indicates small/large errors and GT/predicted bounding box. b) Points belonging to different parts of the same instance may exhibit similar visual features. Thus, the local geometric information is essential to distinguish them from each other. c) Points belonging to different instances may exhibit similar local geometric structures. Therefore, the global geometric information is crucial for correctly mapping them to the corresponding NOCS coordinates." />
+<figcaption aria-hidden="true">a) The visualization for the
+correspondence error map and final pose estimation of the dense
+correspondence-based method, DPDN [17]. Green/red indicates small/large
+errors and GT/predicted bounding box. b) Points belonging to different
+parts of the same instance may exhibit similar visual features. Thus,
+the local geometric information is essential to distinguish them from
+each other. c) Points belonging to different instances may exhibit
+similar local geometric structures. Therefore, the global geometric
+information is crucial for correctly mapping them to the corresponding
+NOCS coordinates.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/method_v4.webp"
+alt="a) Overview of the proposed AG-Pose. b) Illustration of the IAKD module. We initialize a set of category-shared learnable queries and convert them into instance-adaptive detectors by integrating the object features. The instance-adaptive detectors are then used to detect keypoints for the object. To guide the learning of the IAKD module, we futher design the L_{div} and L_{ocd} to constrain the distribution of keypoints. c) Illustration of the GAFA module. Our GAFA can efficiently integrate the geometric information into keypoint features through a two-stage feature aggregation process." />
+<figcaption aria-hidden="true">a) Overview of the proposed AG-Pose. b)
+Illustration of the IAKD module. We initialize a set of category-shared
+learnable queries and convert them into instance-adaptive detectors by
+integrating the object features. The instance-adaptive detectors are
+then used to detect keypoints for the object. To guide the learning of
+the IAKD module, we futher design the <span
+class="math inline">\(L_{div}\)</span> and <span
+class="math inline">\(L_{ocd}\)</span> to constrain the distribution of
+keypoints. c) Illustration of the GAFA module. Our GAFA can efficiently
+integrate the geometric information into keypoint features through a
+two-stage feature aggregation process.</figcaption>
+</figure>
+<h4
+id="mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation">2.
+MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html">【论文笔记】MRC-Net:
+6-DoF Pose Estimation with MultiScale Residual Correlation</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li/overview-6dof.webp"
+alt="MRC-Net features a single-shot sequential Siamese structure of two stages, where the second stage conditions on the first classification stage outcome through multi-scale residual correlation of poses between input and rendered images." />
+<figcaption aria-hidden="true">MRC-Net features a single-shot sequential
+Siamese structure of two stages, where the second stage conditions on
+the first classification stage outcome through multi-scale residual
+correlation of poses between input and rendered images.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li/architecture5.webp"
+alt="MRC-Net Architecture. The classifier and regressor stages employ a Siamese structure with shared weights. Both stages take the object crop and its bounding box map as input, and extract image features to detect the visible object mask, which are concatenated together to estimate object pose. The classifier first predicts pose labels. These predictions, along with the 3D CAD model, are then used to render an image estimate, which serves as input for the second stage. Features from the rendered image are correlated with those from real images in the MRC layer. These correlation features undergo ASPP processing within the rendered branch to regress the pose residuals." />
+<figcaption aria-hidden="true">MRC-Net Architecture. The classifier and
+regressor stages employ a Siamese structure with shared weights. Both
+stages take the object crop and its bounding box map as input, and
+extract image features to detect the visible object mask, which are
+concatenated together to estimate object pose. The classifier first
+predicts pose labels. These predictions, along with the 3D CAD model,
+are then used to render an image estimate, which serves as input for the
+second stage. Features from the rendered image are correlated with those
+from real images in the MRC layer. These correlation features undergo
+ASPP processing within the rendered branch to regress the pose
+residuals.</figcaption>
+</figure>
+<h4
+id="d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation">3.
+6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose
+Estimation</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html">【论文笔记】6D-Diff:
+A Keypoint Diffusion Framework for 6D Object Pose Estimation</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig1.webp"
+alt="Overview of our proposed 6D-Diff framework. As shown, given the 3D keypoints from the object 3D CAD model, we aim to detect the corresponding 2D keypoints in the image to obtain the 6D object pose. Note that when detecting keypoints, there are often challenges such as occlusions (including self-occlusions) and cluttered backgrounds that can introduce noise and indeterminacy into the process, impacting the accuracy of pose prediction." />
+<figcaption aria-hidden="true">Overview of our proposed 6D-Diff
+framework. As shown, given the 3D keypoints from the object 3D CAD
+model, we aim to detect the corresponding 2D keypoints in the image to
+obtain the 6D object pose. Note that when detecting keypoints, there are
+often challenges such as occlusions (including self-occlusions) and
+cluttered backgrounds that can introduce noise and indeterminacy into
+the process, impacting the accuracy of pose prediction.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig2.webp"
+alt="Illustration of our framework. During testing, given an input image, we first crop the Region of Interest (ROI) from the image through an object detector. After that, we feed the cropped ROI to the keypoints distribution initializer to obtain the heatmaps that can provide useful distribution priors about keypoints, to initialize D_K. Meanwhile, we can obtain object appearance features f_\text{app}. Next, we pass f_\text{app} into the encoder, and the output of the encoder will serve as conditional information to aid the reverse process in the decoder. We sample M sets of 2D keypoints coordinates from D_K, and feed these M sets of coordinates into the decoder to perform the reverse process iteratively together with the step embedding f_k. At the final reverse step (K-th step), we average \{d_0\}_{i = 1}^M as the final keypoints coordinates prediction \mathbf{d}_0, and use d_0 to compute the 6D pose with the pre-selected 3D keypoints via a PnP solver." />
+<figcaption aria-hidden="true">Illustration of our framework. During
+testing, given an input image, we first crop the Region of Interest
+(ROI) from the image through an object detector. After that, we feed the
+cropped ROI to the keypoints distribution initializer to obtain the
+heatmaps that can provide useful distribution priors about keypoints, to
+initialize <span class="math inline">\(D_K\)</span>. Meanwhile, we can
+obtain object appearance features <span
+class="math inline">\(f_\text{app}\)</span>. Next, we pass <span
+class="math inline">\(f_\text{app}\)</span> into the encoder, and the
+output of the encoder will serve as conditional information to aid the
+reverse process in the decoder. We sample <span
+class="math inline">\(M\)</span> sets of 2D keypoints coordinates from
+<span class="math inline">\(D_K\)</span>, and feed these <span
+class="math inline">\(M\)</span> sets of coordinates into the decoder to
+perform the reverse process iteratively together with the step embedding
+<span class="math inline">\(f_k\)</span>. At the final reverse step
+(K-th step), we average <span class="math inline">\(\{d_0\}_{i =
+1}^M\)</span> as the final keypoints coordinates prediction <span
+class="math inline">\(\mathbf{d}_0\)</span>, and use <span
+class="math inline">\(d_0\)</span> to compute the 6D pose with the
+pre-selected 3D keypoints via a PnP solver.</figcaption>
+</figure>
+<h4
+id="secondpose-se3-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation">4.
+SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for
+Category-Level Pose Estimation</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html">【论文笔记】SecondPose:
+SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose
+Estimation</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/second_teaser.webp"
+alt="Categorical SE(3)-consistent features. We visualize our fused features by PCA. Colored points highlight the most corresponding parts, where our proposed feature achieves consistent alignment cross instances (left vs. middle) and maintains consistency on the same instance of different poses (middle vs. right)." />
+<figcaption aria-hidden="true">Categorical SE(3)-consistent features. We
+visualize our fused features by PCA. Colored points highlight the most
+corresponding parts, where our proposed feature achieves consistent
+alignment cross instances (left vs. middle) and maintains consistency on
+the same instance of different poses (middle vs. right).</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/pipe.webp"
+alt="Illustration of SecondPose. Semantic features are extracted using the DINOv2 model (A), and the HP-PPF feature is computed on the point cloud (B). These features, combined with RGB values, are fused into our SECOND feature F_f (C) using stream-specific modules L_s, L_g, L_c, and a shared module L_f for concatenated features. The resulting fused features, in conjunction with the point cloud, are utilized for pose estimation (D)." />
+<figcaption aria-hidden="true">Illustration of SecondPose. Semantic
+features are extracted using the DINOv2 model (A), and the HP-PPF
+feature is computed on the point cloud (B). These features, combined
+with RGB values, are fused into our SECOND feature <span
+class="math inline">\(F_f\)</span> (C) using stream-specific modules
+<span class="math inline">\(L_s\)</span>, <span
+class="math inline">\(L_g\)</span>, <span
+class="math inline">\(L_c\)</span>, and a shared module <span
+class="math inline">\(L_f\)</span> for concatenated features. The
+resulting fused features, in conjunction with the point cloud, are
+utilized for pose estimation (D).</figcaption>
+</figure>
+<p>先前的类别级方法通常利用平均形状来作为先验知识估计某一类物体的位姿，这难以处理较大的类内形状变化。</p>
+<p>SecondPose融合了物体的几何特征（从点云中提取）和语义特征（从RGB）中提取，分别训练两个网络，一个网络在训练时使用真实的<span
+class="math inline">\(\mathbf{t}, \mathbf{s}\)</span>预测<span
+class="math inline">\(\mathbf{R}\)</span>，另一个网络在训练时使用真实<span
+class="math inline">\(\mathbf{R}\)</span>预测<span
+class="math inline">\(\mathbf{t}, \mathbf{s}\)</span>。</p>
+<h2 id="section-5">2025</h2>
+<h3 id="cvpr-2">CVPR</h3>
+<h4 id="any6d-model-free-6d-pose-estimation-of-novel-objects">1. Any6D:
+Model-free 6D Pose Estimation of Novel Objects</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html">【论文笔记】Any6D:
+Model-free 6D Pose Estimation of Novel Objects</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/teaser_png.webp"
+alt="Our method accurately estimates 6D object pose for novel objects on drastically different scenes and viewpoints using only a single RGB-D anchor image. We achieve robust pose estimation without requiring precise CAD models or posed multi-view reference images." />
+<figcaption aria-hidden="true">Our method accurately estimates 6D object
+pose for novel objects on drastically different scenes and viewpoints
+using only a single RGB-D anchor image. We achieve robust pose
+estimation without requiring precise CAD models or posed multi-view
+reference images.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/method_png.webp"
+alt="Overview of the Any6D framework for model-free object pose estimation. First, we reconstruct normalized object shape O_N from the image-to3D model. Then, we estimate accurate object pose and size from anchor image I_A using the proposed object alignment (Sec. 3.1). Next, we use the query image I_Q to estimate the pose with the reconstructed metric-scale object shape O_M (Sec. 3.2)." />
+<figcaption aria-hidden="true">Overview of the Any6D framework for
+model-free object pose estimation. First, we reconstruct normalized
+object shape <span class="math inline">\(O_N\)</span> from the
+image-to3D model. Then, we estimate accurate object pose and size from
+anchor image <span class="math inline">\(I_A\)</span> using the proposed
+object alignment (Sec. 3.1). Next, we use the query image <span
+class="math inline">\(I_Q\)</span> to estimate the pose with the
+reconstructed metric-scale object shape <span
+class="math inline">\(O_M\)</span> (Sec. 3.2).</figcaption>
+</figure>
+<h4 id="co-op-correspondence-based-novel-object-pose-estimation">2.
+Co-op: Correspondence-based Novel Object Pose Estimation</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html">【论文笔记】Co-op:
+Correspondence-based Novel Object Pose Estimation</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/main_figure.webp"
+alt="Examples of 6D pose estimation of novel objects. Our method estimates semi-dense or dense correspondences between the input image and rendered images and uses them to estimate the pose." />
+<figcaption aria-hidden="true">Examples of 6D pose estimation of novel
+objects. Our method estimates semi-dense or dense correspondences
+between the input image and rendered images and uses them to estimate
+the pose.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/overview_figure.webp"
+alt="Overview. We estimate object pose through two main stages. In the Coarse Pose Estimation stage (Sec 3.1), we estimate semidense correspondences between the query image and templates and compute the initial pose using PnP. In the Pose Refinement stage (Sec 3.2), we refine the initial pose by estimating dense flow between the query and rendered images. Both stages utilize transformer encoders and decoders with identical structures, with the Pose Refinement stage additionally incorporating a DPT module after the decoder for dense prediction." />
+<figcaption aria-hidden="true">Overview. We estimate object pose through
+two main stages. In the Coarse Pose Estimation stage (Sec 3.1), we
+estimate semidense correspondences between the query image and templates
+and compute the initial pose using PnP. In the Pose Refinement stage
+(Sec 3.2), we refine the initial pose by estimating dense flow between
+the query and rendered images. Both stages utilize transformer encoders
+and decoders with identical structures, with the Pose Refinement stage
+additionally incorporating a DPT module after the decoder for dense
+prediction.</figcaption>
+</figure>
+<h4 id="one2any-one-reference-6d-pose-estimation-for-any-object">3.
+One2Any: One-Reference 6D Pose Estimation for Any Object</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html">【论文笔记】One2Any:
+One-Reference 6D Pose Estimation for Any Object</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu/teaser-v4.webp"
+alt="Given a single RGB-D image as a reference for an unseen object, our method estimates the pose of the object in a given query image, relative to the reference. The method first predicts a Reference Object Pose Embedding (ROPE) that encodes the object&#39;s texture, shape, and pose priors. During inference, each query RGB image is processed through a decoder to predict the Reference Object Coordinate (ROC) map and estimate the relative pose to the reference image. This approach effectively handles large viewpoint changes." />
+<figcaption aria-hidden="true">Given a single RGB-D image as a reference
+for an unseen object, our method estimates the pose of the object in a
+given query image, relative to the reference. The method first predicts
+a Reference Object Pose Embedding (ROPE) that encodes the object's
+texture, shape, and pose priors. During inference, each query RGB image
+is processed through a decoder to predict the Reference Object
+Coordinate (ROC) map and estimate the relative pose to the reference
+image. This approach effectively handles large viewpoint
+changes.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu/architecture.webp"
+alt="Network architecture. The network takes a reference RGB-D image as input and learns a Reference Object Pose Embedding (ROPE) through a Reference Object Encoder (ROE). This embedding is subsequently integrated with the query feature map, which is extracted using a pre-trained VQVAE model [48] with the query RGB image as input. We use the U-Net architecture for effective integrate the ROPE with the query feature with cross-attentions layers. The decoder is trained to predict the ROC map. The final pose estimation is computed using the Umeyama algorithm [53]." />
+<figcaption aria-hidden="true">Network architecture. The network takes a
+reference RGB-D image as input and learns a Reference Object Pose
+Embedding (ROPE) through a Reference Object Encoder (ROE). This
+embedding is subsequently integrated with the query feature map, which
+is extracted using a pre-trained VQVAE model [48] with the query RGB
+image as input. We use the U-Net architecture for effective integrate
+the ROPE with the query feature with cross-attentions layers. The
+decoder is trained to predict the ROC map. The final pose estimation is
+computed using the Umeyama algorithm [53].</figcaption>
+</figure>
+<h4
+id="unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image">4.
+UNOPose: Unseen Object Pose Estimation with an Unposed RGB-D Reference
+Image</h4>
+<p>原文链接：<a
+href="https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html">【论文笔记】UNOPose:
+Unseen Object Pose Estimation with an Unposed RGB-D Reference
+Image</a></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu/teaser.webp"
+alt="Illustration of unseen object pose estimation. Given a query image presenting a target object unseen during training, we aim to estimate its segmentation and 6DoF pose w.r.t. a reference frame. While previous methods [43, 57, 77, 90] often rely on the CAD model or multiple RGB(-D) images for reference, we merely use one unposed RGB-D reference image." />
+<figcaption aria-hidden="true">Illustration of unseen object pose
+estimation. Given a query image presenting a target object unseen during
+training, we aim to estimate its segmentation and 6DoF pose w.r.t. a
+reference frame. While previous methods [43, 57, 77, 90] often rely on
+the CAD model or multiple RGB(-D) images for reference, we merely use
+one unposed RGB-D reference image.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu/network_v1.webp"
+alt="The network architecture of UNOPose. Given the query and reference point clouds \mathbf{Q}_{cam} and \mathbf{P}_{cam} in the camera frame, UNOPose first transforms them into the SE(3)-invariant global reference frame (GRF). Then feature descriptors are extracted from sparse point sets for constructing the coarse correlation matrix. For achieving precise correspondences, the fine pose estimation module exploits structural details using positional encoding and local reference frame (LRF) encoding." />
+<figcaption aria-hidden="true">The network architecture of UNOPose.
+Given the query and reference point clouds <span
+class="math inline">\(\mathbf{Q}_{cam}\)</span> and <span
+class="math inline">\(\mathbf{P}_{cam}\)</span> in the camera frame,
+UNOPose first transforms them into the <span
+class="math inline">\(SE(3)\)</span>-invariant global reference frame
+(GRF). Then feature descriptors are extracted from sparse point sets for
+constructing the coarse correlation matrix. For achieving precise
+correspondences, the fine pose estimation module exploits structural
+details using positional encoding and local reference frame (LRF)
+encoding.</figcaption>
+</figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/paper-reading-records.html" title="论文阅读记录">https://blog.032802.xyz/paper-reading/paper-reading-records.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/2025CVPR/" rel="tag"><i class="fa fa-tag"></i> 2025CVPR</a>
+              <a href="/tags/2017NIPS/" rel="tag"><i class="fa fa-tag"></i> 2017NIPS</a>
+              <a href="/tags/2021ICLR/" rel="tag"><i class="fa fa-tag"></i> 2021ICLR</a>
+              <a href="/tags/2021ICCV/" rel="tag"><i class="fa fa-tag"></i> 2021ICCV</a>
+              <a href="/tags/2022CVPR/" rel="tag"><i class="fa fa-tag"></i> 2022CVPR</a>
+              <a href="/tags/2023ICCV/" rel="tag"><i class="fa fa-tag"></i> 2023ICCV</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="prev" title="【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/resources/apply-for-pp_ua-free-domain-name.html" rel="next" title="申请PP.UA免费域名">
+                  申请PP.UA免费域名 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/paper-reading-records.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/paper-reading-records.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

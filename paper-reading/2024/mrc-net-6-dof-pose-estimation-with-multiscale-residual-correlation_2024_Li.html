@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="We propose a single-shot approach to determining 6-DoF pose of an object with available 3D computer-aided design (CAD) model from a single RGB image. Our method, dubbed MRC-Net, comprises two stages.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="We propose a single-shot approach to determining 6-DoF pose of an object with available 3D computer-aided design (CAD) model from a single RGB image. Our method, dubbed MRC-Net, comprises two stages.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-20T15:55:58.000Z">
+<meta property="article:modified_time" content="2025-02-22T11:55:58.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html","path":"paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html","title":"【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation"><span class="nav-text">MRC-Net:
+6-DoF Pose Estimation with MultiScale Residual Correlation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2. Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#methodology"><span class="nav-text">3. Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#multiscale-residual-correlation"><span class="nav-text">3.1. MultiScale Residual
+Correlation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#technical-details"><span class="nav-text">3.2. Technical Details</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#soft-labels-for-classification"><span class="nav-text">Soft labels for
+classification</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loss-functions"><span class="nav-text">Loss functions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#perspective-correction"><span class="nav-text">Perspective correction</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setup"><span class="nav-text">4.1. Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-studies"><span class="nav-text">4.2. Ablation Studies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comparison-with-state-of-the-art"><span class="nav-text">4.3. Comparison with
+State-of-the Art</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusions-and-limitations"><span class="nav-text">5. Conclusions and Limitations</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-05</time>
+        <br>
+      【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation | Karl的博客">
+      <meta itemprop="description" content="We propose a single-shot approach to determining 6-DoF pose of an object with available 3D computer-aided design (CAD) model from a single RGB image. Our method, dubbed MRC-Net, comprises two stages. The first performs pose classification and renders the 3D object in the classified pose. The second stage performs regression to predict fine-grained residual pose within class. Connecting the two stages is a novel multi-scale residual correlation (MRC) layer that captures high-and-low level correspondences between the input image and rendering from first stage. MRC-Net employs a Siamese network with shared weights between both stages to learn embeddings for input and rendered images. To mitigate ambiguity when predicting discrete pose class labels on symmetric objects, we use soft probabilistic labels to define pose class in the first stage. We demonstrate state-of-the-art accuracy, outperforming all competing RGB-based methods on four challenging BOP benchmark datasets: T-LESS, LM-O, YCB-V, and ITODD. Our method is non-iterative and requires no complex post-processing.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-20 23:55:58" itemprop="dateCreated datePublished" datetime="2025-02-20T23:55:58+08:00">2025-02-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-22 19:55:58" itemprop="dateModified" datetime="2025-02-22T19:55:58+08:00">2025-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>22 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">We propose a single-shot approach to determining 6-DoF pose of an object with available 3D computer-aided design (CAD) model from a single RGB image. Our method, dubbed MRC-Net, comprises two stages. The first performs pose classification and renders the 3D object in the classified pose. The second stage performs regression to predict fine-grained residual pose within class. Connecting the two stages is a novel multi-scale residual correlation (MRC) layer that captures high-and-low level correspondences between the input image and rendering from first stage. MRC-Net employs a Siamese network with shared weights between both stages to learn embeddings for input and rendered images. To mitigate ambiguity when predicting discrete pose class labels on symmetric objects, we use soft probabilistic labels to define pose class in the first stage. We demonstrate state-of-the-art accuracy, outperforming all competing RGB-based methods on four challenging BOP benchmark datasets: T-LESS, LM-O, YCB-V, and ITODD. Our method is non-iterative and requires no complex post-processing.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation">MRC-Net:
+6-DoF Pose Estimation with MultiScale Residual Correlation</h1>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 18%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 32%" />
+<col style="width: 9%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">MRC-Net</td>
+<td style="text-align: center;">（貌似是）实例级</td>
+<td style="text-align: center;">RGB + 物体类别</td>
+<td style="text-align: center;">RGB + 物体类别</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.02.22：说实话这篇文章没怎么看懂，感觉正文和图片对不上...，但是里面有旋转图片的数据增强操作，可以学一下</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li/overview-6dof.webp"
+alt="Figure 1. MRC-Net features a single-shot sequential Siamese structure of two stages, where the second stage conditions on the first classification stage outcome through multi-scale residual correlation of poses between input and rendered images." />
+<figcaption aria-hidden="true">Figure 1. MRC-Net features a single-shot
+sequential Siamese structure of two stages, where the second stage
+conditions on the first classification stage outcome through multi-scale
+residual correlation of poses between input and rendered
+images.</figcaption>
+</figure>
+<p>To summarize, the main contributions of this work are:</p>
+<ul>
+<li>MRC-Net, a novel single-shot approach to directly estimate the 6-DoF
+pose of objects with known 3D models from monocular RGB images. Unlike
+prior methods, our approach performs classification and regression
+sequentially, guiding residual pose regression by conditioning on
+classification outputs. Moreover, we introduce a custom classification
+design based on soft labels, to mitigate symmetry-induced
+ambiguities.</li>
+<li>A novel MRC layer that implicitly captures correspondences between
+input and rendered images at both global and local scales. Since MRC-Net
+is end-to-end trainable, this encourages the correlation features to be
+more discriminative, and avoids the need for complicated post-processing
+procedures.</li>
+<li>State-of-the-art accuracy on a variety of BOP benchmark datasets,
+advancing average recall by 2.4% on average compared to results reported
+by competing methods.</li>
+</ul>
+<h2 id="related-work">2. Related Work</h2>
+<h2 id="methodology">3. Methodology</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li/architecture5.webp"
+alt="Figure 2. MRC-Net Architecture. The classifier and regressor stages employ a Siamese structure with shared weights. Both stages take the object crop and its bounding box map as input, and extract image features to detect the visible object mask, which are concatenated together to estimate object pose. The classifier first predicts pose labels. These predictions, along with the 3D CAD model, are then used to render an image estimate, which serves as input for the second stage. Features from the rendered image are correlated with those from real images in the MRC layer. These correlation features undergo ASPP processing within the rendered branch to regress the pose residuals." />
+<figcaption aria-hidden="true">Figure 2. MRC-Net Architecture. The
+classifier and regressor stages employ a Siamese structure with shared
+weights. Both stages take the object crop and its bounding box map as
+input, and extract image features to detect the visible object mask,
+which are concatenated together to estimate object pose. The classifier
+first predicts pose labels. These predictions, along with the 3D CAD
+model, are then used to render an image estimate, which serves as input
+for the second stage. Features from the rendered image are correlated
+with those from real images in the MRC layer. These correlation features
+undergo ASPP processing within the rendered branch to regress the pose
+residuals.</figcaption>
+</figure>
+<ul>
+<li><p>给定crop后的RGB图和物体的CAD模型，MRC-Net估计物体的<span
+class="math inline">\(\mathbf{R}\)</span>和<span
+class="math inline">\(\mathbf{t}\)</span>，如图2所示；</p></li>
+<li><p>分类阶段和残差回归阶段共同解决三个共存的问题：</p>
+<ul>
+<li>3D旋转<span class="math inline">\(\mathbf{R} \in
+SO(3)\)</span>；</li>
+<li>2D平面内平移<span class="math inline">\((t_x, t_y) \in
+\mathbb{R}^2\)</span>；</li>
+<li>1D深度<span class="math inline">\(t_z \in \mathbb{R}\)</span>；</li>
+</ul></li>
+</ul>
+<ol type="1">
+<li><p>在第一个阶段：</p>
+<ol type="1">
+<li>方法使用一个位姿分类器处理RGB图，得到位姿标签<span
+class="math inline">\(\mathbf{R}_c\)</span>和<span
+class="math inline">\((t_x^c, t_y^c, t_z^c)\)</span>；</li>
+<li>使用预测出的位姿标签，结合物体的CAD，渲染出物体的一幅图片；</li>
+<li>为了量化旋转<span
+class="math inline">\(SO(3)\)</span>，方法根据“Generating Uniform
+Incremental Grids on SO(3) Using the Hopf
+Fibration”，生成了旋转原型集合<span
+class="math inline">\(\{\mathbf{R}_k\}_{k=1}^K\)</span>，这可以将旋转空间分为<span
+class="math inline">\(K\)</span>个bucket；</li>
+<li>同样对于<span class="math inline">\(t_x\)</span>，<span
+class="math inline">\(t_y\)</span>和<span
+class="math inline">\(t_z\)</span>，方法根据“CDPN: Coordinates-Based
+Disentangled Pose Network for Real-Time RGB-Based 6-DoF Object Pose
+Estimation”的SITE，将平移转换表示为<span class="math inline">\((\tau_x,
+\tau_y, \tau_z)\)</span>，然后分别生成2D和1D的空间均匀网格；</li>
+</ol></li>
+<li><p>在第二个阶段：</p>
+<ol type="1">
+<li>将第一个阶段渲染后的物体图像和它的bounding
+box输入，基于“渲染-比较”，估计输入图像和渲染图像之间的残差位姿<span
+class="math inline">\(\Delta \mathbf{R}\)</span>和<span
+class="math inline">\((\Delta \tau_x, \Delta \tau_y, \Delta
+\tau_z)\)</span>；</li>
+<li>这样，第二阶段的位姿估计就受到了第一阶段位姿分类的指导，简化了回归任务；</li>
+<li>这里会使用MRC模块计算输入图像和渲染图像之间之间的相关性；</li>
+</ol></li>
+<li><p>最后，两个阶段的预测结果会进行结合，得到最终的6-DoF位姿，即：<span
+class="math inline">\(\hat{\mathbf{R}} = \Delta \mathbf{R}
+\mathbf{R}^c\)</span>和<span class="math inline">\(\hat{\tau}_i =
+\tau_i^c + \Delta \tau_i, i \in \{x, y, z\}\)</span>。</p></li>
+</ol>
+<h3 id="multiscale-residual-correlation">3.1. MultiScale Residual
+Correlation</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li/fig3.webp"
+alt="Figure 3. Comparison of (a) conventional approaches and (b) our proposed approach leveraging feature correlations to estimate residual pose. Instead of predicting an intermediate flow field, we directly feed multi-scale feature correlations into the regression head in an end-to-end fashion. These features are discriminative and eliminate the need for post refinement, outlier removal or multiview renderings." />
+<figcaption aria-hidden="true">Figure 3. Comparison of (a) conventional
+approaches and (b) our proposed approach leveraging feature correlations
+to estimate residual pose. Instead of predicting an intermediate flow
+field, we directly feed multi-scale feature correlations into the
+regression head in an end-to-end fashion. These features are
+discriminative and eliminate the need for post refinement, outlier
+removal or multiview renderings.</figcaption>
+</figure>
+<p>MRC在三个比例下计算真实图像和渲染图像特征体之间的相关性。随后，相关特征会被送入回归头中，产生残差位姿。</p>
+<p>在计算相关性时，方法遵循“PWC-Net: CNNs for Optical Flow Using
+Pyramid, Warping, and Cost Volume”，将相关性限制在<span
+class="math inline">\(P \times
+P\)</span>的窗口中。数学上，给定维度均为<span class="math inline">\(d
+\times H \times W\)</span>的真实图像特征体<span
+class="math inline">\(\mathbf{f}_r\)</span>和渲染图像特征体<span
+class="math inline">\(\mathbf{f}_s\)</span>，得到维度为<span
+class="math inline">\(P^2 \times H \times W\)</span>的相关体<span
+class="math inline">\(\mathbf{c}\)</span>，计算如下：</p>
+<p><span class="math display">\[
+\mathbf{c}(\mathbf{v}, \mathbf{x}) = \frac{1}{\sqrt{d}}
+\mathbf{f}_s(\mathbf{x})^T \mathbf{f}_r(\mathbf{x} + \mathbf{v}), \quad
+\forall \mathbf{v}: \Vert \mathbf{v} \Vert_\infty \leq P,
+\]</span></p>
+<p>其中，<span
+class="math inline">\(\mathbf{x}\)</span>是每个像素位置，<span
+class="math inline">\(\mathbf{v}\)</span>是偏移量，<span
+class="math inline">\(\Vert \cdot
+\Vert_\infty\)</span>是无穷范数，即向量中每个元素绝对值的最大值。</p>
+<h3 id="technical-details">3.2. Technical Details</h3>
+<h4 id="soft-labels-for-classification">Soft labels for
+classification</h4>
+<p>方法将位姿估计视作分类问题，那么首先需要定义位姿的类别，而将物体旋转分配给离散的位姿bucket是一项复杂的挑战。</p>
+<p>具体来说，物体旋转可能位于<span class="math inline">\(SO(3)\)</span>
+bucket的边界上，对于多个旋转原型有相同的测地距离，导致了固有的歧义。此外，某些物体存在对称性，使得同一RGB图会对应多个刚体变换。为了解决这个问题，方法在分类中使用软标签，根据位姿误差指标，对物体是否属于某个view
+bucket进行二进制概率建模。“EPro-PnP: Generalized End-to-End
+Probabilistic Perspective-n-Points for Monocular Object Pose
+Estimation”中探讨了类似的概念，其中物体位姿的连续分布是根据重投影误差定义的。相比之下，方法为旋转类制定软赋值，为问题提供了一个新颖的视角。</p>
+<p>具体来说，给定带注释的物体位姿<span
+class="math inline">\((\mathbf{R}^*,
+\mathbf{t}^*)\)</span>，方法将旋转标签定义为：</p>
+<p><span class="math display">\[
+l_k^\mathbf{R} = \exp\left\{-\frac{\rho_\text{pose_symm}(\mathbf{R}^*,
+\mathbf{t}^*; \mathbf{R}_k, \mathbf{t}^*)}{\sigma}\right\},
+\]</span></p>
+<p>其中，<span class="math inline">\(k = 1, \cdots, K\)</span>，<span
+class="math inline">\(\rho_\text{pose_symm}(\mathbf{R}^*, \mathbf{t}^*;
+\mathbf{R}_k, \mathbf{t}^*)\)</span>测量物体位姿<span
+class="math inline">\((\mathbf{R}_1, \mathbf{t}_1; \mathbf{R}_k,
+\mathbf{t}_k)\)</span>之间的对称感知距离，<span
+class="math inline">\(\sigma &gt;
+0\)</span>是调节分类标签集中度的超参数。</p>
+<p>本质上来说，软标签描述了以带注释旋转<span
+class="math inline">\(\mathbf{R}^*\)</span>为中心的旋转<span
+class="math inline">\(\mathbf{R}_k\)</span>的指数加权组合，权重由它们的对称感知距离决定。</p>
+<p>相似的，为了用于生成平移的软标签，方法将<span
+class="math inline">\((\tau_x, \tau_y)\)</span>均匀量化为<span
+class="math inline">\(64 \times 64\)</span>的网格，将<span
+class="math inline">\(\tau_z\)</span>量化为指定范围内的<span
+class="math inline">\(1000\)</span>个区间。最后，使用以真值位置为中心的高斯函数计算平移标签。</p>
+<h4 id="loss-functions">Loss functions</h4>
+<p>旋转分类任务是通过最小化焦点损失<span
+class="math inline">\(\mathcal{L}_\text{cls}^\mathbf{R}\)</span>来训练的，定义为：</p>
+<p><span class="math display">\[
+\mathcal{L}_\text{cls}^\mathbf{R} = \sum_{k = 1}^{K} - w^+
+l_{k}^\mathbf{R} (1 - \hat{p}_k)^2 \log \hat{p}_k - (1 -
+l_{k}^\mathbf{R}) \hat{p}_k^2 \log (1 - \hat{p}_k),
+\]</span></p>
+<p>其中，<span class="math inline">\(\{\hat{p}_k\}_{k =
+1}^K\)</span>是分类器预测的概率。</p>
+<p>注意，方法使用成对二进制编码以允许同时存在多个类隶属关系，并引入一个加权参数<span
+class="math inline">\(w^+ &gt;
+0\)</span>，在这里为100，以解决类不平衡问题。</p>
+<p>为了求解平移，<span class="math inline">\(xy\)</span>和<span
+class="math inline">\(z\)</span>分类任务都对多焦点损失进行了优化：</p>
+<p><span class="math display">\[
+\mathcal{L}_\text{cls}^i = -\left(1 - \sum_{j = 1}^{n_i} l_j^i
+\hat{p}_j^i \right)^2 \log \left(\sum_{j = 1}^{n_i} l_j^i
+\hat{p}_j^i\right), \quad i \in \{xy, z\},
+\]</span></p>
+<p>其中，<span class="math inline">\(l_j^{xy}\)</span>和<span
+class="math inline">\(l_j^z\)</span>是<span
+class="math inline">\(xy\)</span>和<span
+class="math inline">\(z\)</span>的平移软标签，<span
+class="math inline">\(\hat{p}_j^{xy}\)</span>和<span
+class="math inline">\(\hat{p}_j^z\)</span>是预测概率，<span
+class="math inline">\(n_{xy} = 64\)</span>和<span
+class="math inline">\(n_z =
+1000\)</span>。在推理时，方法为所有三个任务选择置信度最高的类。</p>
+<p>旋转回归任务预测渲染物体和真实物体之间的残差旋转<span
+class="math inline">\(\Delta
+\mathbf{R}\)</span>。这个量通常在较小的位姿角度下具有局部性，并且更容易通过回归进行学习。将来自分类器的粗略旋转<span
+class="math inline">\(\mathbf{R}_c\)</span>和<span
+class="math inline">\(\Delta
+\mathbf{R}\)</span>结合，就能够得到细粒度旋转预测<span
+class="math inline">\(\hat{\mathbf{R}} = \Delta \mathbf{R}
+\mathbf{R}_c\)</span>。方法使用“On the Continuity of Rotation
+Representations in Neural Networks”中的旋转表示。</p>
+<p>同样的，方法将两个阶段的平移进行结合，来得到最终的物体平移：<span
+class="math inline">\(\hat{\tau}_i = \tau_i^c + \Delta \tau_i, i \in
+\{x, y, z\}\)</span>。</p>
+<p>为了训练旋转回归任务，方法采用的解耦损失函数：</p>
+<p><span class="math display">\[
+\mathcal{L}_\text{reg}^\mathbf{R} = \rho_\text{pose_sym}(\Delta
+\mathbf{R} \mathbf{R}^{c}, \mathbf{t}^*; \mathbf{R}^*, \mathbf{t}^*),
+\]</span></p>
+<p>其中，<span class="math inline">\((\mathbf{R}^*,
+\mathbf{t}^*)\)</span>是带注释的物体位姿。</p>
+<p>其余两项<span
+class="math inline">\(\mathcal{L}_\text{reg}^{xy}\)</span>和<span
+class="math inline">\(\mathcal{L}_\text{reg}^z\)</span>的定义类似。</p>
+<p>最终的损失函数是通过各个项的加权组合形成的：</p>
+<p><span class="math display">\[
+\mathcal{L} = w_\text{cls}^\mathbf{R} \mathcal{L}_\text{cls}^\mathbf{R}
++ w_\text{cls}^{xy} \mathcal{L}_\text{cls}^{xy} + w_\text{cls}^z
+\mathcal{L}_\text{cls}^z + w_\text{reg}^\mathbf{R}
+\mathcal{L}_\text{reg}^\mathbf{R} + w_\text{reg}^{xy}
+\mathcal{L}_\text{reg}^{xy} + w_\text{reg}^z \mathcal{L}_\text{reg}^z +
+w^M \mathcal{L}^M,
+\]</span></p>
+<p>其中，<span
+class="math inline">\(\mathcal{L}^M\)</span>是可见掩码项，定义为二元交叉熵损失，且<span
+class="math inline">\(w^M &gt; 0\)</span>是其权重。</p>
+<h4 id="perspective-correction">Perspective correction</h4>
+<p>由于方法是在以感兴趣对象为中心的裁剪视图上进行操作的，它可能缺乏全局上下文信息。</p>
+<p>具体而言，正如“CLIFF: Carrying Location Information in Full Frames
+into Human Pose and Shape
+Estimation”中所强调的，可能会出现这样的情况：网络被迫对外观相同的图像裁剪预测出不同的姿态，从而在监督过程中造成混淆。</p>
+<p>缓解这一挑战的一个常见策略是将以自我为中心的旋转转换为以环境为中心的旋转。然而，这种解决方案需要对物体中心进行准确预测，并且没有考虑到平移因素。相反，我们采用了与“CLIFF:
+Carrying Location Information in Full Frames into Human Pose and Shape
+Estimation”类似的方法，额外将边界框特征的全局信息纳入到每个分类器中。</p>
+<p>我们输入<span class="math inline">\(\left[\frac{b_x - c_x}{f},
+\frac{b_y - c_y}{f}, \frac{s_{bbox}}{f}\right]\)</span>，其中<span
+class="math inline">\(b_x\)</span>和<span
+class="math inline">\(b_y\)</span>是边界框的中心，<span
+class="math inline">\(c_x\)</span>和<span
+class="math inline">\(c_y\)</span>是相机主点，<span
+class="math inline">\(f\)</span>是焦距。</p>
+<p>在我们的实验中，按照惯例，我们直接从数据集注释中获取相机的焦距和主点。与“CLIFF:
+Carrying Location Information in Full Frames into Human Pose and Shape
+Estimation”不同的是，我们在分类阶段之后得到粗略的平移估计值<span
+class="math inline">\((t_{cx}, t_{cy},
+t_{cz})\)</span>。随后，在回归阶段的“渲染-比较”中，方法直接将<span
+class="math inline">\(\left(\frac{t_{cx}}{t_{cz}},
+\frac{t_{cy}}{t_{cz}},
+s_{bbox}^f\right)\)</span>输入到回归头中，而不是输入边界框中心。这一修改确保了回归器能够获知真实的投影物体中心，从而有助于准确预测残差。</p>
+<h2 id="experiments">4. Experiments</h2>
+<h3 id="setup">4.1. Setup</h3>
+<h3 id="ablation-studies">4.2. Ablation Studies</h3>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+(a) Comparison of hard and soft labels. The table illustrates
+performance when trained with and without soft labels.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR<sub>VSD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR<sub>MSSD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+AR<sub>MSPD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR↑
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Hard Label
+</td>
+<td style="text-align: center;">
+67.8
+</td>
+<td style="text-align: center;">
+72.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+84.6
+</td>
+<td style="text-align: center;">
+74.8
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+Soft Label
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+70.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+74.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+86.0
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+77.1
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+(b) Comparison of parallel and sequential designs. ClfOnly denotes a
+classification-only model. MultiTask is a parallel baseline
+architecture. FeatConcat sends concatenated real and rendered image
+features to the regressor. SSCorr use single-scale feature correlation,
+while MRC-Net uses multi-scale feature correlation. P denotes parallel
+classification and regression, while S denotes sequential.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Type
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR<sub>VSD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR<sub>MSSD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+AR<sub>MSPD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR↑
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+ClfOnly
+</td>
+<td style="text-align: center;">
+55.6
+</td>
+<td style="text-align: center;">
+62.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+77.4
+</td>
+<td style="text-align: center;">
+65.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+P
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+MultiTask
+</td>
+<td style="text-align: center;">
+55.3
+</td>
+<td style="text-align: center;">
+62.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+76.6
+</td>
+<td style="text-align: center;">
+64.9
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+S
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+FeatConcat
+</td>
+<td style="text-align: center;">
+69.4
+</td>
+<td style="text-align: center;">
+73.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+85.7
+</td>
+<td style="text-align: center;">
+76.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+S
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+SSCorr
+</td>
+<td style="text-align: center;">
+69.8
+</td>
+<td style="text-align: center;">
+73.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+85.8
+</td>
+<td style="text-align: center;">
+76.5
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+S
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+MRC-Net
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+70.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+74.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+86.0
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+77.1
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+(c) Impact of perspective correction (PerspCrrct) and test-time
+augmentation (TTA). Dropping perspective correction results in
+noticeable degradation in performance, while omitting TTA has a more
+modest impact.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR<sub>VSD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR<sub>MSSD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+AR<sub>MSPD</sub>↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AR↑
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+w/o PerspCrrct
+</td>
+<td style="text-align: center;">
+69.9
+</td>
+<td style="text-align: center;">
+74.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+85.9
+</td>
+<td style="text-align: center;">
+76.6
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+w/o TTA
+</td>
+<td style="text-align: center;">
+70.4
+</td>
+<td style="text-align: center;">
+74.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+85.7
+</td>
+<td style="text-align: center;">
+76.7
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+Full model
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+70.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+74.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+86.0
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+77.1
+</td>
+</tr>
+</tbody>
+<caption style="caption-side: bottom;">
+Table 1. Ablation studies of our method on T-LESS dataset [16].
+</caption>
+</table>
+<h3 id="comparison-with-state-of-the-art">4.3. Comparison with
+State-of-the Art</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+T-LESS
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ITODD
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+YCB-V
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+LM-O
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Avg.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+EPOS [17]
+</td>
+<td style="text-align: center;">
+46.7
+</td>
+<td style="text-align: center;">
+18.6
+</td>
+<td style="text-align: center;">
+49.9
+</td>
+<td style="text-align: center;">
+54.7
+</td>
+<td style="text-align: center;">
+42.5
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CDPNv2 [29]
+</td>
+<td style="text-align: center;">
+40.7
+</td>
+<td style="text-align: center;">
+10.2
+</td>
+<td style="text-align: center;">
+39.0
+</td>
+<td style="text-align: center;">
+62.4
+</td>
+<td style="text-align: center;">
+38.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+DPODv2 [44]
+</td>
+<td style="text-align: center;">
+63.6
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+58.4
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+PVNet [40]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+57.5
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CosyPose [26]
+</td>
+<td style="text-align: center;">
+64.0
+</td>
+<td style="text-align: center;">
+21.6
+</td>
+<td style="text-align: center;">
+57.4
+</td>
+<td style="text-align: center;">
+63.3
+</td>
+<td style="text-align: center;">
+51.6
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SurfEmb [13]
+</td>
+<td style="text-align: center;">
+<u>74.1</u>
+</td>
+<td style="text-align: center;">
+<u>38.7</u>
+</td>
+<td style="text-align: center;">
+65.3
+</td>
+<td style="text-align: center;">
+65.6
+</td>
+<td style="text-align: center;">
+<u>60.9</u>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SC6D [2]
+</td>
+<td style="text-align: center;">
+73.9
+</td>
+<td style="text-align: center;">
+30.3
+</td>
+<td style="text-align: center;">
+61.0
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SCFlow [11]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+65.1
+</td>
+<td style="text-align: center;">
+<u>68.2</u>
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+PFA [22]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+61.5
+</td>
+<td style="text-align: center;">
+67.4
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CIR [33]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+65.5
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SO-Pose [7]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+61.3
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+NCF [23]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+<u>67.3</u>
+</td>
+<td style="text-align: center;">
+63.2
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CRT-6D [3]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+66.0
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+MRC-Net
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>77.1</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>39.3</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>68.1</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>68.5</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>63.3</strong>
+</td>
+</tr>
+</tbody>
+<caption style="caption-side: bottom;">
+(a)
+</caption>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+T-LESS
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+YCB-V
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Avg.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CDPNv2 [29]
+</td>
+<td style="text-align: center;">
+47.8
+</td>
+<td style="text-align: center;">
+53.2
+</td>
+<td style="text-align: center;">
+50.5
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CosyPose [26]
+</td>
+<td style="text-align: center;">
+72.8
+</td>
+<td style="text-align: center;">
+82.1
+</td>
+<td style="text-align: center;">
+77.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SurfEmb [13]
+</td>
+<td style="text-align: center;">
+77.0
+</td>
+<td style="text-align: center;">
+71.8
+</td>
+<td style="text-align: center;">
+74.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SC6D [2]
+</td>
+<td style="text-align: center;">
+<u>78.0</u>
+</td>
+<td style="text-align: center;">
+78.8
+</td>
+<td style="text-align: center;">
+<u>78.4</u>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SCFlow [11]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+<strong>82.6</strong>
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CIR [33]
+</td>
+<td style="text-align: center;">
+71.5
+</td>
+<td style="text-align: center;">
+<u>82.4</u>
+</td>
+<td style="text-align: center;">
+77.0
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SO-Pose [7]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+71.5
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+NCF [23]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+77.5
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CRT-6D [3]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+75.2
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+MRC-Net
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>79.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+81.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>80.8</strong>
+</td>
+</tr>
+</tbody>
+<caption style="caption-side: bottom;">
+(b)
+</caption>
+<caption style="text-align: left; caption-side: bottom;">
+Table 2. Comparison with state-of-the-srt RGB methods on the BOP
+benchmarks. We report Average Recall in % on (a) T-LESS, ITODD, YCB-V,
+and LM-O datasets trained with purely synthetic images, and (b) T-LESS
+and YCB-V datasets also trained with real images. We highlight the best
+results in bold and underline the second best results. "-" denotes
+results missing from the original paper.
+</caption>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ADD(-S) ↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AUC ADD-S ↑
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AUC ADD(-S) ↑
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SegDriven [19]
+</td>
+<td style="text-align: center;">
+39.0
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SingleStage [20]
+</td>
+<td style="text-align: center;">
+53.9
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CosyPose [26]
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+89.8
+</td>
+<td style="text-align: center;">
+84.5
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+RePose [24]
+</td>
+<td style="text-align: center;">
+62.1
+</td>
+<td style="text-align: center;">
+88.5
+</td>
+<td style="text-align: center;">
+82.0
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+GDR-Net [52]
+</td>
+<td style="text-align: center;">
+60.1
+</td>
+<td style="text-align: center;">
+91.6
+</td>
+<td style="text-align: center;">
+84.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SO-Pose [7]
+</td>
+<td style="text-align: center;">
+56.8
+</td>
+<td style="text-align: center;">
+90.9
+</td>
+<td style="text-align: center;">
+83.9
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+ZebraPose [47]<sup>∗</sup>
+</td>
+<td style="text-align: center;">
+80.5
+</td>
+<td style="text-align: center;">
+90.1
+</td>
+<td style="text-align: center;">
+85.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+SCFlow [11]
+</td>
+<td style="text-align: center;">
+70.5
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+DProST [39]
+</td>
+<td style="text-align: center;">
+65.1
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+77.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+CheckerPose [31]<sup>∗</sup>
+</td>
+<td style="text-align: center;">
+<u>81.4</u>
+</td>
+<td style="text-align: center;">
+91.3
+</td>
+<td style="text-align: center;">
+86.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+MRC-Net
+</td>
+<td style="text-align: center;">
+81.2
+</td>
+<td style="text-align: center;">
+<u>95.0</u>
+</td>
+<td style="text-align: center;">
+<u>92.3</u>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+MRC-Net<sup>∗</sup>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>83.6</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>97.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>94.3</strong>
+</td>
+</tr>
+</tbody>
+<caption style="text-align: left; caption-side: bottom;">
+Table 3. Comparison on the YCB-V Dataset. We report the ADD(-S), AUC of
+ADD-S, and AUC of ADD(-S) metrics in %. We highlight the best results in
+bold and underline the second best results. "-" denotes results missing
+from the original paper and <sup>∗</sup> denotes results obtained using
+the FCOS detector [29].
+</caption>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li/fig4.webp"
+alt="Figure 4. Qualitative comparison of results on T-LESS: (a) Original RGB image, (b) MRC-Net, (c) CosyPose initialized PFA [22], (d) SC6D [2], and (e) ZebraPose [47]. The object&#39;s 3D model is projected with estimated 6D pose and overlaid on original images with distinct colors. Red boxes denote cases where pose predictions are distinctly different across the methods. MRC-Net outperforms the state-of-art models particularly under heavy occlusion. (Best viewed when zoomed in.)" />
+<figcaption aria-hidden="true">Figure 4. Qualitative comparison of
+results on T-LESS: (a) Original RGB image, (b) MRC-Net, (c) CosyPose
+initialized PFA [22], (d) SC6D [2], and (e) ZebraPose [47]. The object's
+3D model is projected with estimated 6D pose and overlaid on original
+images with distinct colors. Red boxes denote cases where pose
+predictions are distinctly different across the methods. MRC-Net
+outperforms the state-of-art models particularly under heavy occlusion.
+(Best viewed when zoomed in.)</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Methods
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+[33]<sup>∗</sup>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+[22]<sup>∗</sup>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+[13]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+[52]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+[2]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+MRC-Net
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+Time (ms)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+2542
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+88
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+1121
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+26
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+25
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+61
+</td>
+</tr>
+</tbody>
+<caption style="text-align: left; caption-side: bottom;">
+Runtime comparisons. We run CIR [33], PFA [22], SurfEmb [13], GDR-Net
+[52], SC6D [2] and MRC-Net (Ours) on the same AWS EC2 P3.2Xlarge
+instance, and report the average runtime in milliseconds to infer one
+object pose. For methods with <sup>∗</sup>, the time required for pose
+initialization, typically involving the execution of an additional
+off-the-shelf network, is not included.
+</caption>
+</table>
+<h2 id="conclusions-and-limitations">5. Conclusions and Limitations</h2>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2403.08019" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" title="【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation">https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="prev" title="【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/paper-reading-records.html" rel="next" title="论文阅读记录">
+                  论文阅读记录 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

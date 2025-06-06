@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文介绍了如何搭建链式代理将线路机和解锁机搭配使用，且无须在VPS上搭建额外的节点。">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="搭建链式代理">
+<meta property="og:url" content="https://blog.032802.xyz/installation/build-a-chain-proxy.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="本文介绍了如何搭建链式代理将线路机和解锁机搭配使用，且无须在VPS上搭建额外的节点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-06T04:21:28.000Z">
+<meta property="article:modified_time" content="2025-02-06T04:21:28.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="Clash for Windows">
+<meta property="article:tag" content="Shadowrocket">
+<meta property="article:tag" content="BandwagonHost">
+<meta property="article:tag" content="ZgoCloud">
+<meta property="article:tag" content="VPS">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/installation/build-a-chain-proxy.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/installation/build-a-chain-proxy.html","path":"installation/build-a-chain-proxy.html","title":"搭建链式代理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>搭建链式代理 | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#clash-for-windows%E9%93%BE%E5%BC%8F%E4%BB%A3%E7%90%86"><span class="nav-text">Clash for Windows链式代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shadowrocket%E9%93%BE%E5%BC%8F%E4%BB%A3%E7%90%86"><span class="nav-text">Shadowrocket链式代理</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/vps-review/zgocloud-los-angeles-global-vps-specials-starter.html" rel="bookmark">
+        <time class="popular-posts-time">2025-03-30</time>
+        <br>
+      【VPS测评】ZgoCloud - Los Angeles Global VPS - Specials - Starter
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/vps-review/bandwagonhost-minibox-10-512.html" rel="bookmark">
+        <time class="popular-posts-time">2025-03-10</time>
+        <br>
+      【VPS测评】BandwagonHost - MINIBOX-10-512
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/vps-review/bandwagonhost-the-dc6-plan.html" rel="bookmark">
+        <time class="popular-posts-time">2025-03-10</time>
+        <br>
+      【VPS测评】BandwagonHost - The DC6 Plan
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/installation/build-a-chain-proxy.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="搭建链式代理 | Karl的博客">
+      <meta itemprop="description" content="本文介绍了如何搭建链式代理将线路机和解锁机搭配使用，且无须在VPS上搭建额外的节点。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建链式代理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-06 12:21:28" itemprop="dateCreated datePublished" datetime="2025-02-06T12:21:28+08:00">2025-02-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index"><span itemprop="name">环境配置</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/installation/build-a-chain-proxy.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/installation/build-a-chain-proxy.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>755</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">本文介绍了如何搭建链式代理将线路机和解锁机搭配使用，且无须在VPS上搭建额外的节点。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>参考文章：</p>
+<ul>
+<li>Clash for Windows：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLnRhbmdsdS5tZS9jaGFpbnMtcHJveGllcy8=">链式代理优化代理速度<i class="fa fa-external-link-alt"></i></span></li>
+<li>Shadowrocket：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmhicWZrai5jbi8yMDI0LzA2L2NoYWluLXByb3h5Lw==">搭建链式代理<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>前段时间买了一台搬瓦工的The DC6
+Plan，搭建节点使用的过程中，虽然线路很稳定，但是访问网页的时候经常跳Cloudflare验证，所以便一直有添置一台解锁机的想法。</p>
+<p>首先明确一下线路机和解锁机的概念：</p>
+<ul>
+<li>线路机：访问速度快，但是流媒体和ChatGPT不解锁，且几乎每次都会跳Cloudflare验证；</li>
+<li>解锁机：访问速度慢，但是上述资源都解锁，且跳Cloudflare验证的几率较小。</li>
+</ul>
+<p>所以需要链式代理来结合线路机的访问速度和解锁机的解锁资源。</p>
+<p>本次购入的解锁机是<span class="exturl" data-url="aHR0cHM6Ly96Z292cHMuY29tLw==">ZgoCloud<i class="fa fa-external-link-alt"></i></span>的Los
+Angeles Global VPS - Specials - Starter，$15一年，线路信息可以在<span class="exturl" data-url="aHR0cHM6Ly9kaWd2cHMuY29tL3Jldmlldy96Z28jbG9zLWFuZ2VsZXMtZ2xvYmFsLXZwcw==">DigVPS<i class="fa fa-external-link-alt"></i></span>中查看，除此之外，可以使用<span class="exturl" data-url="aHR0cHM6Ly93d3cuaXRkb2cuY24vcGluZy8=">在线Ping<i class="fa fa-external-link-alt"></i></span>来比较线路机和解锁机的区别：</p>
+<figure>
+<img
+src="https://img.032802.xyz/installation/building-a-chain-proxy/bandwagonhost.webp"
+alt="搬瓦工线路机" />
+<figcaption aria-hidden="true">搬瓦工线路机</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/installation/building-a-chain-proxy/zgocloud.webp"
+alt="Zgo解锁机" />
+<figcaption aria-hidden="true">Zgo解锁机</figcaption>
+</figure>
+<p>可以看到，搬瓦工线路机基本没有丢包，而Zgo解锁机则丢包较多。</p>
+<h2 id="clash-for-windows链式代理">Clash for Windows链式代理</h2>
+<p>首先打开Clash for Windows的配置文件，下面是我配置文件的一部分：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mixed-port:</span> <span class="number">7890</span></span><br><span class="line"><span class="attr">allow-lan:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">mode:</span> <span class="string">Rule</span></span><br><span class="line"><span class="attr">log-level:</span> <span class="string">info</span></span><br><span class="line"><span class="attr">external-controller:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9090</span></span><br><span class="line"><span class="attr">proxies:</span></span><br><span class="line">  <span class="bullet">-</span> &#123;<span class="attr">name:</span> <span class="string">bwgla</span>, <span class="attr">server:</span> <span class="string">YourURL</span>, <span class="attr">port:</span> <span class="number">12345</span>, <span class="attr">type:</span> <span class="string">vmess</span>, <span class="attr">uuid:</span> <span class="string">YourUUID</span>, <span class="attr">alterId:</span> <span class="number">0</span>, <span class="attr">cipher:</span> <span class="string">auto</span>, <span class="attr">tls:</span> <span class="literal">true</span>, <span class="attr">network:</span> <span class="string">ws</span>, <span class="attr">ws-opts:</span> &#123;<span class="attr">path:</span> <span class="string">/YourPATH</span>, <span class="attr">headers:</span> &#123;<span class="attr">Host:</span> <span class="string">YourURL</span>&#125;&#125;&#125;</span><br><span class="line">  <span class="bullet">-</span> &#123;<span class="attr">name:</span> <span class="string">zgola</span>, <span class="attr">server:</span> <span class="string">YourURL</span>, <span class="attr">port:</span> <span class="number">12345</span>, <span class="attr">type:</span> <span class="string">vmess</span>, <span class="attr">uuid:</span> <span class="string">YourUUID</span>, <span class="attr">alterId:</span> <span class="number">0</span>, <span class="attr">cipher:</span> <span class="string">auto</span>, <span class="attr">tls:</span> <span class="literal">true</span>, <span class="attr">network:</span> <span class="string">ws</span>, <span class="attr">ws-opts:</span> &#123;<span class="attr">path:</span> <span class="string">/YourPATH</span>, <span class="attr">headers:</span> &#123;<span class="attr">Host:</span> <span class="string">YourURL</span>&#125;&#125;&#125;</span><br><span class="line"><span class="attr">proxy-groups:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">🚀</span> <span class="string">节点选择</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">select</span></span><br><span class="line">    <span class="attr">proxies:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">♻️</span> <span class="string">自动选择</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DIRECT</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bwgla</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zgola</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">♻️</span> <span class="string">自动选择</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">url-test</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">http://www.gstatic.com/generate_204</span></span><br><span class="line">    <span class="attr">interval:</span> <span class="number">300</span></span><br><span class="line">    <span class="attr">tolerance:</span> <span class="number">50</span></span><br><span class="line">    <span class="attr">proxies:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bwgla</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zgola</span></span><br></pre></td></tr></table></figure>
+<p>在我的配置中，<code>bwgla</code>为线路机，<code>zgola</code>为解锁机，可以在<code>proxy-groups</code>中增加下面的配置以实现“本机
+-&gt; bwgla -&gt; zgola -&gt; 目标网址”的流量转发：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">proxy-groups:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">bwgla2zgola</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">relay</span></span><br><span class="line">    <span class="attr">proxies:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bwgla</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zgola</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">🚀</span> <span class="string">节点选择</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">select</span></span><br><span class="line">    <span class="attr">proxies:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">♻️</span> <span class="string">自动选择</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DIRECT</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bwgla2zgola</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bwgla</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zgola</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">♻️</span> <span class="string">自动选择</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">url-test</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">http://www.gstatic.com/generate_204</span></span><br><span class="line">    <span class="attr">interval:</span> <span class="number">300</span></span><br><span class="line">    <span class="attr">tolerance:</span> <span class="number">50</span></span><br><span class="line">    <span class="attr">proxies:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bwgla</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zgola</span></span><br></pre></td></tr></table></figure>
+<p>原文中还提到了使用机场作为线路机的配置方法，但是我不打算这么用，所以没有实践。</p>
+<p>转发结果可以在<span class="exturl" data-url="aHR0cHM6Ly9pcC5za2subW9lLw==">https://ip.skk.moe/<i class="fa fa-external-link-alt"></i></span>中查询。</p>
+<h2 id="shadowrocket链式代理">Shadowrocket链式代理</h2>
+<p>iOS端Shadowrocket的操作和Windows上差不多，图片来源于参考文章<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmhicWZrai5jbi8yMDI0LzA2L2NoYWluLXByb3h5Lw==">搭建链式代理<i class="fa fa-external-link-alt"></i></span>：</p>
+<figure>
+<img
+src="https://img.032802.xyz/installation/building-a-chain-proxy/1.webp"
+alt="节点展示" />
+<figcaption aria-hidden="true">节点展示</figcaption>
+</figure>
+<p>上图中，“美国 |
+IEPL”节点即为线路机节点，“62.164.236.24:48308”节点即为解锁机节点，我们需要使用“美国
+| IEPL”节点将流量转发到“62.164.236.24:48308”节点。</p>
+<figure>
+<img
+src="https://img.032802.xyz/installation/building-a-chain-proxy/2.webp"
+alt="节点设置" />
+<figcaption aria-hidden="true">节点设置</figcaption>
+</figure>
+<p>点击“62.164.236.24:48308”节点，选择设置中的代理通过，选择“美国 |
+IEPL”节点然后保存。</p>
+<figure>
+<img
+src="https://img.032802.xyz/installation/building-a-chain-proxy/3.webp"
+alt="节点测试" />
+<figcaption aria-hidden="true">节点测试</figcaption>
+</figure>
+<p>最后使用<span class="exturl" data-url="aHR0cHM6Ly9pcC5za2subW9lLw==">https://ip.skk.moe/<i class="fa fa-external-link-alt"></i></span>进行测试，应该有和Clash
+for Windows链式代理一样的结果。</p>
+<p>使用上面提到的两种方法，无须在VPS上进行额外的节点设置，即可实现线路机到解锁机的流量转发。</p>
+<p><del>什么？你问我节点怎么搭建？这个问题之后再说吧。:)</del></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/installation/build-a-chain-proxy.html" title="搭建链式代理">https://blog.032802.xyz/installation/build-a-chain-proxy.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Clash-for-Windows/" rel="tag"><i class="fa fa-tag"></i> Clash for Windows</a>
+              <a href="/tags/Shadowrocket/" rel="tag"><i class="fa fa-tag"></i> Shadowrocket</a>
+              <a href="/tags/BandwagonHost/" rel="tag"><i class="fa fa-tag"></i> BandwagonHost</a>
+              <a href="/tags/ZgoCloud/" rel="tag"><i class="fa fa-tag"></i> ZgoCloud</a>
+              <a href="/tags/VPS/" rel="tag"><i class="fa fa-tag"></i> VPS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron.html" rel="prev" title="【论文笔记】Emerging Properties in Self-Supervised Vision Transformers">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】Emerging Properties in Self-Supervised Vision Transformers
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/installation/use-resend-smtp-service-to-implement-waline-comment-email-notification.html" rel="next" title="使用Resend SMTP服务实现Waline评论邮件通知">
+                  使用Resend SMTP服务实现Waline评论邮件通知 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/installation/build-a-chain-proxy.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/installation/build-a-chain-proxy.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

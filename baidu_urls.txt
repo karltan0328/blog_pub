@@ -1,0 +1,5 @@
+https://blog.032802.xyz/code-running/shanice-l_UNOPose.html
+https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html
+https://blog.032802.xyz/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html
+https://blog.032802.xyz/code-running/ziqin-h_GIVEPose.html
+https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html

@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Unseen object pose estimation methods often rely on CAD models or multiple reference views, making the onboarding stage costly. To simplify reference acquisition, we aim to estimate the unseen object’">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="Unseen object pose estimation methods often rely on CAD models or multiple reference views, making the onboarding stage costly. To simplify reference acquisition, we aim to estimate the unseen object’">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-19T02:20:35.000Z">
+<meta property="article:modified_time" content="2025-05-19T02:20:35.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta property="article:tag" content="2025CVPR">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html","path":"paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html","title":"【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image"><span class="nav-text">UNOPose:
+Unseen Object Pose Estimation with an Unposed RGB-D Reference Image</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2. Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uno-object-segmentation-and-pose-estimation"><span class="nav-text">3. UNO Object
+Segmentation and Pose Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-formulation"><span class="nav-text">3.1. Problem Formulation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uno-object-segmentation"><span class="nav-text">3.2. UNO Object Segmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uno-object-pose-estimation"><span class="nav-text">3.3. UNO Object Pose Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#overview-of-unopose"><span class="nav-text">3.3.1. Overview of UNOPose</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#coarse-to-fine-pose-estimation"><span class="nav-text">3.3.2. Coarse-to-fine Pose
+Estimation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion-limitation-and-future-work"><span class="nav-text">5. Conclusion, Limitation
+and Future work</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-03</time>
+        <br>
+      【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image | Karl的博客">
+      <meta itemprop="description" content="Unseen object pose estimation methods often rely on CAD models or multiple reference views, making the onboarding stage costly. To simplify reference acquisition, we aim to estimate the unseen object’s pose through a single unposed RGB-D reference image. While previous works leverage reference images as pose anchors to limit the range of relative pose, our scenario presents significant challenges since the relative transformation could vary across the entire SE(3) space. Moreover, factors like occlusion, sensor noise, and extreme geometry could result in low viewpoint overlap. To address these challenges, we present a novel approach and benchmark, termed UNOPose, for <u>UN</u>seen <u>O</u>ne-referencebased object <u>Pose</u> estimation. Building upon a coarse-to-fine paradigm, UNOPose constructs an SE(3)-invariant reference frame to standardize object representation despite pose and size variations. To alleviate small overlap across viewpoints, we recalibrate the weight of each correspondence based on its predicted likelihood of being within the overlapping region. Evaluated on our proposed benchmark based on the BOP Challenge, UNOPose demonstrates superior performance, significantly outperforming traditional and learningbased methods in the one-reference setting and remaining competitive with CAD-model-based methods. The code and dataset are available at https://github.com/shanice-l/UNOPose.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-19 10:20:35" itemprop="dateCreated datePublished" datetime="2025-05-19T10:20:35+08:00">2025-05-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Unseen object pose estimation methods often rely on CAD models or multiple reference views, making the onboarding stage costly. To simplify reference acquisition, we aim to estimate the unseen object’s pose through a single unposed RGB-D reference image. While previous works leverage reference images as pose anchors to limit the range of relative pose, our scenario presents significant challenges since the relative transformation could vary across the entire SE(3) space. Moreover, factors like occlusion, sensor noise, and extreme geometry could result in low viewpoint overlap. To address these challenges, we present a novel approach and benchmark, termed UNOPose, for <u>UN</u>seen <u>O</u>ne-referencebased object <u>Pose</u> estimation. Building upon a coarse-to-fine paradigm, UNOPose constructs an SE(3)-invariant reference frame to standardize object representation despite pose and size variations. To alleviate small overlap across viewpoints, we recalibrate the weight of each correspondence based on its predicted likelihood of being within the overlapping region. Evaluated on our proposed benchmark based on the BOP Challenge, UNOPose demonstrates superior performance, significantly outperforming traditional and learningbased methods in the one-reference setting and remaining competitive with CAD-model-based methods. The code and dataset are available at https://github.com/shanice-l/UNOPose.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image">UNOPose:
+Unseen Object Pose Estimation with an Unposed RGB-D Reference Image</h1>
+<table>
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 9%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 43%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">UNOPose</td>
+<td style="text-align: center;">任意级</td>
+<td style="text-align: center;">RGBDs</td>
+<td style="text-align: center;">RGBDs</td>
+<td style="text-align: center;">相对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.05.21：两阶段方法，估计两RGBD图像之间的相对位姿。粗略阶段使用GeoTransformer和DINOv2分别提取点云特征和RGB特征，特征拼接后计算相关矩阵，根据矩阵得到若干匹配点对，从这些匹配点对中选择三个可生成一个刚体变换，即位姿假设，使用距离的倒数进行评分，将评分最高的设置为初始位姿；精细阶段在粗略阶段的基础上增加了局部点云信息和位置编码信息，同样得到相关矩阵后使用加权SVD计算位姿。</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu/teaser.webp"
+alt="Figure 1. Illustration of unseen object pose estimation. Given a query image presenting a target object unseen during training, we aim to estimate its segmentation and 6DoF pose w.r.t. a reference frame. While previous methods [43, 57, 77, 90] often rely on the CAD model or multiple RGB(-D) images for reference, we merely use one unposed RGB-D reference image." />
+<figcaption aria-hidden="true">Figure 1. Illustration of unseen object
+pose estimation. Given a query image presenting a target object unseen
+during training, we aim to estimate its segmentation and 6DoF pose
+w.r.t. a reference frame. While previous methods [43, 57, 77, 90] often
+rely on the CAD model or multiple RGB(-D) images for reference, we
+merely use one unposed RGB-D reference image.</figcaption>
+</figure>
+<p>Our contributions can be summarized as follows:</p>
+<ul>
+<li>To the best of our knowledge, we are the first to conduct unseen
+object 6DoF pose estimation leveraging a single unposed RGB-D
+reference.</li>
+<li>Based on the BOP Challenge, we devise a new extensive benchmark
+tailored for unseen object segmentation and pose estimation with one
+reference. Additionally, we evaluate several traditional and
+learning-based methods on this benchmark for completeness.</li>
+<li>We introduce UNOPose, a network for learning relative transformation
+between reference and query objects. To achieve this, we propose the
+<span class="math inline">\(SE(3)\)</span>-invariant global and local
+reference frames, enabling standardized object representations despite
+variations in pose and size. Furthermore, the network can automatically
+adjust the confidence of each correspondence by incorporating an overlap
+predictor.</li>
+</ul>
+<h2 id="related-work">2. Related Work</h2>
+<h2 id="uno-object-segmentation-and-pose-estimation">3. UNO Object
+Segmentation and Pose Estimation</h2>
+<h3 id="problem-formulation">3.1. Problem Formulation</h3>
+<p>假设查询图像中存在一个任意的、未见过的刚性物体，我们的目标是利用一张展示目标物体且无严重遮挡或截断的带掩码RGBD参考图像，估计该物体的掩码<span
+class="math inline">\(M_q\)</span>及其6D相对位姿<span
+class="math inline">\(\Delta \mathbf{T} \in
+SE(3)\)</span>。如图1所示，输入包括：</p>
+<ol type="1">
+<li><span class="math inline">\([I_q | D_q] \in \mathbb{R}^{H \times W
+\times 4}\)</span>：查询RGBD图像；</li>
+<li><span class="math inline">\([I_p | D_p] \in \mathbb{R}^{H \times W
+\times 4}\)</span> 和 <span class="math inline">\(M_p \in \mathbb{R}^{H
+\times W}\)</span>：参考RGBD图像及指示目标物体的对应二值掩码；</li>
+<li><span class="math inline">\(K_q \in \mathbb{R}^{3 \times 3}\)</span>
+和 <span class="math inline">\(K_p \in \mathbb{R}^{3 \times
+3}\)</span>：查询图像与参考图像的相机内参。</li>
+</ol>
+<p>可选地，如果参考物体在相机坐标系中的位姿<span
+class="math inline">\(\mathbf{T}_p \in
+SE(3)\)</span>已知，则查询物体的位姿<span
+class="math inline">\(\mathbf{T}_q \in SE(3)\)</span>可通过<span
+class="math inline">\(\mathbf{T}_q = \Delta \mathbf{T}
+\mathbf{T}_p\)</span>恢复。需要注意的是，从实用性角度出发，该方法不应依赖参考物体的绝对位姿，因为世界坐标系在不同应用中可能任意变化。我们仅在推理阶段对标准物体位姿数据集进行评估时使用参考物体的位姿。</p>
+<h3 id="uno-object-segmentation">3.2. UNO Object Segmentation</h3>
+<p>首先，我们需要从杂乱的背景中分割出查询图像中的目标物体。得益于视觉基础模型强大的泛化能力，像“ZeroPose:
+CAD-Prompted Zero-shot Object 6D Pose Estimation in Cluttered
+Scenes”、“SAM-6D: Segment Anything Model Meets Zero-Shot 6D Object Pose
+Estimation”和“CNOS: A Strong Baseline for CAD-based Novel Object
+Segmentation”等方法能够利用CAD模型对新物体进行有效分割。然而，与以往从多个渲染视图生成多样描述符的方法不同，我们仅能获取单张参考图像。为应对这一挑战，我们采用SAM模型[40]从查询图像中预测所有可能的掩码提议，然后通过余弦相似度比较查询图像与参考图像的DINOv2[65]描述符，对每个掩码提议进行评分，从而筛选出最相似的掩码<span
+class="math inline">\(M_q\)</span>。关于UNO分割的更多细节请参见附录。</p>
+<h3 id="uno-object-pose-estimation">3.3. UNO Object Pose Estimation</h3>
+<h4 id="overview-of-unopose">3.3.1. Overview of UNOPose</h4>
+<p>给定查询图像的预测掩码<span
+class="math inline">\(M_q\)</span>和参考图像的掩码<span
+class="math inline">\(M_p\)</span>，我们从深度图<span
+class="math inline">\(D_q\)</span>和<span
+class="math inline">\(D_p\)</span>中裁剪出目标物体，并将其反投影到相机空间，得到两个点集<span
+class="math inline">\(\mathbf{Q}_{cam} \in \mathbb{R}^{N^Q \times
+3}\)</span>和<span class="math inline">\(\mathbf{P}_{cam} \in
+\mathbb{R}^{N^P \times 3}\)</span>，其中<span
+class="math inline">\(N^Q\)</span>和<span
+class="math inline">\(N^P\)</span>分别表示查询点云和参考点云的点数。我们的目标是通过最小化对应点距离来恢复相对变换<span
+class="math inline">\(\Delta \mathbf{T} = \{\Delta \mathbf{R}, \Delta
+\mathbf{t}\}\)</span></p>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    \min\sum_{(\mathbf{q}, \mathbf{p}) \in \mathbf{C}}
+\Vert\Delta\mathbf{R}\mathbf{q} + \Delta\mathbf{t} - \mathbf{p}\Vert_2,
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(\mathbf{C}\)</span>是预测的<span
+class="math inline">\(\mathbf{Q}_{cam}\)</span>与<span
+class="math inline">\(\mathbf{P}_{cam}\)</span>之间的对应点集。我们利用颜色和几何线索构建该对应关系，并遵循点云配准中广泛使用的由粗到细范式来求解公式<span
+class="math inline">\(\eqref{eq1}\)</span>。网络结构如图2所示。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu/network_v1.webp"
+alt="Figure 2. The network architecture of UNOPose. Given the query and reference point clouds \mathbf{Q}_{cam} and \mathbf{P}_{cam} in the camera frame, UNOPose first transforms them into the SE(3)-invariant global reference frame (GRF). Then feature descriptors are extracted from sparse point sets for constructing the coarse correlation matrix. For achieving precise correspondences, the fine pose estimation module exploits structural details using positional encoding and local reference frame (LRF) encoding." />
+<figcaption aria-hidden="true">Figure 2. The network architecture of
+UNOPose. Given the query and reference point clouds <span
+class="math inline">\(\mathbf{Q}_{cam}\)</span> and <span
+class="math inline">\(\mathbf{P}_{cam}\)</span> in the camera frame,
+UNOPose first transforms them into the <span
+class="math inline">\(SE(3)\)</span>-invariant global reference frame
+(GRF). Then feature descriptors are extracted from sparse point sets for
+constructing the coarse correlation matrix. For achieving precise
+correspondences, the fine pose estimation module exploits structural
+details using positional encoding and local reference frame (LRF)
+encoding.</figcaption>
+</figure>
+<h4 id="coarse-to-fine-pose-estimation">3.3.2. Coarse-to-fine Pose
+Estimation</h4>
+<p><strong>Constructing a Pose-invariant Reference
+Frame.</strong>：仅给定一张未标定位姿的参考图像时，待预测的相对位姿在<span
+class="math inline">\(SE(3)\)</span>空间中具有任意性，这对实现鲁棒的对应关系构成了重大挑战。因此，我们引入一个位姿无关全局参考框架（GRF），并将<span
+class="math inline">\(\mathbf{Q}_{cam}\)</span>和<span
+class="math inline">\(\mathbf{P}_{cam}\)</span>转换到GRF中，得到<span
+class="math inline">\(\mathbf{Q}_G\)</span>和<span
+class="math inline">\(\mathbf{P}_G\)</span>。</p>
+<p>具体来说，以<span
+class="math inline">\(\mathbf{Q}_{cam}\)</span>为例，将点云转换为全局参考框架（GRF）涉及7D坐标变换<span
+class="math inline">\(\{\mathbf{R}_G \in SO(3), \mathbf{t}_G \in
+\mathbb{R}^3, s_G \in \mathbb{R}\}\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq2}
+    \mathbf{Q}_G = \{\frac{\mathbf{R}_G^T(\mathbf{q} -
+\mathbf{t}_G)}{s_G} \mid \mathbf{q} \in \mathbf{Q}_{cam}\}.
+\end{equation}
+\]</span></p>
+<p>为实现平移不变性，GRF的原点位于物体中心<span
+class="math inline">\(\mathbf{c}_Q\)</span>；为实现尺寸不变性，点云半径会重新缩放为<span
+class="math inline">\(1\)</span>，计算方式为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq3}
+    \mathbf{t}_G = \mathbf{c}_Q, \quad s_G = \max_{\mathbf{q} \in
+\mathbf{Q}_{cam}} \Vert\mathbf{q} - \mathbf{c}_Q\Vert_2.
+\end{equation}
+\]</span></p>
+<p>关键在于设计旋转矩阵<span class="math inline">\(\mathbf{R}_G =
+[\mathbf{r}_{Gx} | \mathbf{r}_{Gy} |
+\mathbf{r}_{Gz}]\)</span>，其中<span
+class="math inline">\(\mathbf{r}_{Gx}, \mathbf{r}_{Gy},
+\mathbf{r}_{Gz}\)</span>为<span
+class="math inline">\(\mathbf{R}_G\)</span>的三列，用于确保变换后点云的方向不变性。受前人工作“Recognizing
+Objects in Range Data Using Regional Point Descriptors”、“Structural
+indexing: efficient 3-D object recognition”和“TOLDI: An effective and
+robust approach for 3D local shape
+description”的启发，我们将物体中心的法向量<span
+class="math inline">\(\mathbf{n}(\mathbf{c}_Q)\)</span>作为<span
+class="math inline">\(\mathbf{r}_{Gz}\)</span>，将<span
+class="math inline">\(\mathbf{Q}_{cam}\)</span>中所有点投影到<span
+class="math inline">\(\mathbf{c}_Q\)</span>的切平面上，通过统计投影向量确定<span
+class="math inline">\(\mathbf{r}_{Gx}\)</span>，然后通过叉乘<span
+class="math inline">\(\mathbf{r}_{Gy} = \mathbf{r}_{Gx} \times
+\mathbf{r}_{Gz}\)</span>得到<span
+class="math inline">\(\mathbf{r}_{Gy}\)</span>。这确保XY平面均匀分割点云，且x轴代表主投影方向。GRF具有<span
+class="math inline">\(SE(3)\)</span>无关性，因其可由点云的空间分布唯一确定，使变换后的点云对位姿和尺寸变化具有鲁棒性。</p>
+<p>具体来说，我们对协方差矩阵<span
+class="math inline">\(\text{Cov}(\mathbf{Q}_{cam}) = \frac{1}{N_Q}
+\mathbf{Q}_{cam}^T \mathbf{Q}_{cam} - \mathbf{c}_Q
+\mathbf{c}_Q^T\)</span>进行奇异值分解（SVD），并使用与最小奇异值对应的奇异向量来确定<span
+class="math inline">\(\mathbf{r}_{Gz}\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq4}
+    \mathbf{r}_{Gz} = \begin{cases}
+        \mathbf{n}(\mathbf{c}_Q), &amp; \text{if }
+\mathbf{n}(\mathbf{c}_Q)^T\sum_{\mathbf{q} \in
+\mathbf{Q}_{cam}}(\mathbf{c}_Q - \mathbf{q}) &gt; 0 \\
+        -\mathbf{n}(\mathbf{c}_Q), &amp; \text{otherwise}
+    \end{cases}
+\end{equation}
+\]</span></p>
+<p>随后，<span class="math inline">\(r_{Gx}\)</span>的计算公式为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq5}
+    \mathbf{r}_{Gx} = \sum_{\mathbf{q} \in
+\mathbf{Q}_{cam}}w_q((\mathbf{q} - \mathbf{c}_Q) -
+\mathbf{r}_{Gz}^T(\mathbf{q} - \mathbf{c}_Q)\mathbf{r}_{Gz}),
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(w_q\)</span>是关于点<span
+class="math inline">\(\mathbf{q}\)</span>与物体中心<span
+class="math inline">\(\mathbf{c}_Q\)</span>之间距离的权重（具体细节见附录）。</p>
+<p>以往的工作“Leveraging SE(3) Equivariance for Self-Supervised
+Category-Level Object Pose Estimation”、“CPPF: Towards Robust
+Category-Level 9D Pose Estimation in the Wild”和“Rotation-Invariant
+Transformer for Point Cloud
+Matching”通常依赖复杂网络或计算成本高昂的PPF特征来实现<span
+class="math inline">\(SE(3)\)</span>无关性。相比之下，我们的变换方法计算效率高，并且能够无缝适配多种网络架构。</p>
+<p><strong>Coarse Pose Estimation.</strong>：给定GRF中的点云<span
+class="math inline">\(\mathbf{Q}_G\)</span>和<span
+class="math inline">\(\mathbf{P}_G\)</span>，我们采样两个稀疏点集<span
+class="math inline">\(\mathbf{Q}_G^c \in \mathbb{R}^{N^c \times
+3}\)</span>和<span class="math inline">\(\mathbf{P}_G^c \in
+\mathbb{R}^{N^c \times 3}\)</span>以高效获取粗位姿初始化<span
+class="math inline">\(\Delta
+\mathbf{T}_{init}\)</span>。具体而言，我们利用几何编码器“GeoTransformer:
+Fast and Robust Point Cloud Registration with Geometric
+Transformer”和颜色编码器“DINOv2: Learning Robust Visual Features without
+Supervision”分别提取点云和RGB特征。特征进一步拼接为<span
+class="math inline">\(f_Q^c \in \mathbb{R}^{N^c \times
+d}\)</span>和<span class="math inline">\(f_P^c \in \mathbb{R}^{N^c
+\times d}\)</span>，其中<span
+class="math inline">\(d\)</span>为嵌入维度。遵循“SAM-6D: Segment
+Anything Model Meets Zero-Shot 6D Object Pose
+Estimation”，我们添加可学习的背景标记以分配非重叠点。这些嵌入表示为<span
+class="math inline">\(\hat{f}_Q^c \in \mathbb{R}^{(N^c + 1) \times
+d}\)</span>和<span class="math inline">\(\hat{f}_P^c \in
+\mathbb{R}^{(N^c + 1) \times d}\)</span>，并通过三个堆叠的Geometric
+Transformer解码模块进行处理。</p>
+<p>最后一个解码器的输出<span class="math inline">\(\hat{F}_Q^c \in
+\mathbb{R}^{(N^c + 1) \times D}\)</span>和<span
+class="math inline">\(\hat{F}_P^c \in \mathbb{R}^{(N^c + 1) \times
+D}\)</span>是用于构建相关矩阵的逐点特征。然而，在我们的场景中，重叠率可能受到视点、遮挡或深度噪声等复杂因素的影响。为解决这一问题，网络额外预测重叠置信度<span
+class="math inline">\(\hat{O}_Q^c \in \mathbb{R}^{(N^c + 1) \times
+1}\)</span>和<span class="math inline">\(\hat{O}_P^c \in
+\mathbb{R}^{(N^c + 1) \times
+1}\)</span>，表示各点属于重叠区域的概率。因此，重叠感知相关矩阵<span
+class="math inline">\(\mathbf{X}_c \in \mathbb{R}^{(N^c + 1) \times (N^c
++ 1)}\)</span>可通过下式计算：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq6}
+    \mathbf{X}^c = \text{softmax}[(\hat{O}_Q^c \odot
+\hat{F}_Q^c)(\hat{O}_P^c \odot \hat{F}_P^c)^T].
+\end{equation}
+\]</span></p>
+<p>这里<span class="math inline">\(\odot\)</span>表示元素级乘法。<span
+class="math inline">\(\mathbf{X}^c\)</span>中的每个元素表示<span
+class="math inline">\(\mathbf{Q}^c\)</span>与<span
+class="math inline">\(\mathbf{P}^c\)</span>中点对之间的相关分数。</p>
+<p>在计算出相关矩阵<span
+class="math inline">\(\mathbf{X}^c\)</span>后，我们可以提取<span
+class="math inline">\(\mathbf{Q}^c\)</span>和<span
+class="math inline">\(\mathbf{P}^c\)</span>之间所有可能的对应点对及其相关分数，从而求解公式<span
+class="math inline">\(\eqref{eq1}\)</span>。具体来说，我们首先根据<span
+class="math inline">\(\mathbf{X}^c\)</span>的分布采样<span
+class="math inline">\(N_H\)</span>个点对三元组，生成位姿假设。然后，每个位姿假设<span
+class="math inline">\(\Delta \mathbf{T}_h = \{\Delta \mathbf{R}_h,
+\Delta \mathbf{t}_h\}\)</span>按照“SurfEmb: Dense and Continuous
+Correspondence Distributions for Object Pose Estimation with Learnt
+Surface Embeddings”和“SAM-6D: Segment Anything Model Meets Zero-Shot 6D
+Object Pose Estimation”中的方法，通过距离<span
+class="math inline">\(D_h\)</span>的倒数进行评分：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq7}
+    \begin{aligned}
+        D_h &amp;= \frac{1}{N^c}\sum_{\mathbf{p}^c \in
+\mathbf{P}^c}\min_{\mathbf{q}^c \in
+\mathbf{Q}^c}\Vert\Delta\mathbf{R}_h^T(\mathbf{q}^c -
+\Delta\mathbf{t}_h) - \mathbf{p}^c\Vert_2, \\
+        \xi_h &amp;= \frac{1}{D_h}, \quad h = 1, 2, \cdots, N_H.
+    \end{aligned}
+\end{equation}
+\]</span></p>
+<p>得分<span
+class="math inline">\(\xi_h\)</span>最高的位姿假设被选为初始位姿预测值<span
+class="math inline">\(\Delta \mathbf{T}_{init} = \{\Delta
+\mathbf{R}_{init}, \Delta
+\mathbf{t}_{init}\}\)</span>，并进一步用于变换下一阶段的输入。</p>
+<p><strong>Fine Pose Estimation.</strong>：在使用初始位姿预测<span
+class="math inline">\(\Delta \mathbf{T}_{init}\)</span>将<span
+class="math inline">\(\mathbf{Q}_{cam}\)</span>变换为<span
+class="math inline">\(\tilde{\mathbf{Q}}_{cam}\)</span>之后，我们在两个密集点集，即<span
+class="math inline">\(\tilde{\mathbf{Q}}^f \in \mathbb{R}^{N^f \times
+3}\)</span>和<span class="math inline">\(\mathbf{P}^f \in
+\mathbb{R}^{N^f \times
+3}\)</span>之间执行精细匹配过程，以获得更精确的位姿。该网络通过分层编码范式利用几何细节，包括位置编码层和局部参考框架编码层。对于每个点，我们首先使用小型PointNet，即“PointNet:
+Deep Learning on Point Sets for 3D Classification and
+Segmentation”对其全局位置进行编码，然后构建<span
+class="math inline">\(SE(3)\)</span>无关局部参考框架（LRF）以收集局部描述符。这两种编码相互补充，因为局部描述符捕获小邻域内的精细几何结构，而位置编码层提供全局几何上下文。</p>
+<p>以<span
+class="math inline">\(\tilde{\mathbf{Q}}^f\)</span>为例，构建局部参考框架（LRF）编码的过程如下：对于<span
+class="math inline">\(\tilde{\mathbf{Q}}^f\)</span>中的每个点<span
+class="math inline">\(\tilde{\mathbf{q}}^m\)</span>，通过将<span
+class="math inline">\(\tilde{\mathbf{q}}^m\)</span>的<span
+class="math inline">\(N_D\)</span>个邻近点分组，构建局部区域集合<span
+class="math inline">\(\tilde{\mathcal{Q}}^m = \{\tilde{\mathbf{q}}_j,
+\text{where } \Vert\tilde{\mathbf{q}}_j - \tilde{\mathbf{q}}^m\Vert_2
+\leq r\}_{j = 1}^{N_D}\)</span>。LRF的变换位姿<span
+class="math inline">\(\{\mathbf{R}_L^m, \mathbf{t}_L^m,
+s_L^m\}\)</span>的计算方式与GRF类似（见公式<span
+class="math inline">\(\eqref{eq3}\)</span>、<span
+class="math inline">\(\eqref{eq4}\)</span>、<span
+class="math inline">\(\eqref{eq5}\)</span>），区别在于LRF基于局部点集构建，而GRF基于整个点云。通过计算变换位姿，我们将局部点描述符计算为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq8}
+    \begin{aligned}
+        \mathcal{Q}_L^m &amp;= \tilde{\mathcal{Q}}_L^m =
+\{(\mathbf{R}_L^m)^T(\frac{\tilde{\mathbf{q}}_j -
+\mathbf{t}_L^m}{s_L^m})\}_{j = 1}^{N_D}, \\
+        \mathbf{Q}_L^f &amp;= \{\mathcal{Q}_L^m\}_{m = 1}^{N^f}.
+    \end{aligned}
+\end{equation}
+\]</span></p>
+<p>类似地，我们将<span
+class="math inline">\(\mathbf{P}^f\)</span>变换为<span
+class="math inline">\(\mathbf{P}_L^f\)</span>。注意，由于LRF是位姿无关的，因此<span
+class="math inline">\(\mathcal{Q}_L^m =
+\tilde{\mathcal{Q}}_L^m\)</span>。然后，通过三层MLP从<span
+class="math inline">\(\mathbf{Q}_L^f\)</span>和<span
+class="math inline">\(\mathbf{P}_L^f\)</span>中提取LRF编码。</p>
+<p>位置编码和LRF编码与几何和颜色特征相结合，作为几何Transformer的输入。与初始位姿预测类似，通过解码这些特征，我们获得精细的逐点特征<span
+class="math inline">\(\hat{F}^f_Q\)</span>、<span
+class="math inline">\(\hat{F}^f_P\)</span>以及重叠置信度<span
+class="math inline">\(\hat{O}^f_Q\)</span>、<span
+class="math inline">\(\hat{O}^f_P\)</span>，然后利用这些结果得到考虑重叠区域的精细相关矩阵<span
+class="math inline">\(\mathbf{X}^f \in \mathbb{R}^{(N^f + 1) \times (N^f
++ 1)}\)</span>。最终位姿<span class="math inline">\(\Delta
+\mathbf{T}\)</span>通过使用加权SVD算法对<span
+class="math inline">\(\mathbf{X}^f\)</span>求解公式<span
+class="math inline">\(\eqref{eq1}\)</span>来预测。</p>
+<h2 id="experiments">4. Experiments</h2>
+<h2 id="conclusion-limitation-and-future-work">5. Conclusion, Limitation
+and Future work</h2>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2411.16106" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" title="【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image">https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+              <a href="/tags/2025CVPR/" rel="tag"><i class="fa fa-tag"></i> 2025CVPR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="prev" title="【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/code-running/shanice-l_UNOPose.html" rel="next" title="【代码复现】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image">
+                  【代码复现】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

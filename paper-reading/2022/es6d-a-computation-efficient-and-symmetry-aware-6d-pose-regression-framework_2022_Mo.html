@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="In this paper, a computation efficient regression framework is presented for estimating the 6D pose of rigid objects from a single RGB-D image, which is applicable to handling symmetric objects. This">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="In this paper, a computation efficient regression framework is presented for estimating the 6D pose of rigid objects from a single RGB-D image, which is applicable to handling symmetric objects. This">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-23T02:11:31.000Z">
+<meta property="article:modified_time" content="2025-05-08T14:11:31.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta property="article:tag" content="2022CVPR">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html","path":"paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html","title":"【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework"><span class="nav-text">ES6D:
+A Computation Efficient and Symmetry-Aware 6D Pose Regression
+Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2. Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-proposed-method"><span class="nav-text">3. The Proposed Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#overview"><span class="nav-text">3.1. Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#point-wise-feature-extraction"><span class="nav-text">3.2. Point-wise feature
+extraction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-pose-regression"><span class="nav-text">3.3. 6D pose regression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#symmetry-aware-loss"><span class="nav-text">3.4. Symmetry-aware loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#validation-of-amgpd"><span class="nav-text">3.5. Validation of A(M)GPD</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#limitations"><span class="nav-text">5. Limitations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">6. Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#supplementary-material"><span class="nav-text">Supplementary Material</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-05</time>
+        <br>
+      【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework | Karl的博客">
+      <meta itemprop="description" content="In this paper, a computation efficient regression framework is presented for estimating the 6D pose of rigid objects from a single RGB-D image, which is applicable to handling symmetric objects. This framework is designed in a simple architecture that efficiently extracts point-wise features from RGB-D data using a fully convolutional network, called XYZNet, and directly regresses the 6D pose without any post refinement. In the case of symmetric object, one object has multiple ground-truth poses, and this one-to-many relationship may lead to estimation ambiguity. In order to solve this ambiguity problem, we design a symmetry-invariant pose distance metric, called average (maximum) grouped primitives distance or A(M)GPD. The proposed A(M)GPD loss can make the regression network converge to the correct state, i.e., all minima in the A(M)GPD loss surface are mapped to the correct poses. Extensive experiments on YCB-Video and TLESS datasets demonstrate the proposed framework's substantially superior performance in top accuracy and low computational cost. The relevant code is available in https://github.com/GANWANSHUI/ES6D.git.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-23 10:11:31" itemprop="dateCreated datePublished" datetime="2025-04-23T10:11:31+08:00">2025-04-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-05-08 22:11:31" itemprop="dateModified" datetime="2025-05-08T22:11:31+08:00">2025-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>15 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">In this paper, a computation efficient regression framework is presented for estimating the 6D pose of rigid objects from a single RGB-D image, which is applicable to handling symmetric objects. This framework is designed in a simple architecture that efficiently extracts point-wise features from RGB-D data using a fully convolutional network, called XYZNet, and directly regresses the 6D pose without any post refinement. In the case of symmetric object, one object has multiple ground-truth poses, and this one-to-many relationship may lead to estimation ambiguity. In order to solve this ambiguity problem, we design a symmetry-invariant pose distance metric, called average (maximum) grouped primitives distance or A(M)GPD. The proposed A(M)GPD loss can make the regression network converge to the correct state, i.e., all minima in the A(M)GPD loss surface are mapped to the correct poses. Extensive experiments on YCB-Video and TLESS datasets demonstrate the proposed framework's substantially superior performance in top accuracy and low computational cost. The relevant code is available in https://github.com/GANWANSHUI/ES6D.git.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework">ES6D:
+A Computation Efficient and Symmetry-Aware 6D Pose Regression
+Framework</h1>
+<table>
+<colgroup>
+<col style="width: 4%" />
+<col style="width: 34%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 30%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">ES6D</td>
+<td style="text-align: center;">实例级（该方法针对对称物体设计）</td>
+<td style="text-align: center;">RGBD + CAD</td>
+<td style="text-align: center;">RGBD + CAD</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.05.08：这篇文章主要解决的是对称物体的6D位姿估计问题，使用Grouped
+Primitives
+(GP)来对物体分类，GP可以将同一类别的物体（类别是GP的类别，而不是物体的类别）抽象为几个点，以避免由形状引起的不确定性；还设计了位姿距离loss
+A(M)GPD，该loss曲线上的每一个极小值点都可以映射到一个正确的姿态。</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/Figure1.webp"
+alt="Figure 1. Comparison of A(M)GPD and ADD-S. Axis X shows the rotation angle of the object (from 0° to 360°). Axis Y shows the calculated distance. We set the initial pose as the ground truth. As we can see, all minima are mapped to correct poses in the A(M)GPD curve and several minima point to incorrect poses in the ADD-S curve." />
+<figcaption aria-hidden="true">Figure 1. Comparison of A(M)GPD and
+ADD-S. Axis X shows the rotation angle of the object (from 0° to 360°).
+Axis Y shows the calculated distance. We set the initial pose as the
+ground truth. As we can see, all minima are mapped to correct poses in
+the A(M)GPD curve and several minima point to incorrect poses in the
+ADD-S curve.</figcaption>
+</figure>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    l = \text{loss}(p, \hat{p}) = \text{loss}(N(I, w), \hat{p}),
+\end{equation}
+\]</span></p>
+<p>In summary, the main contributions of this work are as follows.</p>
+<ul>
+<li>We propose a novel feature extraction network XYZNet for the RGB-D
+data, which is suitable for pose estimation with low computational cost
+and superior performance.</li>
+<li>The compact shape representation GP and the distance metric A(M)GPD
+are introduced to handle symmetries. The loss based on A(M)GPD can
+constrain the regression network to converge to the correct state.</li>
+<li>A numerical simulation and visualization method is carried out to
+analyze the validity of the A(M)GPD loss. This analytical method is
+applicable to other frameworks in 6D pose estimation.</li>
+<li>The framework ES6D is proposed by using XYZNet and the A(M)GPD loss
+and achieves competitive performance on the YCB-Video and T-LESS
+datasets.</li>
+</ul>
+<h2 id="related-work">2. Related Work</h2>
+<h2 id="the-proposed-method">3. The Proposed Method</h2>
+<h3 id="overview">3.1. Overview</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/Figure2.webp"
+alt="Figure 2. Network overview. First, the RGB-XYZ data is generated from the RGB-D image. The RGB-XYZ data is fed into a CNN module to extract local features, which encode color and geometry information. Second, the point cloud features are obtained by a PointNet-like CNN module and padded to the same size as the local features. Then, the local features and point cloud features are concatenated as the point-wise features for poses estimation. Finally, the pose with the maximum confidence is chosen as the final result." />
+<figcaption aria-hidden="true">Figure 2. Network overview. First, the
+RGB-XYZ data is generated from the RGB-D image. The RGB-XYZ data is fed
+into a CNN module to extract local features, which encode color and
+geometry information. Second, the point cloud features are obtained by a
+PointNet-like CNN module and padded to the same size as the local
+features. Then, the local features and point cloud features are
+concatenated as the point-wise features for poses estimation. Finally,
+the pose with the maximum confidence is chosen as the final
+result.</figcaption>
+</figure>
+<p>本文的目的是从一幅RGBD图像中检测出刚性物体，并在相机坐标系中估计出相应的旋转<span
+class="math inline">\(R \in SO(3)\)</span>和平移<span
+class="math inline">\(\boldsymbol{t} \in
+\mathbb{R}^3\)</span>。为此提出了如下的两阶段方案。</p>
+<p>在第一阶段，利用“PoseCNN: A Convolutional Neural Network for 6D
+Object Pose Estimation in Cluttered
+Scenes”的分割网络来获取目标物体的掩码和边界框。由边界框裁剪得到的每个掩码以及RGBD图像块都会被传送到第二阶段。</p>
+<p>在第二阶段，提出了一个名为ES6D的实时框架来估计物体位姿。该框架的流程如图2所示。首先，经过归一化处理后，带掩码的深度像素会被转换为XYZ
+map。其次，XYZNet从RGB图像块和XYZ
+map的拼接结果中提取point-wise特征。然后，利用三个卷积头来预测point-wise平移偏移量、四元数以及置信度。最后，选择置信度最高的位姿作为最终结果。</p>
+<h3 id="point-wise-feature-extraction">3.2. Point-wise feature
+extraction</h3>
+<p>之前的工作“PVN3D: A Deep Point-wise 3D Keypoints Voting Network for
+6DoF Pose Estimation”和“DenseFusion: 6D Object Pose Estimation by
+Iterative Dense
+Fusion”已经证明，对于6D位姿估计而言，来自RGBD数据的point-wise特征比来自RGB图像的特征更加有效且稳健。最先进的方法PVN3D采用一种异构结构，该结构通过PointNet++获取点云特征，然后通过索引操作将点云特征与RGB特征链接起来。PointNet++通过一系列集合抽象层（Set
+Abstraction Layers,
+SAL）来提取局部特征，这些层会在预定义的搜索半径内对点云进行分组。然而，处理大量的点云非常耗时，并且如果我们减少集合抽象层的数量，其表示能力就会下降。2D卷积操作的一个特点是对相邻信息进行分组以提取局部特征。因此，所提出的XYZNet旨在通过对RGB-XYZ图像执行2D卷积操作来同时提取局部特征。</p>
+<p>首先，经过掩码处理的深度像素被转换为点云<span
+class="math inline">\(\mathcal{P} = \{(x_i, y_i, z_i)\}_{i =
+1}^N\)</span>，然后使用点的中心<span
+class="math inline">\(\boldsymbol{p}_c =
+\text{mean}(\mathcal{P})\)</span>和一个比例因子<span
+class="math inline">\(\gamma\)</span>，将点<span
+class="math inline">\(P\)</span>进行平移和缩放到<span
+class="math inline">\([-1, 1]\)</span>区间。归一化后的点记为<span
+class="math inline">\(\dot{\mathcal{P}} = \{(\dot{x}_i, \dot{y}_i,
+\dot{z}_i)\}_{i = 1}^N\)</span>，并被格式化为一个XYZ map。通过将XYZ
+map与相应的RGB patch进行拼接，就可以得到严格对齐的RGB-XYZ数据。“A
+Unified Framework for Multi-View Multi-Class Object Pose
+Estimation”中的方法也采用了2D卷积网络从XYZ
+map中提取点云特征，但其性能远不如异构结构的方法（PVN3D和DenseFusion）。造成这种情况的主要原因是，当在XYZ
+map上使用2D卷积操作时，点云的空间信息会被丢弃。基于上述观察，我们设计了XYZNet，如图2所示。</p>
+<p>XYZNet由三个部分组成：</p>
+<ol type="1">
+<li>局部特征提取模块。使用2D卷积层来学习局部特征。设置不同的卷积核大小和下采样率，以扩大感受野。</li>
+<li>空间信息编码模块。该模块的主要功能是提取点云特征。该模块将局部特征与XYZ
+map连接起来，以恢复空间结构，并利用<span class="math inline">\(1 \times
+1\)</span>卷积对每个点的局部特征和坐标进行编码。然后，通过最大池化得到全局特征，并将其与每个点的特征连接起来，以提供全局上下文信息。</li>
+<li>特征聚合。将局部特征和点云特征连接起来作为point-wise特征。两种模态的融合使得位姿估计在纹理较少和严重遮挡的情况下也具有较强的鲁棒性。</li>
+</ol>
+<h3 id="d-pose-regression">3.3. 6D pose regression</h3>
+<p>在完成XYZNet后，会得到point-wise特征集合<span class="math inline">\(F
+= \{\boldsymbol{f}_i\}_{i = 1}^{N}\)</span>，其中<span
+class="math inline">\(\boldsymbol{f}_i \in
+\mathbb{R}^d\)</span>。在本小节中，我们将阐述如何利用point-wise特征<span
+class="math inline">\(\boldsymbol{f}_i\)</span>以及对应的可见点<span
+class="math inline">\(\dot{\boldsymbol{p}}_i \in
+\dot{\mathcal{P}}\)</span>来估计旋转<span class="math inline">\(R_i \in
+SO(3)\)</span>和平移<span class="math inline">\(\boldsymbol{t}_i \in
+\mathbb{R}^3\)</span>。如图2所示，采用三个<span class="math inline">\(1
+\times 1\)</span>卷积头（<span
+class="math inline">\(\mathcal{B}_\mathcal{T}\)</span>、<span
+class="math inline">\(\mathcal{B}_\mathcal{Q}\)</span>、<span
+class="math inline">\(\mathcal{B}_\mathcal{C}\)</span>）来回归平移偏移量（<span
+class="math inline">\(\Delta\dot{\boldsymbol{t}}_i \in
+\mathbb{R}^3\)</span>）、四元数（<span
+class="math inline">\(\boldsymbol{q}_i \in \mathbb{R}^4\)</span>且<span
+class="math inline">\(\Vert\boldsymbol{q}_i\Vert =
+1\)</span>）和置信度（<span class="math inline">\(c_i \in [0,
+1]\)</span>）。</p>
+<p><strong>3D translation
+regression</strong>：将归一化物体坐标系的原点视为一个虚拟关键点，通过计算可见点<span
+class="math inline">\(\dot{\boldsymbol{p}}_i\)</span>与原点之间的偏移量<span
+class="math inline">\(\Delta\dot{\boldsymbol{t}}_i\)</span>，就可以得到平移量<span
+class="math inline">\(\boldsymbol{t}_i\)</span>。其公式如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq2}
+    \Delta\dot{\boldsymbol{t}}_i =
+\mathcal{B}_\mathcal{T}(\boldsymbol{f}_i),
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}\label{eq3}
+    \boldsymbol{t}_i = \frac{(\dot{\boldsymbol{p}}_i +
+\Delta\dot{\boldsymbol{t}}_i)}{\gamma} + \boldsymbol{p}_c,
+\end{equation}
+\]</span></p>
+<p>其中，可见点<span
+class="math inline">\(\dot{\boldsymbol{p}}_i\)</span>的偏移量分布在一个特定的球体中。与直接对物体平移进行回归相比，这个回归函数得到的输出空间更小。</p>
+<p><strong>3D rotation
+regression</strong>：我们按照DenseFusion和PoseCNN的方法，采用四元数来表示旋转。我们得到旋转矩阵的方式如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq4}
+    R_i = Quaternion\_matrix(Norm(\mathcal{B}_Q(\boldsymbol{f}_i))),
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}\label{eq5}
+    Norm(\boldsymbol{q}) =
+\frac{\boldsymbol{q}_i}{\Vert\boldsymbol{q}_i\Vert},
+\end{equation}
+\]</span></p>
+<p>其中，<span
+class="math inline">\(Quaternion\_matrix(\cdot)\)</span>表示将四元数转换为旋转矩阵的函数（A
+Survey on the Computation of Quaternions from Rotation Matrices）。</p>
+<p><strong>Confidence
+regression</strong>：为了确定最佳的回归结果，我们设置了一个置信度估计头来评估每个特征的置信度<span
+class="math inline">\(c_i\)</span>。其公式如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq6}
+    c_i = Sigmoid(\mathcal{B}_C(\boldsymbol{f}_i)),
+\end{equation}
+\]</span></p>
+<p>我们采用DenseFusion中提到的自监督方法来训练置信度分支<span
+class="math inline">\(\mathcal{B}_C\)</span>。</p>
+<h3 id="symmetry-aware-loss">3.4. Symmetry-aware loss</h3>
+<p>现有的对称不变距离度量方法依赖于物体的三维形状，例如ADD-S、ACPD、MCPD、VSD（来自“On
+Evaluation of 6D Object Pose
+Estimation”和“DenseFusion”）。然而，独特的形状和点对不匹配是导致错误最小值的原因。此外，在现实中，物体具有各种各样的形状，我们无法保证这些度量方法对每种形状都有效。因此，我们设计了分组基元（GP），将同一类别的物体抽象为几个点，以避免由形状引起的不确定性。此外，我们将这些点分成若干组，并根据公式<span
+class="math inline">\(\eqref{eq12}\)</span>和<span
+class="math inline">\(\eqref{eq13}\)</span>计算同一组中最近点之间的距离，这就避免了点对不匹配的问题。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/GP.webp"
+alt="Figure 3. The pipeline of the GP construction." />
+<figcaption aria-hidden="true">Figure 3. The pipeline of the GP
+construction.</figcaption>
+</figure>
+<p><strong>Grouped
+primitives</strong>：我们在图3中展示了分组基元（GP）构建的流程。有了特定物体的三维模型后，我们可以根据公式<span
+class="math inline">\(\eqref{eq9}\)</span>和<span
+class="math inline">\(\eqref{eq10}\)</span>计算出所有的对称轴。用于分组的基元由对称轴的端点和物体质心组成。具体来说，需要以下三个步骤。</p>
+<p><strong>Step
+1</strong>：这里定义并解释了对称轴-轴角的基本性质。物体<span
+class="math inline">\(O\)</span>绕轴<span
+class="math inline">\(\boldsymbol{e} = (e_x, e_y,
+e_z)\)</span>旋转角度<span
+class="math inline">\(\theta\)</span>后外观保持不变，那么轴<span
+class="math inline">\(\boldsymbol{e}\)</span>就是物体<span
+class="math inline">\(O\)</span>的一条对称轴。轴<span
+class="math inline">\(\boldsymbol{e}\)</span>和角度<span
+class="math inline">\(\theta\)</span>构成了一个对称轴-轴角<span
+class="math inline">\(\boldsymbol{a}\)</span>，其定义如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq7}
+    \boldsymbol{a} = (\boldsymbol{e}, \theta), \quad
+\Vert\boldsymbol{e}\Vert = 1 \wedge \theta \in \{\frac{2\pi}{i}\}_{i =
+2}^M.
+\end{equation}
+\]</span></p>
+<p>需要注意的是，<span
+class="math inline">\(2\pi\)</span>必须是对称角度<span
+class="math inline">\(\theta\)</span>的整数倍（Symmetry），并且对称轴-轴角<span
+class="math inline">\(\boldsymbol{a}\)</span>的阶数可以定义为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq8}
+    |\boldsymbol{a}| = \frac{2\pi}{\theta}(\boldsymbol{a}).
+\end{equation}
+\]</span></p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/Figure4.webp"
+alt="Figure 4. Grouped primitives and the visualization of A(M)GPD landscape. Based on the size of AO and ACO, symmetric objects can be classified into five categories. For each category, a typical toy model and its grouped primitives are presented in the first row plots. The second row shows the A(M)GPD landscape of each object in the rotation space, where the darker color represents the smaller value of A(M)GPD. The third row shows the minima in each landscape. Best viewed in color." />
+<figcaption aria-hidden="true">Figure 4. Grouped primitives and the
+visualization of A(M)GPD landscape. Based on the size of AO and ACO,
+symmetric objects can be classified into five categories. For each
+category, a typical toy model and its grouped primitives are presented
+in the first row plots. The second row shows the A(M)GPD landscape of
+each object in the rotation space, where the darker color represents the
+smaller value of A(M)GPD. The third row shows the minima in each
+landscape. Best viewed in color.</figcaption>
+</figure>
+<p>对称轴-轴角是一种冗余的表示形式。例如，对于图4中类别2的物体，如金字塔，它有四个对称轴-轴角：<span
+class="math inline">\((\boldsymbol{e}, \frac{\pi}{2})\)</span>、<span
+class="math inline">\((\boldsymbol{e}, \pi)\)</span>、<span
+class="math inline">\((-\boldsymbol{e}, \frac{\pi}{2})\)</span>和<span
+class="math inline">\((-\boldsymbol{e}, \pi)\)</span>，其中<span
+class="math inline">\(\boldsymbol{e}\)</span>与绿色线条平行。在这种情况下，由于对称轴<span
+class="math inline">\(\boldsymbol{e}\)</span>相同，这四个对称轴-轴角对于该物体而言具有相同的含义。由于旋转对称的周期性，这四个对称轴-轴角的角度必定存在最大公约数<span
+class="math inline">\(\frac{\pi}{2}\)</span>。需要注意的是，在本研究中仅使用角度为最大公约数的对称轴-轴角，例如<span
+class="math inline">\((\boldsymbol{e}, \frac{\pi}{2})\)</span>和<span
+class="math inline">\((-\boldsymbol{e}, \frac{\pi}{2})\)</span>。</p>
+<p><strong>Step
+2</strong>：在以物体质心为原点的物体坐标系中，可以通过使用以下公式得到物体<span
+class="math inline">\(O\)</span>的一组粗略的对称轴-轴角：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq9}
+    \hat{A}_O = \{\boldsymbol{a}|h(P_O, R(\boldsymbol{a})P_O) &lt;
+\epsilon\},
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(h\)</span>是Hausdorff距离，<span
+class="math inline">\(P_O\)</span>表示物体模型的顶点，<span
+class="math inline">\(R(\mathbf{a})\)</span>是对称轴-轴角<span
+class="math inline">\(\mathbf{a}\)</span>对应的旋转矩阵，并且允许的偏差由<span
+class="math inline">\(\varepsilon\)</span>界定。然后，基于这些对称轴，应用MeanShift
+clustering algorithm（来自“Mean shift: a robust approach toward feature
+space analysis”）来简化<span
+class="math inline">\(\hat{A}_O\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq10}
+    A_O = Mean\_Shift(\hat{A}_O),
+\end{equation}
+\]</span></p>
+<p>此时，<span class="math inline">\(A_O\)</span>包含了物体<span
+class="math inline">\(O\)</span>的所有无冗余的对称轴-轴角，其中<span
+class="math inline">\(|A_O|\)</span>是<span
+class="math inline">\(A_O\)</span>的大小，且为<span
+class="math inline">\(2\)</span>的倍数，因为对称轴-轴角总是成对出现，例如<span
+class="math inline">\((\mathbf{e}, \frac{\pi}{2})\)</span>和<span
+class="math inline">\((-\mathbf{e},
+\frac{\pi}{2})\)</span>。此外，可以得到<span
+class="math inline">\(A_O\)</span>的一个子集<span
+class="math inline">\(AC_{O}\)</span>如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq11}
+    AC_O = \{\boldsymbol{a} | \boldsymbol{a} \in A_O \wedge
+|\boldsymbol{a}| &gt; \rho\},
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(\rho\)</span>是松弛阈值。当<span
+class="math inline">\(|\boldsymbol{a}| &gt; \rho\)</span>时，我们将<span
+class="math inline">\(\boldsymbol{a}\)</span>视为连续的对称轴-轴角，并且当<span
+class="math inline">\(\rho\)</span>设置为<span
+class="math inline">\(6\)</span>时，涵盖了大多数应用情况，包括实验部分中要评估的所有物体。根据<span
+class="math inline">\(A_O\)</span>和<span
+class="math inline">\(AC_O\)</span>的大小，对称物体可以分为五类，如图4所示。</p>
+<p><strong>Step 3</strong>：如图3所示，如果基元<span
+class="math inline">\(A\)</span>绕对称轴旋转特定角度后能够与基元<span
+class="math inline">\(B\)</span>重合，那么我们就认为基元<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>属于同一组。分组后的基元记为<span
+class="math inline">\(G = \{g_i\}_{i = 0}^K\)</span>，其中<span
+class="math inline">\(K\)</span>是集合<span
+class="math inline">\(G\)</span>的大小。分组原则的详细内容见补充材料。</p>
+<p><strong>Pose distance
+metric</strong>：基于分组基元（GP），设计了位姿距离度量A(M)GPD。A(M)GPD包含两个函数，第一个函数是平均分组基元距离（AGPD）：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq12}
+    AGPD = \text{mean}_{g_i \in G}\ \text{mean}_{p_j \in g_i}\ \min_{p_k
+\in g_i, k \ne j} \Vert \hat{p}_j - \dot{p}_k \Vert,
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(\hat{p} = \hat{T}p\)</span>，<span
+class="math inline">\(\dot{p} = \dot{T}p\)</span>，<span
+class="math inline">\(p \in g(G)\)</span>，并且<span
+class="math inline">\(\hat{T}\)</span>，<span
+class="math inline">\(\dot{T} \in SE(3)\)</span>。当物体<span
+class="math inline">\(O\)</span>属于对称类别<span
+class="math inline">\(\{1, 3, 4,
+5\}\)</span>中的一个或者是非对称物体时，平均分组基元距离（AGPD）用于度量物体<span
+class="math inline">\(O\)</span>的两个位姿之间的距离。</p>
+<p>第2类与其他类别不同。它只有一对对称轴，且这对对称轴具有有限的阶数。如果将平均分组基元距离（AGPD）用作损失函数，这种特性会在旋转空间中导致错误的最小值，如图1的第二行所示。为了解决这个问题，引入了第二个函数——最大分组基元距离（MGPD）：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq13}
+    MGPD = \max_{g_i \in G} \max_{p_j \in g_i} \min_{p_k \in g_i, k \ne
+j} \Vert \hat{p}_j - \dot{p}_k \Vert.
+\end{equation}
+\]</span></p>
+<p><strong>Loss for regression
+training</strong>：我们回归框架的总损失与DenseFusion中的损失类似，不同之处在于，我们使用A(M)GPD来计算预测值与真实值之间的误差，而不是使用ADD(S)。</p>
+<h3 id="validation-of-amgpd">3.5. Validation of A(M)GPD</h3>
+<p>在本小节中，提出了一种数值计算与可视化方法，用于检验A(M)GPD是否满足引言中所述的要求（1）all
+minima in the loss surface are mapped to the correct
+poses。为了更清晰地了解A(M)GPD在<span class="math inline">\(R \in
+SO(3)\)</span>上的情况，我们首先采用采样技术生成<span
+class="math inline">\(N\)</span>个旋转<span class="math inline">\(RC =
+\{R_i\}_{i = 1}^N\)</span>，这些旋转在<span class="math inline">\(R \in
+SO(3)\)</span>上密集分布。其次，将单位矩阵<span
+class="math inline">\(I_{3 \times 3}\)</span>视为真实值，而<span
+class="math inline">\(\dot{R} \in RC\)</span>作为预测值。<span
+class="math inline">\(I_{3 \times 3}\)</span>与<span
+class="math inline">\(\dot{R}\)</span>之间的A(M)GPD可表示为<span
+class="math inline">\(\dot{d}\)</span>。</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq14}
+    \dot{d} = \text{A(M)GPD}(I_{3 \times 3}, \dot{R}).
+\end{equation}
+\]</span></p>
+<p>然后，我们借助旋转向量<span class="math inline">\(\boldsymbol{v} =
+(v_x, v_y, v_z)\)</span>来可视化<span
+class="math inline">\(\dot{d}\)</span>，其中向量的方向为旋转轴，长度为旋转角度<span
+class="math inline">\(\theta \in [0,
+\pi]\)</span>。如图4中第二行的图所示，<span
+class="math inline">\(\dot{R}\)</span>的坐标为<span
+class="math inline">\(\boldsymbol{v}(\dot{R})\)</span>，<span
+class="math inline">\(\dot{R}\)</span>的颜色值对应着相应的<span
+class="math inline">\(\dot{d}\)</span>（颜色越深表示<span
+class="math inline">\(\dot{d}\)</span>越小）。然而，在这些图中很难找到最小值，所以我们通过一个简单的算法进一步模拟梯度下降的过程。该算法的原理是<span
+class="math inline">\(\boldsymbol{v}(\dot{R})\)</span>不断地向<span
+class="math inline">\(\boldsymbol{v}(\hat{R})\)</span>移动，<span
+class="math inline">\(\boldsymbol{v}(\hat{R})\)</span>在<span
+class="math inline">\(\boldsymbol{v}(\dot{R})\)</span>的邻域内具有最小的<span
+class="math inline">\(\hat{d}\)</span>，并且这个点最终会停在一个局部最小值处。我们对每个<span
+class="math inline">\(\boldsymbol{v}(\dot{R})\)</span>都应用这个原理，并且在图4第三行的图中用红色星号标记出找到的最小值。如我们所见，所有的最小值都被映射到了正确的位姿上。其他物体的情况在补充材料中给出。</p>
+<h2 id="experiments">4. Experiments</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/Figure5.webp"
+alt="Figure 5. Visualization on the T-LESS dataset with different training loss. The green, red, and blue lines represent the ground truth pose, the result from A(M)GPD loss, and the result from ADD(S) loss, respectively." />
+<figcaption aria-hidden="true">Figure 5. Visualization on the T-LESS
+dataset with different training loss. The green, red, and blue lines
+represent the ground truth pose, the result from A(M)GPD loss, and the
+result from ADD(S) loss, respectively.</figcaption>
+</figure>
+<h2 id="limitations">5. Limitations</h2>
+<h2 id="conclusion">6. Conclusion</h2>
+<h2 id="supplementary-material">Supplementary Material</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig1_XYZNet_new.webp"
+alt="Figure 1. The details of XYZNet." />
+<figcaption aria-hidden="true">Figure 1. The details of
+XYZNet.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig2_ycb.webp"
+alt="Figure 2. The details of grouped primitives in YCB-Video dataset. The first plot is the raw GP of objects, and the second plot is the processed GP of objects." />
+<figcaption aria-hidden="true">Figure 2. The details of grouped
+primitives in YCB-Video dataset. The first plot is the raw GP of
+objects, and the second plot is the processed GP of
+objects.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig3_ycb2.webp"
+alt="Figure 3. The validation of processed grouped primitives in YCB-Video dataset. For each object, the first column presents the grouped primitives. The second shows the A(M)GPD landscape in the rotation space, where the darker color represents the smaller value of A(M)GPD. The third column reveals the minima in each landscape. Best viewed in color." />
+<figcaption aria-hidden="true">Figure 3. The validation of processed
+grouped primitives in YCB-Video dataset. For each object, the first
+column presents the grouped primitives. The second shows the A(M)GPD
+landscape in the rotation space, where the darker color represents the
+smaller value of A(M)GPD. The third column reveals the minima in each
+landscape. Best viewed in color.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig4_C2.webp"
+alt="Figure 4. More instances of category 2. For each example, the first column presents the grouped primitives. The second shows the A(M)GPD landscape in the rotation space, where the darker color represents the smaller value of A(M)GPD. The third column reveals the minima in each landscape. Best viewed in color." />
+<figcaption aria-hidden="true">Figure 4. More instances of category 2.
+For each example, the first column presents the grouped primitives. The
+second shows the A(M)GPD landscape in the rotation space, where the
+darker color represents the smaller value of A(M)GPD. The third column
+reveals the minima in each landscape. Best viewed in color.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig5_C5.webp"
+alt="Figure 5. More instances of category 5. For each example, the first column presents the grouped primitives. The second shows the A(M)GPD landscape in the rotation space, where the darker color represents the smaller value of A(M)GPD. The third column reveals the minima in each landscape. Best viewed in color." />
+<figcaption aria-hidden="true">Figure 5. More instances of category 5.
+For each example, the first column presents the grouped primitives. The
+second shows the A(M)GPD landscape in the rotation space, where the
+darker color represents the smaller value of A(M)GPD. The third column
+reveals the minima in each landscape. Best viewed in color.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig6_3333.webp"
+alt="Figure 6. Visualization for 051_large_clamp and 052_extra_large_clamp on the YCB-Video testing dataset. The 051_large_clamp and 052_extra_large_clamp are marked with the red rectangle. The mask result comes from [5]." />
+<figcaption aria-hidden="true">Figure 6. Visualization for
+051_large_clamp and 052_extra_large_clamp on the YCB-Video testing
+dataset. The 051_large_clamp and 052_extra_large_clamp are marked with
+the red rectangle. The mask result comes from [5].</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig7_1111.webp"
+alt="Figure 7. Visualization on the T-LESS dataset with different training loss. The green, red, and blue lines represent the ground truth pose, the result from A(M)GPD loss, and the result from ADD(S) loss, respectively." />
+<figcaption aria-hidden="true">Figure 7. Visualization on the T-LESS
+dataset with different training loss. The green, red, and blue lines
+represent the ground truth pose, the result from A(M)GPD loss, and the
+result from ADD(S) loss, respectively.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig8_2222.webp"
+alt="Figure 8. Visualization on the T-LESS dataset with different training loss. The green, red, and blue lines represent the ground truth pose, the result from A(M)GPD loss, and the result from ADD(S) loss, respectively." />
+<figcaption aria-hidden="true">Figure 8. Visualization on the T-LESS
+dataset with different training loss. The green, red, and blue lines
+represent the ground truth pose, the result from A(M)GPD loss, and the
+result from ADD(S) loss, respectively.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo/supplementary_fig9_Figure4.webp"
+alt="Figure 9. Demonstration of grouping. The first row shows the grouping operation for category 2, and the second row is for category 5." />
+<figcaption aria-hidden="true">Figure 9. Demonstration of grouping. The
+first row shows the grouping operation for category 2, and the second
+row is for category 5.</figcaption>
+</figure>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2204.01080" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html" title="【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework">https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+              <a href="/tags/2022CVPR/" rel="tag"><i class="fa fa-tag"></i> 2022CVPR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/code-running/Leeiieeo_AG-Pose.html" rel="prev" title="【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">
+                  <i class="fa fa-angle-left"></i> 【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/code-running/ziqin-h_GIVEPose.html" rel="next" title="【代码复现】GIVEPose: Gradual Intra-class Variation Elimination for RGB-based  Category-Level Object Pose Estimation">
+                  【代码复现】GIVEPose: Gradual Intra-class Variation Elimination for RGB-based  Category-Level Object Pose Estimation <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
