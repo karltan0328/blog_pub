@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Rotation estimation of high precision from an RGB-D object observation is a huge challenge in 6D object pose estimation, due to the difficulty of learning in the non-linear space of SO(3). In this pap">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="Rotation estimation of high precision from an RGB-D object observation is a huge challenge in 6D object pose estimation, due to the difficulty of learning in the non-linear space of SO(3). In this pap">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-01T03:04:51.000Z">
+<meta property="article:modified_time" content="2025-04-01T03:04:51.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta property="article:tag" content="2023ICCV">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html","path":"paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html","title":"【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations"><span class="nav-text">VI-Net:
+Boosting Category-level 6D Object Pose Estimation via Learning Decoupled
+Rotations on the Spherical Representations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2. Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#correlation-on-the-sphere-and-rotation-decomposition"><span class="nav-text">3.
+Correlation on the Sphere and Rotation Decomposition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vi-net-for-rotation-estimation"><span class="nav-text">4. VI-Net for Rotation
+Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#conversion-as-spherical-representations"><span class="nav-text">4.1. Conversion as
+Spherical Representations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spherical-feature-pyramid-network"><span class="nav-text">4.2. Spherical Feature
+Pyramid Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v-branch"><span class="nav-text">4.3. V-Branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#i-branch"><span class="nav-text">4.4. I-Branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training-of-vi-net"><span class="nav-text">4.5. Training of VI-Net</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spatial-spherical-convolution"><span class="nav-text">5. Spatial Spherical
+Convolution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#category-level-6d-object-pose-estimation"><span class="nav-text">6. Category-level 6D
+Object Pose Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#experimental-setups"><span class="nav-text">6.1. Experimental Setups</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comparisons-with-existing-methods"><span class="nav-text">6.2. Comparisons with
+Existing Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-studies-and-analyses"><span class="nav-text">6.3. Ablation Studies and
+Analyses</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">7. Conclusion</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-05</time>
+        <br>
+      【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations | Karl的博客">
+      <meta itemprop="description" content="Rotation estimation of high precision from an RGB-D object observation is a huge challenge in 6D object pose estimation, due to the difficulty of learning in the non-linear space of SO(3). In this paper, we propose a novel rotation estimation network, termed as VI-Net, to make the task easier by decoupling the rotation as the combination of a viewpoint rotation and an in-plane rotation. More specifically, VI-Net bases the feature learning on the sphere with two individual branches for the estimates of two factorized rotations, where a V-Branch is employed to learn the viewpoint rotation via binary classification on the spherical signals, while another I-Branch is used to estimate the in-plane rotation by transforming the signals to view from the zenith direction. To process the spherical signals, a Spherical Feature Pyramid Network is constructed based on a novel design of SPAtial Spherical Convolution (SPA-SConv), which settles the boundary problem of spherical signals via feature padding and realizes viewpoint-equivariant feature extraction by symmetric convolutional operations. We apply the proposed VI-Net to the challenging task of categorylevel 6D object pose estimation for predicting the poses of unknown objects without available CAD models; experiments on the benchmarking datasets confirm the efficacy of our method, which outperforms the existing ones with a large margin in the regime of high precision.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-01 11:04:51" itemprop="dateCreated datePublished" datetime="2025-04-01T11:04:51+08:00">2025-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>26 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Rotation estimation of high precision from an RGB-D object observation is a huge challenge in 6D object pose estimation, due to the difficulty of learning in the non-linear space of SO(3). In this paper, we propose a novel rotation estimation network, termed as VI-Net, to make the task easier by decoupling the rotation as the combination of a viewpoint rotation and an in-plane rotation. More specifically, VI-Net bases the feature learning on the sphere with two individual branches for the estimates of two factorized rotations, where a V-Branch is employed to learn the viewpoint rotation via binary classification on the spherical signals, while another I-Branch is used to estimate the in-plane rotation by transforming the signals to view from the zenith direction. To process the spherical signals, a Spherical Feature Pyramid Network is constructed based on a novel design of SPAtial Spherical Convolution (SPA-SConv), which settles the boundary problem of spherical signals via feature padding and realizes viewpoint-equivariant feature extraction by symmetric convolutional operations. We apply the proposed VI-Net to the challenging task of categorylevel 6D object pose estimation for predicting the poses of unknown objects without available CAD models; experiments on the benchmarking datasets confirm the efficacy of our method, which outperforms the existing ones with a large margin in the regime of high precision.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations">VI-Net:
+Boosting Category-level 6D Object Pose Estimation via Learning Decoupled
+Rotations on the Spherical Representations</h1>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 44%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">VI-Net</td>
+<td style="text-align: center;">类别级</td>
+<td style="text-align: center;">RGBD + 物体类别</td>
+<td style="text-align: center;">RGBD + 物体类别</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}, \mathbf{s}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.04.01：类别级方法，使用一个网络估计旋转，另一个网络估计平移和缩放，24年CVPR
+SecondPose沿用了这个方法，对于旋转，该方法将旋转估计分为视角旋转和面内旋转，视作一个分类任务，分别估计，最后组合；对于平移和缩放，该方法使用PointNet++提取特征，直接估计平移和旋转</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/intro.webp"
+alt="Figure 1. An illustration of the factorization of rotation \mathbf{R} into a viewpoint (out-of-plane) rotation \mathbf{R}_{vp} and an in-plane rotation \mathbf{R}_{ip} (around Z-axis). Notations are explained in Sec. 3." />
+<figcaption aria-hidden="true">Figure 1. An illustration of the
+factorization of rotation <span
+class="math inline">\(\mathbf{R}\)</span> into a viewpoint
+(out-of-plane) rotation <span
+class="math inline">\(\mathbf{R}_{vp}\)</span> and an in-plane rotation
+<span class="math inline">\(\mathbf{R}_{ip}\)</span> (around Z-axis).
+Notations are explained in Sec. 3.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/vi-net.webp"
+alt="Figure 2. An illustration of VI-Net for rotation estimation. We firstly construct a Spherical Feature Pyramid Network based on spatial spherical convolutions (SPA-SConv) to exact the high-level spherical feature map \mathcal{S}. On top of \mathcal{S}, a V-Branch is employed to search the canonical zenith direction on the sphere via binary classification for the generation of the viewpoint rotation \mathbf{R}_{vp}, while another I-Branch is used to estimate the in-plane rotation \mathbf{R}_{ip} by transforming \mathcal{S} to view the object from the canonical zenith direction. Finally we have \mathbf{R} = \mathbf{R}_{vp}\mathbf{R}_{ip}. Best view in the electronic version." />
+<figcaption aria-hidden="true">Figure 2. An illustration of VI-Net for
+rotation estimation. We firstly construct a Spherical Feature Pyramid
+Network based on spatial spherical convolutions (SPA-SConv) to exact the
+high-level spherical feature map <span
+class="math inline">\(\mathcal{S}\)</span>. On top of <span
+class="math inline">\(\mathcal{S}\)</span>, a V-Branch is employed to
+search the canonical zenith direction on the sphere via binary
+classification for the generation of the viewpoint rotation <span
+class="math inline">\(\mathbf{R}_{vp}\)</span>, while another I-Branch
+is used to estimate the in-plane rotation <span
+class="math inline">\(\mathbf{R}_{ip}\)</span> by transforming <span
+class="math inline">\(\mathcal{S}\)</span> to view the object from the
+canonical zenith direction. Finally we have <span
+class="math inline">\(\mathbf{R} =
+\mathbf{R}_{vp}\mathbf{R}_{ip}\)</span>. Best view in the electronic
+version.</figcaption>
+</figure>
+<h2 id="related-work">2. Related Work</h2>
+<h2 id="correlation-on-the-sphere-and-rotation-decomposition">3.
+Correlation on the Sphere and Rotation Decomposition</h2>
+<p>如图1所示，使用<span
+class="math inline">\(\mathbf{R}^T\)</span>将物体坐标系XYZ与相机坐标系X'Y'Z'对齐（假设物体坐标系的XYZ的原点和相机坐标系的X'Y'Z'的原点重合），这个过程可以分为两步：</p>
+<ol type="1">
+<li>第一步是将Z'轴与Z轴对齐，这一步由旋转矩阵<span
+class="math inline">\(\mathbf{R}_{vp}^T\)</span>实现，“vp”代表的是“viewpoint”，即视角；</li>
+<li>第二步是将X'轴和Y'轴旋转到X轴和Y轴，这一步由旋转矩阵<span
+class="math inline">\(\mathbf{R}_{ip}^T\)</span>实现，“ip”代表的是“in-plane”，即平面内。</li>
+</ol>
+<p>那么将物体坐标系XYZ与相机坐标系X'Y'Z'对齐的过程可以表示为：<span
+class="math inline">\(\mathbf{R}^T =
+\mathbf{R}_{ip}^T\mathbf{R}_{vp}^T\)</span>。</p>
+<p>由于在<span
+class="math inline">\(SO(3)\)</span>中，矩阵的转置就是矩阵的逆，那么将物体坐标系XYZ和相机坐标系X'Y'Z'恢复到原来的相对位置的过程可以表示为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    \mathbf{R} = \mathbf{R}_{vp}\mathbf{R}_{ip},
+\end{equation}
+\]</span></p>
+<p>现在从物体坐标系XYZ和相机坐标系X'Y'Z'对齐时的状态出发，假设在物体坐标系Z轴上有一点<span
+class="math inline">\((0, 0, 1)\)</span>，使用<span
+class="math inline">\(\mathbf{R} =
+\mathbf{R}_{vp}\mathbf{R}_{ip}\)</span>的过程恢复到原来的相对位置，同样也分为两步：</p>
+<ol type="1">
+<li><p>首先使用<span
+class="math inline">\(\mathbf{R}_{ip}\)</span>让物体坐标系XYZ旋转绕Z'轴旋转<span
+class="math inline">\(\beta \in [0, 2\pi]\)</span>，其旋转矩阵为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq2}
+     \mathbf{R}_{ip} =
+     \begin{bmatrix}
+         \cos\beta &amp; -\sin\beta &amp; 0 \\
+         \sin\beta &amp; \cos\beta &amp; 0 \\
+         0 &amp; 0 &amp; 1
+     \end{bmatrix}.
+\end{equation}
+\]</span></p></li>
+<li><p>此时，物体坐标系XYZ与相机坐标系X'Y'Z'不完全重合（Z轴与Z'轴是重合的，但X轴与X'轴、Y轴与Y'轴不重合），先将物体绕着Y'轴旋转<span
+class="math inline">\(\theta \in [0, \pi]\)</span>，其旋转矩阵为：</p>
+<p><span class="math display">\[
+\mathbf{R}_Y(\theta) =
+\begin{bmatrix}
+     \cos\theta &amp; 0 &amp; \sin\theta \\
+     0 &amp; 1 &amp; 0 \\
+     -\sin\theta &amp; 0 &amp; \cos\theta
+\end{bmatrix};
+\]</span></p></li>
+<li><p>再将物体绕着Z'轴旋转<span class="math inline">\(\varphi \in [0,
+2\pi]\)</span>，其旋转矩阵为：</p>
+<p><span class="math display">\[
+\mathbf{R}_Z(\varphi) =
+\begin{bmatrix}
+     \cos\varphi &amp; -\sin\varphi &amp; 0 \\
+     \sin\varphi &amp; \cos\varphi &amp; 0 \\
+     0 &amp; 0 &amp; 1
+\end{bmatrix};
+\]</span></p></li>
+</ol>
+<p>那么结合上面的第2步和第3步，Z轴上的这一点的坐标变为<span
+class="math inline">\((v_x, v_y, v_z)\)</span>，那么可以计算<span
+class="math inline">\((r, \varphi,
+\theta)\)</span>为（这里我不理解，我觉得公式是错的）：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq3}
+    \left\{\begin{matrix}
+        \begin{aligned}
+            r &amp;= 1 \\
+            \varphi &amp;= \arctan(\frac{v_x}{v_z}) \\
+            \theta &amp;= \arccos(\frac{v_y}{r})
+        \end{aligned}
+    \end{matrix}\right.,
+\end{equation}
+\]</span></p>
+<p>结合<span class="math inline">\(\mathbf{R}_Y(\theta)\)</span>和<span
+class="math inline">\(\mathbf{R}_Z(\varphi)\)</span>，可以得到：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq4}
+    \begin{aligned}
+        \mathbf{R}_{vp} &amp;= \mathbf{R}_Z(\varphi)\mathbf{R}_Y(\theta)
+\\
+        &amp;= \begin{bmatrix}
+            \cos\varphi &amp; -\sin\varphi &amp; 0 \\
+            \sin\varphi &amp; \cos\varphi &amp; 0 \\
+            0 &amp; 0 &amp; 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            \cos\theta &amp; 0 &amp; \sin\theta \\
+            0 &amp; 1 &amp; 0 \\
+            -\sin\theta &amp; 0 &amp; \cos\theta
+        \end{bmatrix}
+    \end{aligned}.
+\end{equation}
+\]</span></p>
+<p>结合<span class="math inline">\(\eqref{eq4}\)</span>和<span
+class="math inline">\(\eqref{eq2}\)</span>，可以发现<span
+class="math inline">\(\mathbf{R} =
+\mathbf{R}_{vp}\mathbf{R}_{ip}\)</span>与ZYZ欧拉角<span
+class="math inline">\(\varphi, \theta, \beta\)</span>的参数化一致。</p>
+<p>根据以上推导，估计物体的旋转可以分解为两个步骤：</p>
+<ol type="1">
+<li>在球体上搜索点<span class="math inline">\((v_x, v_y,
+v_z)\)</span>，以获得<span class="math inline">\(\varphi\)</span>和<span
+class="math inline">\(\theta\)</span>，共同得到视角旋转<span
+class="math inline">\(\mathbf{R}_{vp}\)</span>；</li>
+<li>通过<span
+class="math inline">\(\mathbf{R}_{vp}\)</span>将Z'轴与Z轴对齐，然后回归面内旋转<span
+class="math inline">\(\mathbf{R}_{ip}\)</span>。</li>
+</ol>
+<h2 id="vi-net-for-rotation-estimation">4. VI-Net for Rotation
+Estimation</h2>
+<h3 id="conversion-as-spherical-representations">4.1. Conversion as
+Spherical Representations</h3>
+<p>给定一个点集<span class="math inline">\(\mathcal{P} \in \mathbb{R}^{N
+\times 3}\)</span>，每一个点都对应一个特征<span
+class="math inline">\(\mathcal{F} \in \mathbb{R}^{N \times
+C_0}\)</span>（比如径向距离、RGB值、表面法线等），首先使用“Learning
+SO(3) Equivariant Representations with Spherical CNNs”和“DualPoseNet:
+Category-level 6D Object Pose and Size Estimation Using Dual Pose
+Network with Refined Learning of Pose
+Consistency”中的方法，生成在球体上定义的特征图<span
+class="math inline">\(\mathcal{S}_0 \in \mathbb{R}^{C_0 \times H_0
+\times W_0}\)</span>，其中<span
+class="math inline">\(N\)</span>是点的数量，<span
+class="math inline">\(H_0 \times W_0\)</span>是球面采样分辨率，<span
+class="math inline">\(C_0\)</span>是特征维度（比如<span
+class="math inline">\(C_0 = 1\)</span>为径向距离，<span
+class="math inline">\(C_0 = 3\)</span>为RGB值或表面法线）。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/spa-sconv.webp"
+alt="Figure 3. An illustration of the feature padding in SPA-SConv. Best view in the electronic version." />
+<figcaption aria-hidden="true">Figure 3. An illustration of the feature
+padding in SPA-SConv. Best view in the electronic version.</figcaption>
+</figure>
+<p>具体来说，将球面坐标系沿方位轴（水平方向）和倾角轴（竖直方向）均匀的划分为<span
+class="math inline">\(H_0 \times
+W_0\)</span>个网格（如图3所示），在每一个网格中，我们搜索径向距离最大的点，表示为<span
+class="math inline">\(\mathbf{p}_{h, w}^{max}\)</span>，并让<span
+class="math inline">\(\mathcal{S}_0(h, w) = \mathbf{f}_{h, w}^{max} \in
+\mathcal{F}\)</span>，对应于<span class="math inline">\(\mathbf{p}_{h,
+w}^{max}\)</span>；如果这个区域内没有点，则让<span
+class="math inline">\(\mathcal{S}_0(h, w) = \mathbf{0}\)</span>。</p>
+<h3 id="spherical-feature-pyramid-network">4.2. Spherical Feature
+Pyramid Network</h3>
+<p>使用ResNet18构建特征金字塔网络（FPN），用SPAtial Spherical
+Convolutions (SPA-SConvs)，代替传统的2D卷积，得到高级语义球形特征图<span
+class="math inline">\(\mathcal{S} \in \mathbb{R}^{C \times H \times
+W}\)</span>，如图2所示。第5部分中会有详细介绍。</p>
+<h3 id="v-branch">4.3. V-Branch</h3>
+<p>V-Branch估计视角旋转<span
+class="math inline">\(\mathbf{R}_{vp}\)</span>，视角旋转中包含了方位角<span
+class="math inline">\(\varphi\)</span>和倾角<span
+class="math inline">\(\theta\)</span>，为了简化任务，可以分别估计<span
+class="math inline">\(\varphi\)</span>和<span
+class="math inline">\(\theta\)</span>，这也有效缓解了正负样本对不平衡的问题。图2给出了V-Branch的图示。</p>
+<p>以两层MLP提升<span
+class="math inline">\(\mathcal{S}\)</span>的特征维度，得到<span
+class="math inline">\(\mathcal{S}_{vp} \in \mathbb{R}^{C_{vp} \times H
+\times W}\)</span>。为了学习水平方位角<span
+class="math inline">\(\varphi\)</span>，在竖直方向上的倾角维度对<span
+class="math inline">\(S_{vp}\)</span>进行最大池化，得到<span
+class="math inline">\(\mathcal{F}_\varphi \in \mathbb{R}^{C_{vp} \times
+W}\)</span>，再将其送入另一个MLP中得到<span
+class="math inline">\(W\)</span>方位角区域的概率图<span
+class="math inline">\(\mathcal{Y}_\alpha \in
+\mathbb{R}^W\)</span>。<span
+class="math inline">\(\mathcal{Y}_\alpha\)</span>中的每一个元素都表示该区域成为目标的可能性。将具有最大概率的元素的索引表示为<span
+class="math inline">\(w_{max}\)</span>，则有：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq5}
+    \varphi = \frac{w_{max} + 0.5}{W} \times 2\pi.
+\end{equation}
+\]</span></p>
+<p>同样，对于倾角<span
+class="math inline">\(\theta\)</span>，沿水平方向上的方位角维度对<span
+class="math inline">\(S_{vp}\)</span>进行最大池化，得到<span
+class="math inline">\(\mathcal{F}_\theta \in \mathbb{R}^{C_{vp} \times
+H}\)</span>，然后得到<span class="math inline">\(\mathcal{Y}_\beta \in
+\mathbb{R}^H\)</span>，那么<span
+class="math inline">\(\theta\)</span>可以计算如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq6}
+    \theta = \frac{h_{max} + 0.5}{H} \times \pi.
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(h_{max}\)</span>是<span
+class="math inline">\(\mathcal{Y}_\beta\)</span>中最大概率的索引。最后，结合<span
+class="math inline">\(\eqref{eq5}\)</span>、<span
+class="math inline">\(\eqref{eq6}\)</span>和<span
+class="math inline">\(\eqref{eq4}\)</span>，可以得到视角旋转<span
+class="math inline">\(\mathbf{R}_{vp} =
+\mathbf{R}_Z(\varphi)\mathbf{R}_Y(\theta)\)</span>。</p>
+<h3 id="i-branch">4.4. I-Branch</h3>
+<p>在V-Branch之后，我们已经得到了视角旋转<span
+class="math inline">\(\mathbf{R}_{vp}\)</span>，那么就可以使用<span
+class="math inline">\(\mathbf{R}_{vp}\)</span>将Z'轴与Z轴对齐（如图1所示）。对齐后可以构建一个新的球面特征图<span
+class="math inline">\(S_{ip} \in \mathbb{R}^{C \times H \times
+W}\)</span>。<span
+class="math inline">\(\mathcal{S}\)</span>的视点不变性使得在特征空间中实现变换以获得<span
+class="math inline">\(S_{ip}\)</span>成为可能。</p>
+<p>对于分辨率为<span class="math inline">\(H \times
+W\)</span>的规则球面映射，我们将所有<span
+class="math inline">\(HW\)</span>离散锚点的中心点表示为点集<span
+class="math inline">\(\mathcal{G} =
+\{\mathbf{g}\}\)</span>。当我们用<span
+class="math inline">\(\mathbf{R}_{vp}\)</span>将点集<span
+class="math inline">\(\mathcal{P} = \{\mathbf{p}\}\)</span>旋转到<span
+class="math inline">\(\mathcal{P}^\prime = \{\mathbf{p}^\prime\} =
+\{\mathbf{R}_{vp}^T\mathbf{p}\}\)</span>时，<span
+class="math inline">\(\mathcal{S}\)</span>的锚点也旋转为<span
+class="math inline">\(\mathcal{G}^\prime = \{\mathbf{g}^\prime\} =
+\{\mathbf{R}_{vp}^T\mathbf{g}\}\)</span>；我们将<span
+class="math inline">\(\mathbf{g}^\prime\)</span>的特征标记为<span
+class="math inline">\(\mathcal{S}^{\mathbf{g}^\prime}\)</span>。</p>
+<p>为了从顶部观察物体，需要为变换后的<span
+class="math inline">\(\mathcal{P}^\prime\)</span>构建一个新的球形特征图<span
+class="math inline">\(\mathcal{S}_{ip}\)</span>。对于<span
+class="math inline">\(\mathcal{S}_{ip}\)</span>，我们使用“PointNet++:
+Deep Hierarchical Feature Learning on Point Sets in a Metric
+Space”中的点特征加权插值方法，在每个锚点<span
+class="math inline">\(\mathbf{g}\)</span>上生成其特征，表示为<span
+class="math inline">\(\mathcal{S}_{ip}^\mathbf{g}\)</span>，如下所示：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq7}
+    \mathcal{S}_{ip}^\mathbf{g} = \frac{\sum_{i = 1}^k a_i
+\mathcal{S}^{\mathbf{g}^\prime_i}}{\sum_{i = 1}^k a_i},
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(a_i = \frac{1}{\Vert\mathbf{g} -
+\mathbf{g}^\prime_i\Vert}\)</span>是按点距离衡量的插值权重，<span
+class="math inline">\(\{\mathbf{g}_i^\prime\}_{i = 1}^k \subset
+\mathcal{G}^\prime\)</span>是<span
+class="math inline">\(\mathbf{g}\)</span>的<span
+class="math inline">\(k\)</span>个最近邻。</p>
+<p>通过<span class="math inline">\(\eqref{eq7}\)</span>实现从<span
+class="math inline">\(\mathcal{S}\)</span>到<span
+class="math inline">\(\mathcal{S}_{ip}\)</span>的转换后，使用卷积来降低<span
+class="math inline">\(\mathcal{S}_{ip}\)</span>的分辨率，并为<span
+class="math inline">\(\mathbf{R}_{ip}\)</span>的回归提取一个全局特征图，如图2所示。旋转的连续6D表示作为回归的输出，然后转换为旋转矩阵<span
+class="math inline">\(\mathbf{R}_{ip}\)</span>。这里预测的<span
+class="math inline">\(\mathbf{R}_{ip}\)</span>并不只包含面内旋转，而是残差视点旋转和精确面内旋转的组合。</p>
+<h3 id="training-of-vi-net">4.5. Training of VI-Net</h3>
+<p>对于V-Branch，使用来自“Focal Loss for Dense Object
+Detection”的焦点损失，给定GT <span
+class="math inline">\(\hat{\mathcal{Y}}_\varphi \in
+\mathbb{R}^W\)</span>和<span
+class="math inline">\(\hat{\mathcal{Y}}_\theta \in
+\mathbb{R}^H\)</span>，损失函数为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq8}
+    \mathcal{L}_{vp} = \mathcal{D}_{FL}(\mathcal{Y}_\varphi,
+\hat{\mathcal{Y}}_\varphi) + \mathcal{D}_{FL}(\mathcal{Y}_\theta,
+\hat{\mathcal{Y}}_\theta),
+\end{equation}
+\]</span></p>
+<p>其中：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq9}
+    \mathcal{D}_{FL}(\mathcal{Y}, \hat{\mathcal{Y}}) = \frac{1}{M}
+\sum_{i = 1}^M -\alpha(1 - t_{i, t})^\gamma \log(y_{i, t}),
+\end{equation}
+\]</span></p>
+<p>且：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq10}
+    y_{i, t} =
+    \begin{cases}
+        y_i, &amp; \text{if} &amp; \hat{y}_i = 1 \\
+        1 - y_i, &amp; \text{if} &amp; \hat{y}_i = 0
+    \end{cases},
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(\mathcal{Y} = \{y_i\}_{i =
+1}^M\)</span>，<span class="math inline">\(\hat{\mathcal{Y}} =
+\{\hat{y}_i \in \{0, 1\}\}_{i = 1}^M\)</span>。<span
+class="math inline">\(\alpha\)</span>是权重因子，<span
+class="math inline">\(\gamma\)</span>表示调节因子的指数。</p>
+<p>给定GT <span
+class="math inline">\(\hat{\mathbf{R}}\)</span>，我们对I-Branch的输出<span
+class="math inline">\(\mathbf{R} =
+\mathbf{R}_{vp}\mathbf{R}_{ip}\)</span>监督如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq11}
+    \mathcal{L}_{ip} = \Vert\mathbf{R} - \hat{\mathbf{R}}\Vert =
+\Vert\mathbf{R}_{vp}\mathbf{R}_{ip} - \hat{\mathbf{R}}\Vert.
+\end{equation}
+\]</span></p>
+<p>结合<span class="math inline">\(\eqref{eq8}\)</span>和<span
+class="math inline">\(\eqref{eq11}\)</span>，VI-Net的训练目标为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq12}
+    \min \mathcal{L} = \mathcal{L}_{ip} + \lambda \mathcal{L}_{vp}.
+\end{equation}
+\]</span></p>
+<p>其中<span
+class="math inline">\(\lambda\)</span>是平衡两个损失的权重因子。</p>
+<h2 id="spatial-spherical-convolution">5. Spatial Spherical
+Convolution</h2>
+<p>方法建立具有规则2D空间大小的球形特征图以实现旋转估计，特征图建立后，就可以使用传统的2D卷积来处理球形信号。但是，直接在球形特征图上使用2D卷积会有边界问题，比如特征图<span
+class="math inline">\(S_0\)</span>上的<span class="math inline">\(S_0(h,
+1)\)</span>和<span class="math inline">\(S_0(h,
+W)\)</span>在球面上是相连的，而在特征图中则有很大的距离。此外，为了支持I-Branch中的特征转换以便从天顶方向查看，backbone中的卷积也需要是视角一致的。这里提出了SPAtial
+Spherical
+Convolution，即SPA-SConv，在球面上连续提取视角一致的特征，可以灵活的适应现有的卷积架构，例如4.2节中的FPN。</p>
+<p>给定输入球面特征图<span class="math inline">\(\mathcal{S}_l \in
+\mathbb{R}^{C_l \times H_l \times
+W_l}\)</span>和卷积参数（如卷积核大小<span
+class="math inline">\(K\)</span>、步长<span
+class="math inline">\(s\)</span>和输出通道数<span
+class="math inline">\(C_{l +
+1}\)</span>等），我们分两步实现SPA-SConv：</p>
+<ol type="1">
+<li>将<span class="math inline">\(\mathcal{S}_l\)</span>padding到<span
+class="math inline">\(S_l^{pad} \in \mathbb{R}^{C_l \times (H_l + 2P)
+\times (W_l + 2P)}\)</span>，其中<span class="math inline">\(P = \frac{K
+- 1}{2}\)</span>；</li>
+<li>将对称卷积应用于<span
+class="math inline">\(S_l^{pad}\)</span>，基于没有padding的常规2D卷积，得到输出球面特征图<span
+class="math inline">\(\mathcal{S}_{l + 1} \in \mathbb{R}^{C_{l + 1}
+\times H_{l + 1} \times W_{l + 1}}\)</span>，其中<span
+class="math inline">\(H_{l + 1} =
+\lfloor\frac{H_l}{s}\rfloor\)</span>，<span class="math inline">\(W_{l +
+1} =
+\lfloor\frac{W_l}{s}\rfloor\)</span>（为简单起见，我们假设2D卷积核的长度和宽度都是<span
+class="math inline">\(K\)</span>，<span
+class="math inline">\(K\)</span>是一个奇数）。</li>
+</ol>
+<p>图3可视化了从<span
+class="math inline">\(\mathcal{S}_l\)</span>到<span
+class="math inline">\(S_l^{pad}\)</span>的padding过程。首先，将<span
+class="math inline">\(\mathcal{S}_l\)</span>的中心作为<span
+class="math inline">\(\mathcal{S}_l^{pad}\)</span>的中心：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq13}
+    S_l^{pad}(h + P, w + P) = \mathcal{S}_l(h, w),
+\end{equation}
+\]</span></p>
+<p>对于<span class="math inline">\(\forall h = 1, 2, \cdots,
+H_l\)</span>和<span class="math inline">\(\forall w = 1, 2, \cdots,
+W_l\)</span>。接下来，我们沿倾角方向填充<span
+class="math inline">\(\mathcal{S}_l\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq14}
+    \begin{aligned}
+        S_l^{pad}(p, w + P) &amp;= \mathcal{S}_l^{pad}(2P - p + 1,
+w^\prime), \\
+        \text{and } S_l^{pad}(H_l + P + p, w + P) &amp;=
+\mathcal{S}_l^{pad}(H_l + P - p + 1, w^\prime),
+    \end{aligned}
+\end{equation}
+\]</span></p>
+<p>其中：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq15}
+    w^\prime =
+    \begin{cases}
+        w + \frac{W_l}{2} + P &amp; \text{if} &amp; w \le \frac{W_l}{2}
+\\
+        w - \frac{W_l}{2} + P &amp; &amp; \text{otherwise}
+    \end{cases},
+\end{equation}
+\]</span></p>
+<p>对于<span class="math inline">\(\forall p = 1, 2, \cdots,
+P\)</span>和<span class="math inline">\(\forall w = 1, 2, \cdots,
+W_l\)</span>。最后，我们沿方位角方向填充<span
+class="math inline">\(\mathcal{S}_l\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq16}
+    \begin{aligned}
+        S_l^{pad}(h, p) &amp;= \mathcal{S}_l^{pad}(h, W_l + p), \\
+        \text{and } S_l^{pad}(h, W_l + P + p) &amp;=
+\mathcal{S}_l^{pad}(h, P + p),
+    \end{aligned},
+\end{equation}
+\]</span></p>
+<p>对于<span class="math inline">\(\forall p = 1, 2, \cdots,
+P\)</span>和<span class="math inline">\(\forall w = 1, 2, \cdots,
+W_l\)</span>。</p>
+<p>得到<span
+class="math inline">\(S_l^{pad}\)</span>后，我们就可以使用2D卷积来实现视点一致的对称卷积运算：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq17}
+    \mathcal{S}_{l + 1} = \text{Max}(\text{Conv}(\mathcal{S}_l^{pad};
+\kappa_l), \text{Conv}(\mathcal{S}_l^{pad}, \text{Flip}(\kappa_l))),
+\end{equation}
+\]</span></p>
+<p>其中，<span
+class="math inline">\(\text{Conv}\)</span>表示2D卷积、<span
+class="math inline">\(\text{Flip}\)</span>表示卷积核的水平翻转、<span
+class="math inline">\(\text{Max}\)</span>表示元素级最大池化。根据“PointNet:
+Deep Learning on Point Sets for 3D Classification and
+Segmentation”中的方法，<span
+class="math inline">\(\text{Max}\)</span>作为对称函数来聚合特征，并保持视点一致的性质，补充材料中给出了此特性的证明。</p>
+<h2 id="category-level-6d-object-pose-estimation">6. Category-level 6D
+Object Pose Estimation</h2>
+<p>VI-Net估计<span class="math inline">\(\mathbf{R}, \mathbf{t},
+\mathbf{s}\)</span>，且在推理时CAD模型不可用。给定一张RGBD图，首先使用MaskRCNN分割物体，对于每个裁剪出的具有点集<span
+class="math inline">\(\mathcal{P} =
+\{\mathbf{p}\}\)</span>的物体，首先使用PointNet++估计<span
+class="math inline">\(\mathbf{t}\)</span>和<span
+class="math inline">\(\mathbf{s}\)</span>，然后在旋转估计时，将估计出的<span
+class="math inline">\(\mathbf{t}\)</span>和<span
+class="math inline">\(\mathbf{s}\)</span>作为初始化输入到VI-Net中进行归一化：<span
+class="math inline">\(\mathcal{P}^\prime = \{\frac{\mathbf{p} -
+\mathbf{t}}{\Vert\mathbf{s}\Vert}\}\)</span>，最后使用VI-Net估计<span
+class="math inline">\(\mathbf{R}\)</span>。</p>
+<h3 id="experimental-setups">6.1. Experimental Setups</h3>
+<h3 id="comparisons-with-existing-methods">6.2. Comparisons with
+Existing Methods</h3>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 1. Quantitative comparisons of different methods for
+category-level 6D object pose estimation on REAL275 and CAMERA25
+datasets [31]. Overall best results are in bold and the second best
+results are underlined. '∗' denotes the IoU metrics used in [23] rather
+than those in [31].
+</caption>
+<thead>
+<tr>
+<th rowspan="2" style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th rowspan="2" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Use of<br>Shape Priors
+</th>
+<th colspan="5" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+REAL275
+</th>
+<th colspan="5" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+CAMERA25
+</th>
+</tr>
+<tr>
+<th style="text-align: center; border-bottom: 1px solid black;">
+IoU<sub>75</sub>∗
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5°5cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10°2cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+10°5cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+IoU<sub>75</sub>∗
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5°5cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10°2cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10°5cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+NOCS [31]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+9.4
+</td>
+<td style="text-align: center;">
+7.2
+</td>
+<td style="text-align: center;">
+10.0
+</td>
+<td style="text-align: center;">
+13.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+25.2
+</td>
+<td style="text-align: center;">
+37.0
+</td>
+<td style="text-align: center;">
+32.3
+</td>
+<td style="text-align: center;">
+40.9
+</td>
+<td style="text-align: center;">
+48.2
+</td>
+<td style="text-align: center;">
+64.6
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+FS-Net [5]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+28.2
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+60.8
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+DualPoseNet [20]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+30.8
+</td>
+<td style="text-align: center;">
+29.3
+</td>
+<td style="text-align: center;">
+35.9
+</td>
+<td style="text-align: center;">
+50.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+66.8
+</td>
+<td style="text-align: center;">
+71.7
+</td>
+<td style="text-align: center;">
+64.7
+</td>
+<td style="text-align: center;">
+70.7
+</td>
+<td style="text-align: center;">
+77.2
+</td>
+<td style="text-align: center;">
+84.7
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+GPV-Pose [8]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+32.0
+</td>
+<td style="text-align: center;">
+42.9
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+73.3
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+72.1
+</td>
+<td style="text-align: center;">
+79.1
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+89.0
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+SS-ConvNet [18]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+36.6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+43.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+52.6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+63.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+PN2 + VI-Net (Ours)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>48.3</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>50.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>57.6</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>70.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+<strong>82.1</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>79.1</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<u>74.1</u>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>81.4</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+79.3
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+87.3
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SPD [28]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+27.0
+</td>
+<td style="text-align: center;">
+19.3
+</td>
+<td style="text-align: center;">
+21.4
+</td>
+<td style="text-align: center;">
+43.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+<u>54.1</u>
+</td>
+<td style="text-align: center;">
+46.9
+</td>
+<td style="text-align: center;">
+54.3
+</td>
+<td style="text-align: center;">
+59.0
+</td>
+<td style="text-align: center;">
+73.3
+</td>
+<td style="text-align: center;">
+81.5
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+CR-Net [32]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+33.2
+</td>
+<td style="text-align: center;">
+27.8
+</td>
+<td style="text-align: center;">
+34.3
+</td>
+<td style="text-align: center;">
+47.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+60.8
+</td>
+<td style="text-align: center;">
+75.0
+</td>
+<td style="text-align: center;">
+72.0
+</td>
+<td style="text-align: center;">
+76.4
+</td>
+<td style="text-align: center;">
+81.0
+</td>
+<td style="text-align: center;">
+87.7
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+CenterSnap-R [14]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+29.1
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+64.3
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+66.2
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+81.3
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+ACR-Pose [10]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+31.6
+</td>
+<td style="text-align: center;">
+36.9
+</td>
+<td style="text-align: center;">
+54.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+65.9
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+70.4
+</td>
+<td style="text-align: center;">
+74.1
+</td>
+<td style="text-align: center;">
+82.6
+</td>
+<td style="text-align: center;">
+87.8
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SAR-Net [17]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+31.6
+</td>
+<td style="text-align: center;">
+42.3
+</td>
+<td style="text-align: center;">
+50.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+68.3
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+66.7
+</td>
+<td style="text-align: center;">
+70.9
+</td>
+<td style="text-align: center;">
+75.3
+</td>
+<td style="text-align: center;">
+80.3
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SSP-Pose [37]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+34.7
+</td>
+<td style="text-align: center;">
+44.6
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+77.8
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+64.7
+</td>
+<td style="text-align: center;">
+75.5
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+87.4
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SGPA [4]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+37.1
+</td>
+<td style="text-align: center;">
+35.9
+</td>
+<td style="text-align: center;">
+39.6
+</td>
+<td style="text-align: center;">
+61.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+70.7
+</td>
+<td style="text-align: center;">
+69.1
+</td>
+<td style="text-align: center;">
+70.7
+</td>
+<td style="text-align: center;">
+74.5
+</td>
+<td style="text-align: center;">
+<u>82.7</u>
+</td>
+<td style="text-align: center;">
+88.4
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+RBP-Pose [36]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+38.2
+</td>
+<td style="text-align: center;">
+48.1
+</td>
+<td style="text-align: center;">
+63.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+<u>79.2</u>
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+73.5
+</td>
+<td style="text-align: center;">
+79.6
+</td>
+<td style="text-align: center;">
+82.1
+</td>
+<td style="text-align: center;">
+<strong>89.5</strong>
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SPD + CATRE [23]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+<u>43.6</u>
+</td>
+<td style="text-align: center;">
+45.8
+</td>
+<td style="text-align: center;">
+<u>54.4</u>
+</td>
+<td style="text-align: center;">
+61.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+73.1
+</td>
+<td style="text-align: center;">
+<u>76.1</u>
+</td>
+<td style="text-align: center;">
+<strong>75.4</strong>
+</td>
+<td style="text-align: center;">
+<u>80.3</u>
+</td>
+<td style="text-align: center;">
+<strong>83.3</strong>
+</td>
+<td style="text-align: center;">
+<u>89.3</u>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+DPDN [19]
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<u>46.0</u>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+50.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<u>70.4</u>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+78.4
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+-
+</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/vis_sota.webp"
+alt="Figure 4. Qualitative comparisons between the state-of-the-art method of DPDN [19] and our proposed one on REAL275 dataset [31]." />
+<figcaption aria-hidden="true">Figure 4. Qualitative comparisons between
+the state-of-the-art method of DPDN [19] and our proposed one on REAL275
+dataset [31].</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/mAP.webp"
+alt="Figure 5. Plottings of per-category average precision versus different rotation/translation error thresholds for our proposed method on REAL275 dataset [31]." />
+<figcaption aria-hidden="true">Figure 5. Plottings of per-category
+average precision versus different rotation/translation error thresholds
+for our proposed method on REAL275 dataset [31].</figcaption>
+</figure>
+<h3 id="ablation-studies-and-analyses">6.3. Ablation Studies and
+Analyses</h3>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 2. Ablation studies of the variants of our VI-Net with or without
+rotation decomposition (R.D.) on REAL275 dataset [31].
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+R.D.
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°5cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+Baseline1: Avg Pool + MLP
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+45.0
+</td>
+<td style="text-align: center;">
+51.8
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+Baseline2: Flattening + MLP
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+42.7
+</td>
+<td style="text-align: center;">
+48.8
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+VI-Net
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>50.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>57.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 3. Ablation studies of the variants of the V-Branch and I-Branch
+in our VI-Net on REAL275 dataset [31].
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Variants of V-Branch
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Feature Trans. in I-Branch
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°5cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10°5cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Direct Regression
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+26.3
+</td>
+<td style="text-align: center;">
+28.9
+</td>
+<td style="text-align: center;">
+54.1
+</td>
+<td style="text-align: center;">
+61.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Binary Classification (1-branch)
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+30.8
+</td>
+<td style="text-align: center;">
+34.4
+</td>
+<td style="text-align: center;">
+65.5
+</td>
+<td style="text-align: center;">
+75.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+Binary Classification (2-branch)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+33.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+37.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+65.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+75.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Direct Regression
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+43.1
+</td>
+<td style="text-align: center;">
+48.3
+</td>
+<td style="text-align: center;">
+68.0
+</td>
+<td style="text-align: center;">
+78.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Binary Classification (1-branch)
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+49.3
+</td>
+<td style="text-align: center;">
+56.9
+</td>
+<td style="text-align: center;">
+69.4
+</td>
+<td style="text-align: center;">
+79.7
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+Binary Classification (2-branch)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>50.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>57.6</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>70.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>82.1</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 4. Quantitative comparisons of SPE-SConv [9] and variants of our
+proposed SPA-SConv on REAL275 dataset [31].
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Type of<br>Convolution
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Padding
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Symmetric<br>Operation
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°5cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+SPE-SConv [9]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+35.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+40.8
+</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+SPA-SConv
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center;">
+46.9
+</td>
+<td style="text-align: center;">
+53.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+✕
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+48.5
+</td>
+<td style="text-align: center;">
+55.5
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>50.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>57.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 5. Quantitative comparisons between VI-Net+ts and PN2 for
+translation and size estimation on REAL275 dataset [31].
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°5cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10°5cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+VI-Net<sub>+ts</sub>
+</td>
+<td style="text-align: center;">
+45.0
+</td>
+<td style="text-align: center;">
+56.0
+</td>
+<td style="text-align: center;">
+65.9
+</td>
+<td style="text-align: center;">
+80.5
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+PN2 + VI-Net
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>50.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>57.6</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>70.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>82.1</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 6. Quantitative comparisons of different input data types of
+VI-Net on REAL275 dataset [31].
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Data Type
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5°5cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10°2cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10°5cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Depth
+</td>
+<td style="text-align: center;">
+43.0
+</td>
+<td style="text-align: center;">
+52.1
+</td>
+<td style="text-align: center;">
+64.3
+</td>
+<td style="text-align: center;">
+77.0
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+RGB + Depth
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>50.0</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>57.6</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>70.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>82.1</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin/vis_viewpoint.webp"
+alt="Figure 6. Qualitative results of the predicted viewpoint rotation \mathbf{R}_{vp} from V-Branch and the final output rotation \mathbf{R} from VI-Net." />
+<figcaption aria-hidden="true">Figure 6. Qualitative results of the
+predicted viewpoint rotation <span
+class="math inline">\(\mathbf{R}_{vp}\)</span> from V-Branch and the
+final output rotation <span class="math inline">\(\mathbf{R}\)</span>
+from VI-Net.</figcaption>
+</figure>
+<h2 id="conclusion">7. Conclusion</h2>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2308.09916" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" title="【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations">https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+              <a href="/tags/2023ICCV/" rel="tag"><i class="fa fa-tag"></i> 2023ICCV</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-list/2025cvpr-ope.html" rel="prev" title="2025 CVPR Object Pose Estimation论文列表">
+                  <i class="fa fa-angle-left"></i> 2025 CVPR Object Pose Estimation论文列表
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html" rel="next" title="【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects">
+                  【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

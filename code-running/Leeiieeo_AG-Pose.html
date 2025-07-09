@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="复现AG-Pose的代码，并进行测试。">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">
+<meta property="og:url" content="https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="复现AG-Pose的代码，并进行测试。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-22T12:50:45.000Z">
+<meta property="article:modified_time" content="2025-05-08T06:10:45.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta property="article:tag" content="代码复现">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html","path":"code-running/Leeiieeo_AG-Pose.html","title":"【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ag-pose%E7%8E%AF%E5%A2%83"><span class="nav-text">安装AG-Pose环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-text">下载数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-text">处理数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jiehonglinself-dpdn"><span class="nav-text">JiehongLin&#x2F;Self-DPDN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mentianobject-deformnet"><span class="nav-text">mentian&#x2F;object-deformnet</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81"><span class="nav-text">运行代码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/code-running/ziqin-h_GIVEPose.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-24</time>
+        <br>
+      【代码复现】GIVEPose: Gradual Intra-class Variation Elimination for RGB-based  Category-Level Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-list/2025cvpr-ope.html" rel="bookmark">
+        <time class="popular-posts-time">2025-03-30</time>
+        <br>
+      2025 CVPR Object Pose Estimation论文列表
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/code-running/shanice-l_UNOPose.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-31</time>
+        <br>
+      【代码复现】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation | Karl的博客">
+      <meta itemprop="description" content="复现AG-Pose的代码，并进行测试。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-22 20:50:45" itemprop="dateCreated datePublished" datetime="2025-04-22T20:50:45+08:00">2025-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-05-08 14:10:45" itemprop="dateModified" datetime="2025-05-08T14:10:45+08:00">2025-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%8E%B0/" itemprop="url" rel="index"><span itemprop="name">代码复现</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/code-running/Leeiieeo_AG-Pose.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/code-running/Leeiieeo_AG-Pose.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">复现AG-Pose的代码，并进行测试。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="安装ag-pose环境">安装AG-Pose环境</h2>
+<ol type="1">
+<li><p>创建环境：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create --name agpose python=3.9</span><br></pre></td></tr></table></figure></p></li>
+<li><p>激活环境：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda activate agpose</span><br></pre></td></tr></table></figure></p></li>
+<li><p>安装PyTorch：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install torch==1.12 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu113</span><br></pre></td></tr></table></figure></p></li>
+<li><p>安装其他依赖：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pip3 install gorilla-core==0.2.5.3</span><br><span class="line">pip3 install opencv-python</span><br><span class="line"></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/Leeiieeo/AG-Pose.git</span><br><span class="line"><span class="built_in">cd</span> AG-Pose/model/pointnet2</span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure></p></li>
+<li><p>Clone <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21lbnRpYW4vb2JqZWN0LWRlZm9ybW5ldA==">mentian/object-deformnet<i class="fa fa-external-link-alt"></i></span>并安装<code>nn_distance</code>，需要使用该仓库中的代码进行数据处理：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/mentian/object-deformnet.git</span><br><span class="line"><span class="built_in">cd</span> object-deformnet/lib/nn_distance</span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<h2 id="下载数据集">下载数据集</h2>
+<ol type="1">
+<li><p>下载NOCS数据集到数据集文件夹中：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL2NhbWVyYV9jb21wb3NlZF9kZXB0aC56aXA=">http://download.cs.stanford.edu/orion/nocs/camera_composed_depth.zip<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL2NhbWVyYV90cmFpbi56aXA=">http://download.cs.stanford.edu/orion/nocs/camera_train.zip<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL2NhbWVyYV92YWwyNUsuemlw">http://download.cs.stanford.edu/orion/nocs/camera_val25K.zip<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL2d0cy56aXA=">http://download.cs.stanford.edu/orion/nocs/gts.zip<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL29ial9tb2RlbHMuemlw">http://download.cs.stanford.edu/orion/nocs/obj_models.zip<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL3JlYWxfdGVzdC56aXA=">http://download.cs.stanford.edu/orion/nocs/real_test.zip<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Rvd25sb2FkLmNzLnN0YW5mb3JkLmVkdS9vcmlvbi9ub2NzL3JlYWxfdHJhaW4uemlw">http://download.cs.stanford.edu/orion/nocs/real_train.zip<i class="fa fa-external-link-alt"></i></span></li>
+</ul></li>
+<li><p>下载<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ppZWhvbmdMaW4vU2VsZi1EUERO">JiehongLin/Self-DPDN<i class="fa fa-external-link-alt"></i></span>的分割结果到仓库文件夹中：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8xaE5tTlJyN1lSQ2dnLWNfcWR2YUl6S0VkMmc0S2FjM3cv">https://drive.google.com/file/d/1hNmNRr7YRCgg-c_qdvaIzKEd2g4Kac3w/<i class="fa fa-external-link-alt"></i></span></li>
+</ul></li>
+<li><p>下载使用<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21lbnRpYW4vb2JqZWN0LWRlZm9ybW5ldA==">mentian/object-deformnet<i class="fa fa-external-link-alt"></i></span>进行数据预处理时用到的数据到仓库文件夹中：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8xcDcyTmRZNEJpZV9zcmE5VTh6b1VOSTRmVHJRWmRibmMv">https://drive.google.com/file/d/1p72NdY4Bie_sra9U8zoUNI4fTrQZdbnc/<i class="fa fa-external-link-alt"></i></span></li>
+</ul></li>
+<li><p>下载运行AG-Pose时使用到的分割结果：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL2hvbWUudXN0Yy5lZHUuY24vfmxsaW54aWFvL3NlZ21lbnRhdGlvbl9yZXN1bHRzLnppcA==">http://home.ustc.edu.cn/~llinxiao/segmentation_results.zip<i class="fa fa-external-link-alt"></i></span></li>
+</ul></li>
+<li><p>下载NOCS数据集中缺失的物体模型（From: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21lbnRpYW4vb2JqZWN0LWRlZm9ybW5ldC9pc3N1ZXMvMyNpc3N1ZWNvbW1lbnQtNjk4ODU4MzMy">https://github.com/mentian/object-deformnet/issues/3#issuecomment-698858332<i class="fa fa-external-link-alt"></i></span>）到数据集文件夹中：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8xcldreEVWSkpoX2tXSXF4dWRuX2k2c0otaGhkMEU3VFYv">https://drive.google.com/file/d/1rWkxEVJJh_kWIqxudn_i6sJ-hhd0E7TV/<i class="fa fa-external-link-alt"></i></span></li>
+</ul></li>
+</ol>
+<h2 id="处理数据集">处理数据集</h2>
+<h3 id="jiehonglinself-dpdn">JiehongLin/Self-DPDN</h3>
+<p>遵循<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ppZWhvbmdMaW4vU2VsZi1EUERO">JiehongLin/Self-DPDN<i class="fa fa-external-link-alt"></i></span>的处理方式，首先解压上述文件，并组织如下，注意，data文件夹位于Self-DPDN文件夹下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">data</span><br><span class="line">├── camera -&gt; /data1/dataset/nocs/tanmx/dpdn/camera</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── camera_full_depths -&gt; /data1/dataset/nocs/tanmx/dpdn/camera_full_depths/</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── gts -&gt; /data1/dataset/nocs/tanmx/dpdn/gts/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   └── val</span><br><span class="line">├── mean_shapes.npy</span><br><span class="line">├── obj_models -&gt; /data1/dataset/nocs/tanmx/dpdn/obj_models/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   ├── real_train</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── real -&gt; /data1/dataset/nocs/tanmx/dpdn/real/</span><br><span class="line">│   ├── test</span><br><span class="line">│   └── train</span><br><span class="line">└── segmentation_results -&gt; /data1/dataset/nocs/tanmx/dpdn/segmentation_results/</span><br><span class="line">    ├── test_trainedwithMask</span><br><span class="line">    ├── test_trainedwoMask</span><br><span class="line">    └── train_trainedwoMask</span><br><span class="line"></span><br><span class="line">21 directories, 1 file</span><br></pre></td></tr></table></figure>
+<p>进入<code>obj_models/val/02876657/d3b53f56b4a7b3b3c9f016d57db96408</code>文件夹，其中内容为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span></span><br><span class="line">bbox.txt  model.mtl  model.obj</span><br></pre></td></tr></table></figure>
+<p>查看<code>model.obj</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cat</span> model.obj</span><br><span class="line">newmtl Material.57774a50243e5d429f3a4ea105ec3930</span><br><span class="line">d 0.5</span><br><span class="line">Tr 0.5</span><br><span class="line">Kd 0.392157 0.584314 0.929412</span><br><span class="line">newmtl Material.90b00bf69165eda831fe702671104217</span><br><span class="line">Tr 0.0</span><br><span class="line">Kd 0.6 0.117647 0.117647</span><br><span class="line">newmtl Material.dc7a3ca9ca091ddbf48733c3a604f557</span><br><span class="line">Tr 0.0</span><br><span class="line">Kd 1.0 1.0 1.0</span><br><span class="line">newmtl Material.b2cdaf4394d1a4f850458878b81c7fa1</span><br><span class="line">Tr 0.0</span><br><span class="line">Kd 0.8 0.6 0.0</span><br></pre></td></tr></table></figure>
+<p>解压<span class="exturl" data-url="aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8xcldreEVWSkpoX2tXSXF4dWRuX2k2c0otaGhkMEU3VFYv">https://drive.google.com/file/d/1rWkxEVJJh_kWIqxudn_i6sJ-hhd0E7TV/<i class="fa fa-external-link-alt"></i></span>中的文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ unzip obj_models.zip</span><br><span class="line">$ <span class="built_in">ls</span></span><br><span class="line">02876657  obj_models.zip</span><br><span class="line">$ <span class="built_in">ls</span> 02876657/d3b53f56b4a7b3b3c9f016d57db96408/</span><br><span class="line">bbox.txt  info.txt  model_bad.mtl  model_bad.obj  model.mtl  model.obj</span><br></pre></td></tr></table></figure>
+<p>删除原文件夹<code>obj_models/val/02876657/d3b53f56b4a7b3b3c9f016d57db96408</code>中的内容，将<code>02876657/d3b53f56b4a7b3b3c9f016d57db96408</code>文件夹中的内容复制到该文件夹中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">rm</span> obj_models/val/02876657/d3b53f56b4a7b3b3c9f016d57db96408/*</span><br><span class="line">$ <span class="built_in">cp</span> 02876657/d3b53f56b4a7b3b3c9f016d57db96408/* obj_models/val/02876657/d3b53f56b4a7b3b3c9f016d57db96408/</span><br><span class="line">$ <span class="built_in">ls</span> obj_models/val/02876657/d3b53f56b4a7b3b3c9f016d57db96408</span><br><span class="line">bbox.txt  info.txt  model_bad.mtl  model_bad.obj  model.mtl  model.obj</span><br></pre></td></tr></table></figure>
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python data_processing.py</span><br></pre></td></tr></table></figure>
+<p>执行后目录变为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">data</span><br><span class="line">├── camera -&gt; /data1/dataset/nocs/tanmx/dpdn/camera</span><br><span class="line">│   ├── train</span><br><span class="line">│   ├── train_list_all.txt</span><br><span class="line">│   ├── train_list.txt</span><br><span class="line">│   ├── val</span><br><span class="line">│   └── val_list_all.txt</span><br><span class="line">├── camera_full_depths -&gt; /data1/dataset/nocs/tanmx/dpdn/camera_full_depths/</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── gts -&gt; /data1/dataset/nocs/tanmx/dpdn/gts/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   └── val</span><br><span class="line">├── mean_shapes.npy</span><br><span class="line">├── obj_models -&gt; /data1/dataset/nocs/tanmx/dpdn/obj_models/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   ├── real_train</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── real -&gt; /data1/dataset/nocs/tanmx/dpdn/real/</span><br><span class="line">│   ├── test</span><br><span class="line">│   ├── test_list_all.txt</span><br><span class="line">│   ├── train</span><br><span class="line">│   ├── train_list_all.txt</span><br><span class="line">│   └── train_list.txt</span><br><span class="line">└── segmentation_results -&gt; /data1/dataset/nocs/tanmx/dpdn/segmentation_results</span><br><span class="line">    ├── test_trainedwithMask</span><br><span class="line">    ├── test_trainedwoMask</span><br><span class="line">    └── train_trainedwoMask</span><br><span class="line"></span><br><span class="line">21 directories, 7 files</span><br></pre></td></tr></table></figure>
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l data/camera/</span><br><span class="line">total 9712</span><br><span class="line">drwxr-xr-x 27502 tanmx tanmx  577536 Jun 14  2019 train</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx 4675000 Apr 29 11:00 train_list_all.txt</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx 4235159 Apr 29 15:57 train_list.txt</span><br><span class="line">drwxr-xr-x  2502 tanmx tanmx   69632 Jun 14  2019 val</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx  375000 Apr 29 11:00 val_list_all.txt</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">ls</span> -l data/real/</span><br><span class="line">total 228</span><br><span class="line">drwxrwxr-x 8 tanmx tanmx  4096 Nov 13  2018 <span class="built_in">test</span></span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 49572 Apr 29 11:00 test_list_all.txt</span><br><span class="line">drwxrwxr-x 9 tanmx tanmx  4096 Jun 14  2019 train</span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 82042 Apr 29 11:00 train_list_all.txt</span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 82042 Apr 29 16:09 train_list.txt</span><br></pre></td></tr></table></figure>
+<h3 id="mentianobject-deformnet">mentian/object-deformnet</h3>
+<p>遵循<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21lbnRpYW4vb2JqZWN0LWRlZm9ybW5ldA==">mentian/object-deformnet<i class="fa fa-external-link-alt"></i></span>的处理方式，首先解压上述文件，并组织如下，注意，data文件夹位于object-deformnet文件夹下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">data</span><br><span class="line">├── camera -&gt; /data1/dataset/nocs/tanmx/spd/camera/</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── deformnet_eval -&gt; /data1/dataset/nocs/tanmx/spd/deformnet_eval/</span><br><span class="line">│   ├── camera</span><br><span class="line">│   ├── mrcnn_results</span><br><span class="line">│   ├── nocs_results</span><br><span class="line">│   └── real</span><br><span class="line">├── gts -&gt; /data1/dataset/nocs/tanmx/spd/gts/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   └── val</span><br><span class="line">├── obj_models -&gt; /data1/dataset/nocs/tanmx/spd/obj_models/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   ├── real_train</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── pose_dataset.py</span><br><span class="line">├── real -&gt; /data1/dataset/nocs/tanmx/spd/real/</span><br><span class="line">│   ├── test</span><br><span class="line">│   └── train</span><br><span class="line">└── shape_dataset.py</span><br><span class="line"></span><br><span class="line">19 directories, 2 files</span><br></pre></td></tr></table></figure>
+<p>注意，这里也要和替换掉缺失的物体模型。</p>
+<p><strong>按顺序</strong>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> preprocess</span><br><span class="line">python shape_data.py</span><br><span class="line">python pose_data.py</span><br></pre></td></tr></table></figure>
+<p>执行<code>python shape_data.py</code>后目录变为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">data</span><br><span class="line">├── camera -&gt; /data1/dataset/nocs/tanmx/spd/camera/</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── deformnet_eval -&gt; /data1/dataset/nocs/tanmx/spd/deformnet_eval/</span><br><span class="line">│   ├── camera</span><br><span class="line">│   ├── mrcnn_results</span><br><span class="line">│   ├── nocs_results</span><br><span class="line">│   └── real</span><br><span class="line">├── gts -&gt; /data1/dataset/nocs/tanmx/spd/gts/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   └── val</span><br><span class="line">├── obj_models -&gt; /data1/dataset/nocs/tanmx/spd/obj_models/</span><br><span class="line">│   ├── camera_train.pkl</span><br><span class="line">│   ├── camera_val.pkl</span><br><span class="line">│   ├── mug_meta.pkl</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   ├── real_test.pkl</span><br><span class="line">│   ├── real_train</span><br><span class="line">│   ├── real_train.pkl</span><br><span class="line">│   ├── ShapeNetCore_2048.h5</span><br><span class="line">│   ├── ShapeNetCore_4096.h5</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── pose_dataset.py</span><br><span class="line">├── real -&gt; /data1/dataset/nocs/tanmx/spd/real/</span><br><span class="line">│   ├── test</span><br><span class="line">│   └── train</span><br><span class="line">└── shape_dataset.py</span><br><span class="line"></span><br><span class="line">19 directories, 9 files</span><br></pre></td></tr></table></figure>
+<p>执行<code>python pose_data.py</code>后目录变为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">data</span><br><span class="line">├── camera -&gt; /data1/dataset/nocs/tanmx/spd/camera</span><br><span class="line">│   ├── train</span><br><span class="line">│   ├── train_list_all.txt</span><br><span class="line">│   ├── train_list.txt</span><br><span class="line">│   ├── val</span><br><span class="line">│   ├── val_list_all.txt</span><br><span class="line">│   └── val_list.txt</span><br><span class="line">├── deformnet_eval -&gt; /data1/dataset/nocs/tanmx/spd/deformnet_eval</span><br><span class="line">│   ├── camera</span><br><span class="line">│   ├── mrcnn_results</span><br><span class="line">│   ├── nocs_results</span><br><span class="line">│   └── real</span><br><span class="line">├── gts -&gt; /data1/dataset/nocs/tanmx/spd/gts/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   └── val</span><br><span class="line">├── obj_models -&gt; /data1/dataset/nocs/tanmx/spd/obj_models/</span><br><span class="line">│   ├── camera_train.pkl</span><br><span class="line">│   ├── camera_val.pkl</span><br><span class="line">│   ├── mug_meta.pkl</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   ├── real_test.pkl</span><br><span class="line">│   ├── real_train</span><br><span class="line">│   ├── real_train.pkl</span><br><span class="line">│   ├── ShapeNetCore_2048.h5</span><br><span class="line">│   ├── ShapeNetCore_4096.h5</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── pose_dataset.py</span><br><span class="line">├── real -&gt; /data1/dataset/nocs/tanmx/spd/real/</span><br><span class="line">│   ├── test</span><br><span class="line">│   ├── test_list_all.txt</span><br><span class="line">│   ├── test_list.txt</span><br><span class="line">│   ├── train</span><br><span class="line">│   ├── train_list_all.txt</span><br><span class="line">│   └── train_list.txt</span><br><span class="line">└── shape_dataset.py</span><br><span class="line"></span><br><span class="line">19 directories, 17 files</span><br></pre></td></tr></table></figure>
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l data/camera/</span><br><span class="line">total 9996</span><br><span class="line">drwxr-xr-x 27502 tanmx tanmx  577536 Jun 14  2019 train</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx 4675000 Apr 29 14:00 train_list_all.txt</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx 4235159 Apr 29 18:42 train_list.txt</span><br><span class="line">drwxr-xr-x  2502 tanmx tanmx   69632 Jun 14  2019 val</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx  375000 Apr 29 14:00 val_list_all.txt</span><br><span class="line">-rw-rw-r--     1 tanmx tanmx  288300 Apr 29 19:15 val_list.txt</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">ls</span> -l data/real/</span><br><span class="line">total 280</span><br><span class="line">drwxrwxr-x 8 tanmx tanmx  4096 Nov 13  2018 <span class="built_in">test</span></span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 49572 Apr 29 14:00 test_list_all.txt</span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 49572 Apr 29 19:21 test_list.txt</span><br><span class="line">drwxrwxr-x 9 tanmx tanmx  4096 Jun 14  2019 train</span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 82042 Apr 29 14:00 train_list_all.txt</span><br><span class="line">-rw-rw-r-- 1 tanmx tanmx 82042 Apr 29 18:53 train_list.txt</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">ls</span> -l data/obj_models/</span><br><span class="line">total 116060</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx 26695895 Apr 29 11:32 camera_train.pkl</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx  4634293 Apr 29 11:36 camera_val.pkl</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx    23197 Apr 29 11:37 mug_meta.pkl</span><br><span class="line">drwxrwxr-x  2 tanmx tanmx     4096 Sep 27  2019 real_test</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx   443600 Apr 29 11:37 real_test.pkl</span><br><span class="line">drwxrwxr-x  2 tanmx tanmx     4096 Sep 27  2019 real_train</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx   443584 Apr 29 11:37 real_train.pkl</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx 28950893 Apr 29 12:21 ShapeNetCore_2048.h5</span><br><span class="line">-rw-rw-r--  1 tanmx tanmx 57618690 Apr 29 11:39 ShapeNetCore_4096.h5</span><br><span class="line">drwxr-xr-x 12 tanmx tanmx     4096 Sep 27  2019 train</span><br><span class="line">drwxr-xr-x 12 tanmx tanmx     4096 Sep 27  2019 val</span><br></pre></td></tr></table></figure>
+<h2 id="运行代码">运行代码</h2>
+<p>需要<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ppZWhvbmdMaW4vU2VsZi1EUERO">JiehongLin/Self-DPDN<i class="fa fa-external-link-alt"></i></span>处理后的数据集及其list和<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21lbnRpYW4vb2JqZWN0LWRlZm9ybW5ldA==">mentian/object-deformnet<i class="fa fa-external-link-alt"></i></span>处理后的物体模型pkl，组织如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">data</span><br><span class="line">├── camera -&gt; /data1/dataset/nocs/tanmx/agpose/camera</span><br><span class="line">│   ├── train</span><br><span class="line">│   ├── train_list_all.txt</span><br><span class="line">│   ├── train_list.txt</span><br><span class="line">│   ├── val</span><br><span class="line">│   └── val_list_all.txt</span><br><span class="line">├── camera_full_depths -&gt; /data1/dataset/nocs/tanmx/agpose/camera_full_depths/</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── gts -&gt; /data1/dataset/nocs/tanmx/agpose/gts/</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   └── val</span><br><span class="line">├── obj_models -&gt; /data1/dataset/nocs/tanmx/agpose/obj_models/</span><br><span class="line">│   ├── camera_train.pkl</span><br><span class="line">│   ├── real_test</span><br><span class="line">│   ├── real_train</span><br><span class="line">│   ├── real_train.pkl</span><br><span class="line">│   ├── train</span><br><span class="line">│   └── val</span><br><span class="line">├── real -&gt; /data1/dataset/nocs/tanmx/agpose/real/</span><br><span class="line">│   ├── test</span><br><span class="line">│   ├── test_list_all.txt</span><br><span class="line">│   ├── train</span><br><span class="line">│   ├── train_list_all.txt</span><br><span class="line">│   └── train_list.txt</span><br><span class="line">└── segmentation_results -&gt; /data1/dataset/nocs/tanmx/agpose/segmentation_results</span><br><span class="line">    ├── CAMERA25</span><br><span class="line">    └── REAL275</span><br><span class="line"></span><br><span class="line">20 directories, 8 files</span><br></pre></td></tr></table></figure>
+<p>之后按照仓库README中的命令运行代码即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html" title="【代码复现】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%8E%B0/" rel="tag"><i class="fa fa-tag"></i> 代码复现</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/vps-review/suda-hkt-ty-line-1.html" rel="prev" title="【VPS测评】Suda速达云 - [家宽]香港HKT区NAT 一号机 (04:00定时刷新IP) - 香港-KVM-小杯">
+                  <i class="fa fa-angle-left"></i> 【VPS测评】Suda速达云 - [家宽]香港HKT区NAT 一号机 (04:00定时刷新IP) - 香港-KVM-小杯
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/2022/es6d-a-computation-efficient-and-symmetry-aware-6d-pose-regression-framework_2022_Mo.html" rel="next" title="【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework">
+                  【论文笔记】ES6D: A Computation Efficient and Symmetry-Aware 6D Pose Regression Framework <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/code-running/Leeiieeo_AG-Pose.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/code-running/Leeiieeo_AG-Pose.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

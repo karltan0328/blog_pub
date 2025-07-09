@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="类别级6D对象姿态估计旨在估计特定类别中看不见的实例的旋转、平移和大小。在这一领域，基于密集对应的方法取得了领先的性能。但是，它们没有明确考虑不同实例的局部和全局几何信息，导致对具有显著形状变化的不可见实例的泛化能力较差。针对这个问题，我们提出了一种新的用于类别级6D物体姿态估计（AG-Pose）的实例自适应和几何感知关键点学习方法，该方法包括两个关键设计：（1）第一个设计是实例自适应关键点检测模">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【代码阅读】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">
+<meta property="og:url" content="https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="类别级6D对象姿态估计旨在估计特定类别中看不见的实例的旋转、平移和大小。在这一领域，基于密集对应的方法取得了领先的性能。但是，它们没有明确考虑不同实例的局部和全局几何信息，导致对具有显著形状变化的不可见实例的泛化能力较差。针对这个问题，我们提出了一种新的用于类别级6D物体姿态估计（AG-Pose）的实例自适应和几何感知关键点学习方法，该方法包括两个关键设计：（1）第一个设计是实例自适应关键点检测模">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-21T03:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-21T03:00:00.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html","path":"code-reading/Leeiieeo_AG-Pose.html","title":"【代码阅读】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【代码阅读】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86"><span class="nav-text">数据处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%9B%BE%E5%8A%A0%E8%BD%BD"><span class="nav-text">深度图加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%9B%BE%E8%A1%A5%E5%85%A8"><span class="nav-text">深度图补全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mask%E5%8A%A0%E8%BD%BD"><span class="nav-text">mask加载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%BB%E9%99%A4%E9%9D%9E%E7%9B%AE%E6%A0%87%E7%89%A9%E4%BD%93%E7%9A%84mask"><span class="nav-text">去除非目标物体的mask</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E7%89%A9%E4%BD%93%E4%B8%8A%E9%87%87%E6%A0%B7"><span class="nav-text">从物体上采样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E6%B7%B1%E5%BA%A6%E5%9B%BE%E8%BD%AC%E6%8D%A2%E4%B8%BA%E7%82%B9%E4%BA%91"><span class="nav-text">将深度图转换为点云</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb"><span class="nav-text">RGB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%87%87%E6%A0%B7%E4%B8%8B%E6%A0%87"><span class="nav-text">修改采样下标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E7%89%A9%E4%BD%93%E6%A8%A1%E5%9E%8B%E7%82%B9%E4%BA%91"><span class="nav-text">读取物体模型点云</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%AF%B9%E7%A7%B0%E7%89%A9%E4%BD%93"><span class="nav-text">处理对称物体</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84"><span class="nav-text">网络架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E7%89%B9%E5%BE%81"><span class="nav-text">RGB特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%91%E9%80%89rgb%E7%89%B9%E5%BE%81"><span class="nav-text">挑选RGB特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%99%AA"><span class="nav-text">加噪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E4%BA%91%E7%89%B9%E5%BE%81"><span class="nav-text">点云特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iakd"><span class="nav-text">IAKD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gafa"><span class="nav-text">GAFA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-text">训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-text">测试</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【代码阅读】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation | Karl的博客">
+      <meta itemprop="description" content="类别级6D对象姿态估计旨在估计特定类别中看不见的实例的旋转、平移和大小。在这一领域，基于密集对应的方法取得了领先的性能。但是，它们没有明确考虑不同实例的局部和全局几何信息，导致对具有显著形状变化的不可见实例的泛化能力较差。针对这个问题，我们提出了一种新的用于类别级6D物体姿态估计（AG-Pose）的实例自适应和几何感知关键点学习方法，该方法包括两个关键设计：（1）第一个设计是实例自适应关键点检测模块，它可以自适应地检测各种实例的一组稀疏关键点来表示它们的几何结构。（2）第二种设计是GeometricAware Feature Aggregation模块，可以高效地将局部和全局几何信息集成到关键点特征中。这两个模块可以协同工作，为看不见的实例建立健壮的关键点级对应关系，从而增强模型的泛化能力。在CAMERA25和REAL275数据集上的实验结果表明，所提出的AG-Pose在没有特定类别形状先验的情况下，其性能大大优于最先进的方法。代码将于https://github.com/Leeiieeo/AG-Pose发布。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【代码阅读】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-21 11:00:00" itemprop="dateCreated datePublished" datetime="2025-03-21T11:00:00+08:00">2025-03-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">代码阅读</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/code-reading/Leeiieeo_AG-Pose.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/code-reading/Leeiieeo_AG-Pose.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">类别级6D对象姿态估计旨在估计特定类别中看不见的实例的旋转、平移和大小。在这一领域，基于密集对应的方法取得了领先的性能。但是，它们没有明确考虑不同实例的局部和全局几何信息，导致对具有显著形状变化的不可见实例的泛化能力较差。针对这个问题，我们提出了一种新的用于类别级6D物体姿态估计（AG-Pose）的实例自适应和几何感知关键点学习方法，该方法包括两个关键设计：（1）第一个设计是实例自适应关键点检测模块，它可以自适应地检测各种实例的一组稀疏关键点来表示它们的几何结构。（2）第二种设计是GeometricAware Feature Aggregation模块，可以高效地将局部和全局几何信息集成到关键点特征中。这两个模块可以协同工作，为看不见的实例建立健壮的关键点级对应关系，从而增强模型的泛化能力。在CAMERA25和REAL275数据集上的实验结果表明，所提出的AG-Pose在没有特定类别形状先验的情况下，其性能大大优于最先进的方法。代码将于https://github.com/Leeiieeo/AG-Pose发布。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="数据处理">数据处理</h2>
+<p>在<code>./provider/create_dataloaders.py</code>中创建Dataloader，分别可以使用camera_real，camera和housecat6d三种创建方式，如果使用camera_real方式创建的话，camera和real的比例为3:1。</p>
+<h3 id="深度图加载">深度图加载</h3>
+<p>由于该方法使用到了CAMERA25和REAL25两个数据集，而CAMERA25数据集是一个合成数据集，其深度图为合成深度图，所以需要进行处理，下面是合成深度图的读取方法（注意这里读取的是<code>./data/camera_full_depths/</code>中的图，和<code>./data/camera/</code>中的不一样）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">load_composed_depth</span>(<span class="params">img_path</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Load depth image from img_path. &quot;&quot;&quot;</span></span><br><span class="line">    img_path_ = img_path.replace(<span class="string">&#x27;/data/camera/&#x27;</span>, <span class="string">&#x27;/data/camera_full_depths/&#x27;</span>)</span><br><span class="line">    depth_path = img_path_ + <span class="string">&#x27;_composed.png&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(depth_path):</span><br><span class="line">        depth = cv2.imread(depth_path, -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(depth.shape) == <span class="number">3</span>:</span><br><span class="line">            <span class="comment"># This is encoded depth image, let&#x27;s convert</span></span><br><span class="line">            <span class="comment"># <span class="doctag">NOTE:</span> RGB is actually BGR in opencv</span></span><br><span class="line">            depth16 = depth[:, :, <span class="number">1</span>]*<span class="number">256</span> + depth[:, :, <span class="number">2</span>]</span><br><span class="line">            depth16 = np.where(depth16==<span class="number">32001</span>, <span class="number">0</span>, depth16)</span><br><span class="line">            depth16 = depth16.astype(np.uint16)</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">len</span>(depth.shape) == <span class="number">2</span> <span class="keyword">and</span> depth.dtype == <span class="string">&#x27;uint16&#x27;</span>:</span><br><span class="line">            depth16 = depth</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">assert</span> <span class="literal">False</span>, <span class="string">&#x27;[ Error ]: Unsupported depth type.&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> depth16</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;warning: No data&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<p>使用OpenCV读取<code>./data/camera/train/00000/0000_depth.png</code>，分别可视化其三个通道：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img_path = <span class="string">&#x27;./data/camera/train/00000/0000&#x27;</span></span><br><span class="line"></span><br><span class="line">depth_path = img_path + <span class="string">&#x27;_depth.png&#x27;</span></span><br><span class="line">depth = cv2.imread(depth_path, -<span class="number">1</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">5</span>))</span><br><span class="line">plt.subplot(<span class="number">131</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;depth[:, :, 0]&#x27;</span>)</span><br><span class="line">plt.imshow(depth[:, :, <span class="number">0</span>])</span><br><span class="line">plt.colorbar(shrink=<span class="number">0.5</span>)</span><br><span class="line">plt.subplot(<span class="number">132</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;depth[:, :, 1]&#x27;</span>)</span><br><span class="line">plt.imshow(depth[:, :, <span class="number">1</span>])</span><br><span class="line">plt.colorbar(shrink=<span class="number">0.5</span>)</span><br><span class="line">plt.subplot(<span class="number">133</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;depth[:, :, 2]&#x27;</span>)</span><br><span class="line">plt.imshow(depth[:, :, <span class="number">2</span>])</span><br><span class="line">plt.colorbar(shrink=<span class="number">0.5</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://img.032802.xyz/code-reading/Leeiieeo_AG-Pose/load_composed_depth_src.webp"
+alt="load_composed_depth_src" />
+<figcaption aria-hidden="true">load_composed_depth_src</figcaption>
+</figure>
+<p>合成第1通道和第2通道：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img_path = <span class="string">&#x27;./data/camera/train/00000/0000&#x27;</span></span><br><span class="line"></span><br><span class="line">depth_path = img_path + <span class="string">&#x27;_depth.png&#x27;</span></span><br><span class="line">depth = cv2.imread(depth_path, -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">depth_camera = depth[:, :, <span class="number">1</span>]*<span class="number">256</span> + depth[:, :, <span class="number">2</span>]</span><br><span class="line">depth_camera = np.where(depth_camera==<span class="number">32001</span>, <span class="number">0</span>, depth_camera)</span><br><span class="line">depth_camera = depth_camera.astype(np.uint16)</span><br><span class="line"></span><br><span class="line">plt.imshow(depth_camera)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://img.032802.xyz/code-reading/Leeiieeo_AG-Pose/load_composed_depth_dist.webp"
+alt="load_composed_depth_dist" />
+<figcaption aria-hidden="true">load_composed_depth_dist</figcaption>
+</figure>
+<p>读取<code>./data/camera_full_depths/train/00000/0000_composed.png</code>，直接可视化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img_path = <span class="string">&#x27;./data/camera_full_depths/train/00000/0000&#x27;</span></span><br><span class="line"></span><br><span class="line">depth_path = img_path + <span class="string">&#x27;_composed.png&#x27;</span></span><br><span class="line">depth = cv2.imread(depth_path, -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">plt.imshow(depth)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://img.032802.xyz/code-reading/Leeiieeo_AG-Pose/load_composed_depth.webp"
+alt="load_composed_depth" />
+<figcaption aria-hidden="true">load_composed_depth</figcaption>
+</figure>
+<p>下面是真实深度图的读取方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">load_depth</span>(<span class="params">img_path</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Load depth image from img_path. &quot;&quot;&quot;</span></span><br><span class="line">    depth_path = img_path + <span class="string">&#x27;_depth.png&#x27;</span></span><br><span class="line">    depth = cv2.imread(depth_path, -<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(depth.shape) == <span class="number">3</span>:</span><br><span class="line">        <span class="comment"># This is encoded depth image, let&#x27;s convert</span></span><br><span class="line">        <span class="comment"># <span class="doctag">NOTE:</span> RGB is actually BGR in opencv</span></span><br><span class="line">        depth16 = depth[:, :, <span class="number">1</span>]*<span class="number">256</span> + depth[:, :, <span class="number">2</span>]</span><br><span class="line">        depth16 = np.where(depth16==<span class="number">32001</span>, <span class="number">0</span>, depth16)</span><br><span class="line">        depth16 = depth16.astype(np.uint16)</span><br><span class="line">    <span class="keyword">elif</span> <span class="built_in">len</span>(depth.shape) == <span class="number">2</span> <span class="keyword">and</span> depth.dtype == <span class="string">&#x27;uint16&#x27;</span>:</span><br><span class="line">        depth16 = depth</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">assert</span> <span class="literal">False</span>, <span class="string">&#x27;[ Error ]: Unsupported depth type.&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> depth16</span><br></pre></td></tr></table></figure>
+<p>直接读取<code>./data/real/train/scene_1/0000_depth.png</code>并可视化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img_path = <span class="string">&#x27;./data/real/train/scene_1/0000&#x27;</span></span><br><span class="line"></span><br><span class="line">depth_path = img_path + <span class="string">&#x27;_depth.png&#x27;</span></span><br><span class="line">depth_real = cv2.imread(depth_path, -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">plt.imshow(depth_real)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://img.032802.xyz/code-reading/Leeiieeo_AG-Pose/load_depth.webp"
+alt="load_depth" />
+<figcaption aria-hidden="true">load_depth</figcaption>
+</figure>
+<p>简单来说就是合成数据集读取的是<code>./data/camera_full_depths/</code>中的深度图，而真实数据集读取的是<code>./data/real/</code>中的深度图。</p>
+<h3 id="深度图补全">深度图补全</h3>
+<p>然后对深度图进行补全，分别对合成深度图和真实深度图进行补全：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> utils.data_utils <span class="keyword">import</span> fill_missing, load_depth, load_composed_depth</span><br><span class="line"></span><br><span class="line">camera_img_path = <span class="string">&#x27;./data/camera/train/00000/0000&#x27;</span></span><br><span class="line">real_img_path = <span class="string">&#x27;./data/real/train/scene_1/0000&#x27;</span></span><br><span class="line"></span><br><span class="line">camera_depth = load_composed_depth(camera_img_path)</span><br><span class="line">real_depth = load_depth(real_img_path)</span><br><span class="line"></span><br><span class="line">fill_missing_camera = fill_missing(camera_depth, <span class="number">1000.0</span>, <span class="number">1</span>)</span><br><span class="line">fill_missing_real = fill_missing(real_depth, <span class="number">1000.0</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">5</span>))</span><br><span class="line">plt.subplot(<span class="number">121</span>)</span><br><span class="line">plt.imshow(fill_missing_camera)</span><br><span class="line">plt.colorbar(shrink=<span class="number">0.5</span>)</span><br><span class="line">plt.subplot(<span class="number">122</span>)</span><br><span class="line">plt.imshow(fill_missing_real)</span><br><span class="line">plt.colorbar(shrink=<span class="number">0.5</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://img.032802.xyz/code-reading/Leeiieeo_AG-Pose/fill_missing_depth.webp"
+alt="fill_missing_depth" />
+<figcaption aria-hidden="true">fill_missing_depth</figcaption>
+</figure>
+<h3 id="mask加载">mask加载</h3>
+<p>以下读取<code>./data/camera/train/00000/0000_label.pkl</code>中的内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(img_path + <span class="string">&#x27;_label.pkl&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    gts = cPickle.load(f)</span><br></pre></td></tr></table></figure>
+<p><code>gts</code>的内容为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;class_ids&#x27;: [1, 2, 6, 1],</span><br><span class="line"> &#x27;bboxes&#x27;: array([[ 50, 379, 222, 438],</span><br><span class="line">        [224, 107, 325, 222],</span><br><span class="line">        [ 21, 303,  83, 344],</span><br><span class="line">        [  0,  78, 158, 187]], dtype=int32),</span><br><span class="line"> &#x27;scales&#x27;: array([0.3005802 , 0.21199934, 0.17190282, 0.42889243], dtype=float32),</span><br><span class="line"> &#x27;sizes&#x27;: array([[0.238512, 0.941394, 0.238512],</span><br><span class="line">        [0.691974, 0.20577 , 0.691974],</span><br><span class="line">        [0.685634, 0.549036, 0.477982],</span><br><span class="line">        [0.210626, 0.926818, 0.31088 ]], dtype=float32),</span><br><span class="line"> &#x27;rotations&#x27;: array([[[ 0.98163134,  0.01207083, -0.19040541],</span><br><span class="line">         [ 0.14415757, -0.7006575 ,  0.69878304],</span><br><span class="line">         [-0.12497408, -0.7133957 , -0.6895274 ]],</span><br><span class="line"> </span><br><span class="line">        [[ 0.1414129 ,  0.01162317,  0.98988247],</span><br><span class="line">         [-0.705418  , -0.7003605 ,  0.10899841],</span><br><span class="line">         [ 0.69454145, -0.7136947 , -0.09084082]],</span><br><span class="line"> </span><br><span class="line">        [[ 0.02342262,  0.01182115,  0.9996558 ],</span><br><span class="line">         [-0.71319616, -0.7005187 ,  0.02499446],</span><br><span class="line">         [ 0.700573  , -0.7135361 , -0.00797719]],</span><br><span class="line"> </span><br><span class="line">        [[-0.98874557,  0.01170614,  0.14914814],</span><br><span class="line">         [-0.11453401, -0.70061237, -0.7042899 ],</span><br><span class="line">         [ 0.09625051, -0.7134461 ,  0.69406813]]], dtype=float32),</span><br><span class="line"> &#x27;translations&#x27;: array([[ 0.1340191 , -0.14495842,  0.8599784 ],</span><br><span class="line">        [-0.20857327,  0.04460018,  0.7819705 ],</span><br><span class="line">        [ 0.0061691 , -0.40006354,  1.2049764 ],</span><br><span class="line">        [-0.31816682, -0.3390898 ,  0.9828115 ]], dtype=float32),</span><br><span class="line"> &#x27;instance_ids&#x27;: [2, 3, 4, 9],</span><br><span class="line"> &#x27;model_list&#x27;: [&#x27;ab6792cddc7c4c83afbf338b16b43f53&#x27;,</span><br><span class="line">  &#x27;7d7bdea515818eb844638317e9e4ff18&#x27;,</span><br><span class="line">  &#x27;73b8b6456221f4ea20d3c05c08e26f&#x27;,</span><br><span class="line">  &#x27;a1275bd03ab15100f6dbe3dc17d6cdf7&#x27;]&#125;</span><br></pre></td></tr></table></figure>
+<p>读取<code>mask</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mask = cv2.imread(img_path + <span class="string">&#x27;_mask.png&#x27;</span>)[:, :, <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<p>这里只取了第2通道，因为第2通道携带了类别信息：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mask = cv2.imread(<span class="string">&#x27;./data/camera/train/00000/0000_mask.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line">unique_ids_0 = np.unique(mask[:, :, <span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;第0通道实例ID列表：&quot;</span>, unique_ids_0)</span><br><span class="line"><span class="comment"># 第0通道实例ID列表： [  0 255]</span></span><br><span class="line"></span><br><span class="line">unique_ids_1 = np.unique(mask[:, :, <span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;第1通道实例ID列表：&quot;</span>, unique_ids_1)</span><br><span class="line"><span class="comment"># 第1通道实例ID列表： [  0 255]</span></span><br><span class="line"></span><br><span class="line">unique_ids_2 = np.unique(mask[:, :, <span class="number">2</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;第2通道实例ID列表：&quot;</span>, unique_ids_2)</span><br><span class="line"><span class="comment"># 第2通道实例ID列表： [  1   2   3   4   9 255]</span></span><br></pre></td></tr></table></figure>
+<p>与上方的<code>instance_ids</code>对应。</p>
+<h4 id="去除非目标物体的mask">去除非目标物体的mask</h4>
+<p>首先随机选取一个物体（注意，训练时会从图像中所有物体中随机返回一个，而测试时则会全部返回）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">idx = np.random.randint(<span class="number">0</span>, num_instance)</span><br></pre></td></tr></table></figure>
+<p>使用<code>get_bbox</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rmin, rmax, cmin, cmax = get_bbox(gts[<span class="string">&#x27;bboxes&#x27;</span>][idx])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_bbox</span>(<span class="params">bbox</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Compute square image crop window. &quot;&quot;&quot;</span></span><br><span class="line">    y1, x1, y2, x2 = bbox</span><br><span class="line">    img_width = <span class="number">480</span></span><br><span class="line">    img_length = <span class="number">640</span></span><br><span class="line">    window_size = (<span class="built_in">max</span>(y2 - y1, x2 - x1) // <span class="number">40</span> + <span class="number">1</span>) * <span class="number">40</span></span><br><span class="line">    window_size = <span class="built_in">min</span>(window_size, <span class="number">440</span>)</span><br><span class="line">    center = [(y1 + y2) // <span class="number">2</span>, (x1 + x2) // <span class="number">2</span>]</span><br><span class="line">    rmin = center[<span class="number">0</span>] - <span class="built_in">int</span>(window_size / <span class="number">2</span>)</span><br><span class="line">    rmax = center[<span class="number">0</span>] + <span class="built_in">int</span>(window_size / <span class="number">2</span>)</span><br><span class="line">    cmin = center[<span class="number">1</span>] - <span class="built_in">int</span>(window_size / <span class="number">2</span>)</span><br><span class="line">    cmax = center[<span class="number">1</span>] + <span class="built_in">int</span>(window_size / <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">if</span> rmin &lt; <span class="number">0</span>:</span><br><span class="line">        delt = -rmin</span><br><span class="line">        rmin = <span class="number">0</span></span><br><span class="line">        rmax += delt</span><br><span class="line">    <span class="keyword">if</span> cmin &lt; <span class="number">0</span>:</span><br><span class="line">        delt = -cmin</span><br><span class="line">        cmin = <span class="number">0</span></span><br><span class="line">        cmax += delt</span><br><span class="line">    <span class="keyword">if</span> rmax &gt; img_width:</span><br><span class="line">        delt = rmax - img_width</span><br><span class="line">        rmax = img_width</span><br><span class="line">        rmin -= delt</span><br><span class="line">    <span class="keyword">if</span> cmax &gt; img_length:</span><br><span class="line">        delt = cmax - img_length</span><br><span class="line">        cmax = img_length</span><br><span class="line">        cmin -= delt</span><br><span class="line">    <span class="keyword">return</span> rmin, rmax, cmin, cmax</span><br></pre></td></tr></table></figure>
+<p>以原boundingbox的中心为中心，生成长宽为40的倍数的boundingbox，并考虑了结果boundingbox超出图像范围的情况。</p>
+<p>使用与操作去除其余物体的mask：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mask = np.equal(mask, gts[<span class="string">&#x27;instance_ids&#x27;</span>][idx])</span><br><span class="line">mask = np.logical_and(mask , depth &gt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="从物体上采样">从物体上采样</h3>
+<p>在后续得到物体点云后，需要从点云中采样固定数量的点以调整为网络需要的输入维度，在这一步实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">choose = mask[rmin:rmax, cmin:cmax].flatten().nonzero()[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>从mask中截取目标物体的一部分，然后展平，得到其非零值的下标。</p>
+<p>采样到固定数量（配置文件中为1024）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(choose) &lt;= <span class="variable language_">self</span>.sample_num: <span class="comment"># 1024</span></span><br><span class="line">    choose_idx = np.random.choice(<span class="built_in">len</span>(choose), <span class="variable language_">self</span>.sample_num)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    choose_idx = np.random.choice(<span class="built_in">len</span>(choose), <span class="variable language_">self</span>.sample_num, replace=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">choose = choose[choose_idx]</span><br></pre></td></tr></table></figure>
+<h3 id="将深度图转换为点云">将深度图转换为点云</h3>
+<p>获取内参：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cam_fx, cam_fy, cam_cx, cam_cy = <span class="variable language_">self</span>.intrinsics</span><br></pre></td></tr></table></figure>
+<p>（深度）归一化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pts2 = depth.copy() / <span class="variable language_">self</span>.norm_scale</span><br></pre></td></tr></table></figure>
+<p>将像素坐标系中的xy坐标转换为相机坐标系中的xy坐标：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">self</span>.xmap = np.array([[i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">640</span>)] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">480</span>)])</span><br><span class="line"><span class="variable language_">self</span>.ymap = np.array([[j <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">640</span>)] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">480</span>)])</span><br><span class="line">pts0 = (<span class="variable language_">self</span>.xmap - cam_cx) * pts2 / cam_fx</span><br><span class="line">pts1 = (<span class="variable language_">self</span>.ymap - cam_cy) * pts2 / cam_fy</span><br></pre></td></tr></table></figure>
+<p>具体原理见：<span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vc2lsZW5jZS1jaG8vcC8xNTAyMzgyMi5odG1s">针孔相机成像模型<i class="fa fa-external-link-alt"></i></span></p>
+<p>合并并裁剪：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pts = np.transpose(np.stack([pts0, pts1, pts2]), (<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>)).astype(np.float32)</span><br><span class="line">pts = pts[rmin:rmax, cmin:cmax, :].reshape((-<span class="number">1</span>, <span class="number">3</span>))[choose, :]</span><br></pre></td></tr></table></figure>
+<h3 id="rgb">RGB</h3>
+<p>这里会将目标图像使用<code>rmin, rmax, cmin, cmax</code>进行裁剪，然后resize（代码中为<span
+class="math inline">\(224 \times
+224\)</span>），那么相应的采样下标也需要修改。</p>
+<p>除此之外，使用OpenCV读入RGB时，其维度顺序为HWC，在经过<code>transforms.ToTensor()</code>后，维度顺序会变为CHW。</p>
+<h3 id="修改采样下标">修改采样下标</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">crop_w = rmax - rmin <span class="comment"># 原本crop mask的宽度</span></span><br><span class="line">ratio = <span class="variable language_">self</span>.img_size / crop_w <span class="comment"># 缩放比例</span></span><br><span class="line">col_idx = choose % crop_w <span class="comment"># 原本列索引的相对位置</span></span><br><span class="line">row_idx = choose // crop_w <span class="comment"># 原本行索引的相对位置</span></span><br><span class="line">choose = (np.floor(row_idx * ratio) * <span class="variable language_">self</span>.img_size + np.floor(col_idx * ratio)).astype(np.int64)</span><br><span class="line"><span class="comment"># np.floor(row_idx * ratio) 新行所在的位置</span></span><br><span class="line"><span class="comment"># np.floor(col_idx * ratio) 新列所在的位置</span></span><br><span class="line"><span class="comment"># np.floor(row_idx * ratio) * self.img_size + np.floor(col_idx * ratio) 新位置的索引</span></span><br></pre></td></tr></table></figure>
+<h3 id="读取物体模型点云">读取物体模型点云</h3>
+<p>首先是全部物体的模型点云，这里读取的是<code>./data/obj_models/camera_train.pkl</code>中的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">self</span>.models = &#123;&#125;</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(<span class="variable language_">self</span>.data_dir, model_path), <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="variable language_">self</span>.models.update(cPickle.load(f))</span><br></pre></td></tr></table></figure>
+<p>该文件以字典的形式存储了物体的点云信息，可以通过键取出对应的点云：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = <span class="variable language_">self</span>.models[gts[<span class="string">&#x27;model_list&#x27;</span>][idx]].astype(np.float32)</span><br></pre></td></tr></table></figure>
+<p>取出物体的平移、旋转和大小：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">translation = gts[<span class="string">&#x27;translations&#x27;</span>][idx].astype(np.float32) <span class="comment"># 3 物体坐标系到相机坐标系的平移</span></span><br><span class="line">rotation = gts[<span class="string">&#x27;rotations&#x27;</span>][idx].astype(np.float32) <span class="comment"># 3, 3 物体坐标系到相机坐标系的旋转</span></span><br><span class="line">size = gts[<span class="string">&#x27;scales&#x27;</span>][idx] * gts[<span class="string">&#x27;sizes&#x27;</span>][idx].astype(np.float32) <span class="comment"># 3</span></span><br><span class="line"><span class="comment"># gts[&#x27;scales&#x27;][idx] 1 物体缩放比例</span></span><br><span class="line"><span class="comment"># gts[&#x27;sizes&#x27;][idx] 3 物体长宽高</span></span><br></pre></td></tr></table></figure>
+<h3 id="处理对称物体">处理对称物体</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> cat_id <span class="keyword">in</span> <span class="variable language_">self</span>.sym_ids:</span><br><span class="line">    theta_x = rotation[<span class="number">0</span>, <span class="number">0</span>] + rotation[<span class="number">2</span>, <span class="number">2</span>]</span><br><span class="line">    theta_y = rotation[<span class="number">0</span>, <span class="number">2</span>] - rotation[<span class="number">2</span>, <span class="number">0</span>]</span><br><span class="line">    r_norm = math.sqrt(theta_x**<span class="number">2</span> + theta_y**<span class="number">2</span>)</span><br><span class="line">    s_map = np.array([[theta_x/r_norm, <span class="number">0.0</span>, -theta_y/r_norm],</span><br><span class="line">                        [<span class="number">0.0</span>,            <span class="number">1.0</span>,  <span class="number">0.0</span>           ],</span><br><span class="line">                        [theta_y/r_norm, <span class="number">0.0</span>,  theta_x/r_norm]])</span><br><span class="line">    rotation = rotation @ s_map</span><br><span class="line"><span class="comment"># 绕Y轴旋转，这里假设Y轴朝上，Z轴朝前，X轴朝右，为右手系</span></span><br></pre></td></tr></table></figure>
+<p>Y轴朝上，所以第2列为<span class="math inline">\([0, 1,
+0]\)</span>。</p>
+<h2 id="网络架构">网络架构</h2>
+<h3 id="rgb特征">RGB特征</h3>
+<p>使用DINOv2提取RGB特征：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">self</span>.rgb_extractor = torch.hub.load(<span class="string">&#x27;facebookresearch/dinov2&#x27;</span>,<span class="string">&#x27;dinov2_vits14&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> param <span class="keyword">in</span> <span class="variable language_">self</span>.rgb_extractor.parameters():</span><br><span class="line">    param.requires_grad = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p>还使用了一个1d卷积：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">self</span>.feature_mlp = nn.Sequential(</span><br><span class="line">    nn.Conv1d(<span class="number">384</span>, <span class="number">128</span>, <span class="number">1</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">rgb_local = <span class="variable language_">self</span>.feature_mlp(dino_feature)</span><br></pre></td></tr></table></figure>
+<h3 id="挑选rgb特征">挑选RGB特征</h3>
+<p>在数据处理时，生成了一个<code>choose</code>变量，这里要用该变量将RGB特征从<span
+class="math inline">\(\mathbb{R}^{b \times 128 \times (196 \times
+196)}\)</span>采样为<span class="math inline">\(\mathbb{R}^{b \times 128
+\times 1024}\)</span>。</p>
+<h3 id="加噪">加噪</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="variable language_">self</span>.training:</span><br><span class="line">    delta_r, delta_t, delta_s = generate_augmentation(b)</span><br><span class="line">    pts = (pts - delta_t) / delta_s.unsqueeze(<span class="number">2</span>) @ delta_r</span><br></pre></td></tr></table></figure>
+<p>其中，生成噪声的函数为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">generate_augmentation</span>(<span class="params">batchsize</span>):</span><br><span class="line">    delta_t = torch.rand(batchsize, <span class="number">1</span>, <span class="number">3</span>).cuda() <span class="comment"># b, 1, 3</span></span><br><span class="line">    delta_t = delta_t.uniform_(-<span class="number">0.02</span>, <span class="number">0.02</span>) <span class="comment"># 将值重新采样到[-0.02, 0.02]范围</span></span><br><span class="line"></span><br><span class="line">    angle_r = torch.randn(batchsize, <span class="number">3</span>) <span class="comment"># b, 3</span></span><br><span class="line">    angle_r.uniform_(-<span class="number">20</span>, <span class="number">20</span>) <span class="comment"># 将值重新采样到[-20, 20]范围</span></span><br><span class="line">    angle_r = angle_r / <span class="number">180</span> * torch.pi <span class="comment"># b, 3 将角度转换为弧度</span></span><br><span class="line"></span><br><span class="line">    delta_r_x = torch.eye(<span class="number">3</span>).unsqueeze(<span class="number">0</span>).repeat(batchsize, <span class="number">1</span>, <span class="number">1</span>) <span class="comment"># b, 3, 3</span></span><br><span class="line">    delta_r_y = torch.eye(<span class="number">3</span>).unsqueeze(<span class="number">0</span>).repeat(batchsize, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    delta_r_z = torch.eye(<span class="number">3</span>).unsqueeze(<span class="number">0</span>).repeat(batchsize, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绕X轴旋转</span></span><br><span class="line">    delta_r_x[:, <span class="number">1</span>, <span class="number">1</span>] = torch.cos(angle_r[:, <span class="number">0</span>])</span><br><span class="line">    delta_r_x[:, <span class="number">1</span>, <span class="number">2</span>] = -torch.sin(angle_r[:, <span class="number">0</span>])</span><br><span class="line">    delta_r_x[:, <span class="number">2</span>, <span class="number">1</span>] = torch.sin(angle_r[:, <span class="number">0</span>])</span><br><span class="line">    delta_r_x[:, <span class="number">2</span>, <span class="number">2</span>] = torch.cos(angle_r[:, <span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绕Y轴旋转</span></span><br><span class="line">    delta_r_y[:, <span class="number">0</span>, <span class="number">0</span>] = torch.cos(angle_r[:, <span class="number">1</span>])</span><br><span class="line">    delta_r_y[:, <span class="number">0</span>, <span class="number">2</span>] = torch.sin(angle_r[:, <span class="number">1</span>])</span><br><span class="line">    delta_r_y[:, <span class="number">2</span>, <span class="number">0</span>] = -torch.sin(angle_r[:, <span class="number">1</span>])</span><br><span class="line">    delta_r_y[:, <span class="number">2</span>, <span class="number">2</span>] = torch.cos(angle_r[:, <span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绕Z轴旋转</span></span><br><span class="line">    delta_r_z[:, <span class="number">0</span>, <span class="number">0</span>] = torch.cos(angle_r[:, <span class="number">2</span>])</span><br><span class="line">    delta_r_z[:, <span class="number">0</span>, <span class="number">1</span>] = -torch.sin(angle_r[:, <span class="number">2</span>])</span><br><span class="line">    delta_r_z[:, <span class="number">1</span>, <span class="number">0</span>] = torch.sin(angle_r[:, <span class="number">2</span>])</span><br><span class="line">    delta_r_z[:, <span class="number">1</span>, <span class="number">1</span>] = torch.cos(angle_r[:, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 组合旋转矩阵</span></span><br><span class="line">    delta_r = torch.bmm(torch.bmm(delta_r_x, delta_r_y), delta_r_z).cuda()</span><br><span class="line"></span><br><span class="line">    delta_s = torch.rand(batchsize, <span class="number">1</span>).cuda() <span class="comment"># b, 1</span></span><br><span class="line">    delta_s = delta_s.uniform_(<span class="number">0.8</span>, <span class="number">1.2</span>) <span class="comment"># 将值重新采样到[0.8, 1.2]范围</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> delta_r, delta_t, delta_s</span><br></pre></td></tr></table></figure>
+<p>模型会预测加噪后的位姿，然后在Loss阶段，会使用生成的噪声去除噪声，以实现数据增强。</p>
+<h3 id="点云特征">点云特征</h3>
+<p>原文中说使用PointNet++来提取点云特征，但是暂时没有阅读过和PointNet++相关的论文，所以暂时不详细写。</p>
+<h3 id="iakd">IAKD</h3>
+<p>该模块以RGB特征和点云特征为输入，将点云特征和RGB特征进行拼接后作为<span
+class="math inline">\(KV\)</span>、将可训练的一个查询向量作为<span
+class="math inline">\(Q\)</span>，执行交叉注意力，返回处理后的查询向量和注意力图。</p>
+<p>然后使用查询向量和输入特征做矩阵乘法，得到热图，最后返回查询向量和热图。</p>
+<p>热图将拼接后的点云特征和RGB特征进一步压缩。</p>
+<h3 id="gafa">GAFA</h3>
+<p>首先使用一堆卷积和一堆全连接堆叠成GAFA块，然后使用两个GAFA块组成GAFA模块，最后返回关键点特征。</p>
+<h2 id="训练">训练</h2>
+<p>这里训练和测试都使用的是<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0dvcmlsbGEtTGFiLVNDVVQvZ29yaWxsYS1jb3Jl">Gorilla-Lab-SCUT/gorilla-core<i class="fa fa-external-link-alt"></i></span>中的包。</p>
+<h2 id="测试">测试</h2>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html" title="【代码阅读】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/vps-review/racknerd-4.5gb-kvm-vps-black-friday-2024.html" rel="prev" title="【VPS测评】RackNerd - 4.5 GB KVM VPS (Black Friday 2024)">
+                  <i class="fa fa-angle-left"></i> 【VPS测评】RackNerd - 4.5 GB KVM VPS (Black Friday 2024)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/vps-review/leziyun-a1-unlimited.html" rel="next" title="【VPS测评】乐子云 - A1.unlimited-和小埋特殊交易的产物">
+                  【VPS测评】乐子云 - A1.unlimited-和小埋特殊交易的产物 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/code-reading/Leeiieeo_AG-Pose.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/code-reading/Leeiieeo_AG-Pose.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

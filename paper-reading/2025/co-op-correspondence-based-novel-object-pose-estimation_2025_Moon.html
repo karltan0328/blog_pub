@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="We propose Co-op, a novel method for accurately and robustly estimating the 6DoF pose of objects unseen during training from a single RGB image. Our method requires only the CAD model of the target ob">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="We propose Co-op, a novel method for accurately and robustly estimating the 6DoF pose of objects unseen during training from a single RGB image. Our method requires only the CAD model of the target ob">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-05T09:50:51.000Z">
+<meta property="article:modified_time" content="2025-04-05T09:50:51.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta property="article:tag" content="2025CVPR">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html","path":"paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html","title":"【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#co-op-correspondence-based-novel-object-pose-estimation"><span class="nav-text">Co-op:
+Correspondence-based Novel Object Pose Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2. Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-text">3. Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#coarse-pose-estimation"><span class="nav-text">3.1. Coarse Pose Estimation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pose-refinement"><span class="nav-text">3.2. Pose Refinement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pose-selection"><span class="nav-text">3.3. Pose Selection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training"><span class="nav-text">3.4. Training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation-details"><span class="nav-text">3.5. Implementation Details</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#experimental-setup"><span class="nav-text">4.1. Experimental Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bop-benchmark-results"><span class="nav-text">4.2. BOP Benchmark Results</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#coarse-estimation"><span class="nav-text">4.2.1 Coarse Estimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pose-refinement-1"><span class="nav-text">4.2.2 Pose Refinement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-study"><span class="nav-text">4.3. Ablation Study</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">5. Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#supplementary-material"><span class="nav-text">Supplementary Material</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#training-details"><span class="nav-text">6. Training Details</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#additional-experiments"><span class="nav-text">7. Additional Experiments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qualitative-results"><span class="nav-text">8. Qualitative Results</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation | Karl的博客">
+      <meta itemprop="description" content="We propose Co-op, a novel method for accurately and robustly estimating the 6DoF pose of objects unseen during training from a single RGB image. Our method requires only the CAD model of the target object and can precisely estimate its pose without any additional fine-tuning. While existing model-based methods suffer from inefficiency due to using a large number of templates, our method enables fast and accurate estimation with a small number of templates. This improvement is achieved by finding semidense correspondences between the input image and the pre-rendered templates. Our method achieves strong generalization performance by leveraging a hybrid representation that combines patch-level classification and offset regression. Additionally, our pose refinement model estimates probabilistic flow between the input image and the rendered image, refining the initial estimate to an accurate pose using a differentiable PnP layer. We demonstrate that our method not only estimates object poses rapidly but also outperforms existing methods by a large margin on the seven core datasets of the BOP Challenge, achieving state-of-theart accuracy.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-05 17:50:51" itemprop="dateCreated datePublished" datetime="2025-04-05T17:50:51+08:00">2025-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">We propose Co-op, a novel method for accurately and robustly estimating the 6DoF pose of objects unseen during training from a single RGB image. Our method requires only the CAD model of the target object and can precisely estimate its pose without any additional fine-tuning. While existing model-based methods suffer from inefficiency due to using a large number of templates, our method enables fast and accurate estimation with a small number of templates. This improvement is achieved by finding semidense correspondences between the input image and the pre-rendered templates. Our method achieves strong generalization performance by leveraging a hybrid representation that combines patch-level classification and offset regression. Additionally, our pose refinement model estimates probabilistic flow between the input image and the rendered image, refining the initial estimate to an accurate pose using a differentiable PnP layer. We demonstrate that our method not only estimates object poses rapidly but also outperforms existing methods by a large margin on the seven core datasets of the BOP Challenge, achieving state-of-theart accuracy.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="co-op-correspondence-based-novel-object-pose-estimation">Co-op:
+Correspondence-based Novel Object Pose Estimation</h1>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 7%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 51%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Co-op</td>
+<td style="text-align: center;">任意级</td>
+<td style="text-align: center;">RGB + CAD</td>
+<td style="text-align: center;">RGB + CAD</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.04.06：使用patch-patch的匹配来确定与查询最接近的模板并得到2D-3D的匹配，然后使用EPnP计算粗略位姿。在优化时，将查询和模板之间的flow定义为一个单变量拉普拉斯分布，预测这个分布以优化位姿。</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/main_figure.webp"
+alt="Figure 1. Examples of 6D pose estimation of novel objects. Our method estimates semi-dense or dense correspondences between the input image and rendered images and uses them to estimate the pose." />
+<figcaption aria-hidden="true">Figure 1. Examples of 6D pose estimation
+of novel objects. Our method estimates semi-dense or dense
+correspondences between the input image and rendered images and uses
+them to estimate the pose.</figcaption>
+</figure>
+<p>Our contributions can be summarized as follows:</p>
+<ul>
+<li>We present Co-op, a novel framework for unseen object pose
+estimation in RGB-only cases. Co-op does not require additional training
+or fine-tuning for new objects and outperforms existing methods by a
+large margin on the seven core datasets of the BOP Challenge.</li>
+<li>We propose a method for fast and accurate coarse pose estimation
+using a hybrid representation that combines patch-level classification
+and offset regression.</li>
+<li>Additionally, we propose a precise object pose refinement method. It
+estimates dense correspondences defined by probabilistic flow and learns
+confidence end-to-end through a differentiable PnP layer.</li>
+</ul>
+<h2 id="related-work">2. Related Work</h2>
+<h2 id="method">3. Method</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/overview_figure.webp"
+alt="Figure 2. Overview. We estimate object pose through two main stages. In the Coarse Pose Estimation stage (Sec 3.1), we estimate semidense correspondences between the query image and templates and compute the initial pose using PnP. In the Pose Refinement stage (Sec 3.2), we refine the initial pose by estimating dense flow between the query and rendered images. Both stages utilize transformer encoders and decoders with identical structures, with the Pose Refinement stage additionally incorporating a DPT module after the decoder for dense prediction." />
+<figcaption aria-hidden="true">Figure 2. Overview. We estimate object
+pose through two main stages. In the Coarse Pose Estimation stage (Sec
+3.1), we estimate semidense correspondences between the query image and
+templates and compute the initial pose using PnP. In the Pose Refinement
+stage (Sec 3.2), we refine the initial pose by estimating dense flow
+between the query and rendered images. Both stages utilize transformer
+encoders and decoders with identical structures, with the Pose
+Refinement stage additionally incorporating a DPT module after the
+decoder for dense prediction.</figcaption>
+</figure>
+<h3 id="coarse-pose-estimation">3.1. Coarse Pose Estimation</h3>
+<p><strong>Template
+Generation</strong>：粗略位姿估计阶段使用和GigaPose类似的方法，生成仅包含面外旋转的模板来减少位姿估计需要的模板数。</p>
+<p>使用“Templates for 3D Object Pose Estimation Revisited:
+Generalization to New Objects and Robustness to Occlusions”和“CNOS: A
+Strong Baseline for CAD-based Novel Object
+Segmentation”中的方法生成模板。</p>
+<p><strong>Hybrid
+Representation</strong>：Query图像和Template图像分别使用<span
+class="math inline">\(\mathcal{I}_Q, \mathcal{I}_T \in \mathbb{R}^{H
+\times W \times
+3}\)</span>表示。为了提高泛化性，使用了一种结合patch分类和偏移回归的混合表示。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/hybrid_figure.webp"
+alt="Figure 3. Visualization of Our Hybrid Representation. Left: Patch-level classification results; matching patches are highlighted with the same color. Right: Offset regression within template patches to refine correspondences; red arrows represent the estimated offsets." />
+<figcaption aria-hidden="true">Figure 3. Visualization of Our Hybrid
+Representation. Left: Patch-level classification results; matching
+patches are highlighted with the same color. Right: Offset regression
+within template patches to refine correspondences; red arrows represent
+the estimated offsets.</figcaption>
+</figure>
+<p>图3左侧是patch分类结果，右侧是偏移回归结果。</p>
+<p>如图2所示，使用Transformer
+Encoder提取Query图像和Template图像的特征，然后使用Transformer
+Decoder生成patch分类结果和偏移回归结果。</p>
+<p>Encoder将<span class="math inline">\(\mathcal{I}_Q\)</span>和<span
+class="math inline">\(\mathcal{I}_T\)</span>作为输入，提取特征图<span
+class="math inline">\(\mathcal{F}_Q, \mathcal{F}_T \in
+\mathbb{R}^{\frac{H}{16} \times \frac{W}{16} \times
+1024}\)</span>。然后Decoder和后续头处理<span
+class="math inline">\(\mathcal{F}_Q\)</span>和<span
+class="math inline">\(\mathcal{F}_T\)</span>，计算patch级分类<span
+class="math inline">\(\mathcal{C} \in \mathbb{R}^{\frac{H}{16} \times
+\frac{W}{16} \times K}\)</span>和xy-offsets <span
+class="math inline">\(\mathcal{U} \in \mathbb{R}^{\frac{H}{16} \times
+\frac{W}{16} \times 2}\)</span>。</p>
+<p>其中，<span class="math inline">\(K = \frac{H}{16} \times
+\frac{W}{16} + 1\)</span>表示patch级分类的类数，<span
+class="math inline">\(\frac{H}{16} \times
+\frac{W}{16}\)</span>为patch的数量，最后的<span
+class="math inline">\(+1\)</span>表示没有匹配的情况，例如遮挡。对于特征图中的每个位置<span
+class="math inline">\((i, j)\)</span>，<span
+class="math inline">\(\mathcal{C}_{i, j} \in
+\mathbb{R}^K\)</span>包含分类分数，指示Query <span
+class="math inline">\((i, j)\)</span>位置上的patch和Template中<span
+class="math inline">\(\frac{H}{16} \times
+\frac{W}{16}\)</span>个patch的匹配情况。</p>
+<p>在此之后，我们将索引定义为<span class="math inline">\(c_{i, j} = \arg
+\max_{k \in 1, 2, \cdots, K} \mathcal{C}_{i,
+j}^k\)</span>，将偏移的范围定义在<span
+class="math inline">\(\mathcal{U}_{i, j} \in [-0.5,
+0.5]\)</span>。在<span class="math inline">\(c_{i, j} \ne
+K\)</span>的位置<span class="math inline">\((i,
+j)\)</span>上，可以使用下面的公式来计算Query中下标为<span
+class="math inline">\((i, j)\)</span>的patch的中心点在Template
+patch中的对应点<span class="math inline">\(\mathcal{M}_{i,
+j}^T\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    \mathcal{M}_{i, j}^T =
+    \left(\begin{bmatrix}
+        c_{i, j} \mod 16 + 0.5 \\
+        \lfloor \frac{c_{i, j}}{16} \rfloor + 0.5
+    \end{bmatrix} + \mathcal{U}_{i, j}\right) \times 16.
+\end{equation}
+\]</span></p>
+<p>添加<span class="math inline">\(\mathcal{U}_{i,
+j}\)</span>可优化特征图网格中的位置。乘16会将该位置映射回原始图像<span
+class="math inline">\(\mathcal{I}_Q\)</span>和<span
+class="math inline">\(\mathcal{I}_T\)</span>的坐标系，因为特征图中的每个位置都对应原始图像中一个大小为<span
+class="math inline">\(16 \times
+16\)</span>的patch。对应的Query图像位置<span
+class="math inline">\(\mathcal{M}_{i, j}^Q\)</span>为<span
+class="math inline">\(((i + 0.5) \times 16, (j + 0.5) \times
+16)\)</span>，即每个Query patch的中心位置。<span
+class="math inline">\(\mathcal{I}_Q\)</span>和<span
+class="math inline">\(\mathcal{I}_T\)</span>的对应关系定义为<span
+class="math inline">\(\mathcal{M}_{i, j} = (\mathcal{M}_{i, j}^Q,
+\mathcal{M}_{i, j}^T)\)</span>。</p>
+<p><strong>Pose Fitting</strong>：我们计算<span
+class="math inline">\(\mathcal{I}_Q\)</span>和所有<span
+class="math inline">\(\mathcal{I}_T\)</span>的对应关系<span
+class="math inline">\(\mathcal{M}\)</span>，并选择与Query最相似的模板<span
+class="math inline">\(k\)</span>。每个模板的相似性得分定义如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq2}
+    S_t = \sum_{i, j}
+    \begin{cases}
+        \max(\mathcal{C}_{i, j}), &amp; \text{if } c_{i, j} \ne K \\
+        0, &amp; \text{otherwise}
+    \end{cases}.
+\end{equation}
+\]</span></p>
+<p>如果<span class="math inline">\(c_{i, j} =
+K\)</span>（表示遮挡或不匹配的patch），我们从总和中排除<span
+class="math inline">\(\max(\mathcal{C}_{i,
+j})\)</span>。通过计算每个模板的<span
+class="math inline">\(S_t\)</span>，我们选择相似度得分最高的模板作为<span
+class="math inline">\(\mathcal{I}_Q\)</span>的最佳匹配，然后基于模板中的深度信息构建2D-3D的对应关系，然后使用RANSAC和EPnP来计算初始位姿。</p>
+<h3 id="pose-refinement">3.2. Pose Refinement</h3>
+<p>如图2所示，细化模型就是在粗略位姿估计模型的基础上增加一个密集预测Transformer（DPT）。DPT支持像素级预测，从而实现精确的位姿优化。此外，使用渲染-比较方法迭代优化位姿，该阶段克服了在粗略位姿估计阶段使用预渲染模板所带来的限制，比如自遮挡。</p>
+<p><strong>Probabilistic Flow Regression</strong>：与“Perspective Flow
+Aggregation for Data-Limited 6D Object Pose Estimation”和“GenFlow:
+Generalizable Recurrent Flow for 6D Pose Refinement of Novel
+Objects”类似，细化模型估计Query <span
+class="math inline">\(\mathcal{I}_T\)</span>和Render <span
+class="math inline">\(\mathcal{I}_R\)</span>之间的流动以优化位姿。要从流中准确恢复位姿，必须防止不准确的流显著影响位姿计算。所以，“Perspective
+Flow Aggregation for Data-Limited 6D Object Pose
+Estimation”使用RANSAC从位姿估计中概率的排除不准确的流。但是，由于RANSAC对异常值分布敏感，因此当异常值普遍存在或分布不均匀时，RANSAC的性能会下降。</p>
+<p>与之前基于流的细化方法不同，我们的目标是学习流的条件概率。根据“ASpanFormer:
+Detector-Free Image Matching with Adaptive Span Transformer”和“PDC-Net+:
+Enhanced Probabilistic Dense Correspondence
+Network”，我们将这个条件概率定义为<span class="math inline">\(p(Y |
+\mathcal{I}_Q, \mathcal{I}_R; \theta)\)</span>，其中<span
+class="math inline">\(Y\)</span>是<span
+class="math inline">\(\mathcal{I}_Q\)</span>和<span
+class="math inline">\(\mathcal{I}_R\)</span>之间的流，<span
+class="math inline">\(\theta\)</span>是模型参数。很多方法通过学习预测<span
+class="math inline">\(Y\)</span>的方差来实现这一点，并且使用高斯分布或拉普拉斯分布对预测密度进行建模。我们将其建模为单变量拉普拉斯分布以简化问题。具体来说，<span
+class="math inline">\(p(Y | \mathcal{I}_Q, \mathcal{I}_R;
+\theta)\)</span>建模为均值为<span class="math inline">\(\mu \in
+\mathbb{R}^{H \times W \times 2}\)</span>，尺度为<span
+class="math inline">\(b \in \mathbb{R}^{H \times W \times
+1}\)</span>的拉普拉斯分布，两者均由网络预测。将流估计表示为概率回归，使我们的模型通过调整尺度参数<span
+class="math inline">\(b\)</span>专注于高度可靠的对应关系。</p>
+<p><strong>Flow
+Confidence</strong>：要使用模型估计的流来计算位姿，我们需要置信度<span
+class="math inline">\(\mathcal{W} \in \mathbb{R}^{H \times W \times
+1}\)</span>。<span
+class="math inline">\(\mathcal{W}\)</span>决定了在计算可微分PnP层中的位姿时，每个流误差的权重。<span
+class="math inline">\(\mathcal{W}\)</span>是根据确定性、敏感性和流概率计算得出的，这些概率是通过不同的损失函数学习的。确定性估计从<span
+class="math inline">\(\mathcal{I}_R\)</span>到<span
+class="math inline">\(\mathcal{I}_Q\)</span>的流是否被遮挡。灵敏度是从位姿损失中学习的，并高亮具有丰富纹理或物体边缘的区域。与“PDC-Net+:
+Enhanced Probabilistic Dense Correspondence
+Network”类似，我们定义了流概率<span
+class="math inline">\(P_R\)</span>，它表示真实流动<span
+class="math inline">\(y\)</span>位于平均光流<span
+class="math inline">\(\mu\)</span>、半径为<span
+class="math inline">\(R\)</span>范围内的概率。其计算方式如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq3}
+    P_R = P(\Vert y - \mu\Vert_1 &lt; R) = 1 -
+\exp\left(-\frac{R}{b}\right).
+\end{equation}
+\]</span></p>
+<p><span
+class="math inline">\(P_R\)</span>是可靠性的可解释度量，表示阈值为<span
+class="math inline">\(R\)</span>的流的准确性。流置信度<span
+class="math inline">\(\mathcal{W}\)</span>计算为确定性、敏感性和<span
+class="math inline">\(P_R\)</span>的元素乘积。这意味着在没有遮挡（高质量）、有判别信息可用于解决位姿（高灵敏度）以及准确性（高<span
+class="math inline">\(P_R\)</span>）时，<span
+class="math inline">\(\mathcal{W}\)</span>将具有更高的值。</p>
+<p><strong>Pose Update</strong>：为了使用流<span
+class="math inline">\(Y\)</span>和流置信度<span
+class="math inline">\(\mathcal{W}\)</span>计算细化后的6D位姿<span
+class="math inline">\(\mathbf{P}_\text{refined}\)</span>，我们使用基于Levenberg-Marquardt(LM)的PnP求解器。给定输入位姿<span
+class="math inline">\(\mathbf{P}_\text{input} = [\mathbf{R}_\text{input}
+| \mathbf{t}_\text{input}]\)</span>，相机内参矩阵<span
+class="math inline">\(\mathbf{K}\)</span>和对应于<span
+class="math inline">\(\mathcal{I}_R\)</span>的深度图<span
+class="math inline">\(\mathcal{D}_R\)</span>，我们计算<span
+class="math inline">\(\mathcal{I}_R\)</span>对应的3D空间坐标<span
+class="math inline">\(\mathbf{x}_{u,
+v}^\text{3D}\)</span>，如下所示：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq4}
+    \mathbf{x}_{u, v}^\text{3D} =
+\mathbf{R}_\text{input}^{-1}(\mathbf{K}^{-1}\mathcal{D}_R(u,
+v)\mathbf{x}_{u, v}^\text{2D} - \mathbf{t}_\text{input}),
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\((u, v)\)</span>是<span
+class="math inline">\(\mathcal{I}_R\)</span>中的像素坐标，<span
+class="math inline">\(\mathcal{D}_R(u,
+v)\)</span>是每个像素的深度值，且<span
+class="math inline">\(\mathbf{x}_{u, v}^\text{2D} = (u, v,
+1)^T\)</span>。我们通过最小化加权重投影误差的平方和来优化6D位姿，如下所示：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq5}
+    \underset{\mathbf{R},
+\mathbf{t}}{\arg\min}\frac{1}{2}\sum_u\sum_v\Vert\mathcal{W}(u, v)
+\times (\pi(\mathbf{R}\mathbf{x}_{u, v}^\text{3D} + \mathbf{t}) - ((u,
+v)^T + Y(u, v)))\Vert^2.
+\end{equation}
+\]</span></p>
+<p>其中，<span
+class="math inline">\(\pi\)</span>是重投影函数，它使用相机内参<span
+class="math inline">\(\mathbf{K}\)</span>将相机坐标中的3D点映射到2D图像点。</p>
+<p>根据之前的工作“GenFlow: Generalizable Recurrent Flow for 6D Pose
+Refinement of Novel
+Objects”，我们使用LM算法分三次迭代更新位姿，并使用Gauss-Newton算法进一步将其细化为最终位姿。</p>
+<h3 id="pose-selection">3.3. Pose Selection</h3>
+<p>在粗略位姿估计阶段，最佳评分模板可能无法提供用于细化的最佳初始位姿。例如，选择相对于GT旋转180度的模板（见图4）会使优化变得具有挑战性。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/selection_figure.webp"
+alt="Figure 4. Pose Selection. To achieve more precise pose estimation using a multiple hypothesis strategy, we introduce a pose selection stage (Sec 3.3)." />
+<figcaption aria-hidden="true">Figure 4. Pose Selection. To achieve more
+precise pose estimation using a multiple hypothesis strategy, we
+introduce a pose selection stage (Sec 3.3).</figcaption>
+</figure>
+<p>为了解决这个问题，“MegaPose”、“GenFlow”、“GigaPose”、“FoundPose”、“FoundationPose”等方法采用多重假设策略：生成<span
+class="math inline">\(N\)</span>个粗略位姿估计，细化每个估计，并通过将渲染的结果和查询图像进行比较来选择最佳匹配。我们的位姿选择模型以查询图像和模板作为输入，在粗略位姿估计模型的基础上增加一个评分头来对每个位姿假设进行评分。即使这会增加推理时间，但是考虑多个优化位姿能够避免难以优化模板导致最终位姿较差的情况。</p>
+<h3 id="training">3.4. Training</h3>
+<p><strong>Datasets</strong>：为了训练我们的三个模型（粗略位姿估计器、位姿优化器和位姿选择器），我们需要具有GT
+6D位姿标注的RGBD图像。我们使用“MegaPose: 6D Pose Estimation of Novel
+Objects via Render &amp;
+Compare”提供的大规模数据集。该数据集由使用“BlenderProc2: A Procedural
+Pipeline for Photorealistic
+Rendering”生成的合成数据组成，其中包含来自“ShapeNet: An Information-Rich
+3D Model Repository”和“Google Scanned Objects: A High-Quality Dataset of
+3D Scanned Household Items”的各种对象，包括全面的GT
+6D位姿标注和对象掩码。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/coarse_figure_3rows.webp"
+alt="Figure 5. In-plane Rotation Invariant Matching Example. From left to right: Query image, semi-dense correspondences between the query image and the best scoring template, and the coarse pose recovered using the PnP algorithm." />
+<figcaption aria-hidden="true">Figure 5. In-plane Rotation Invariant
+Matching Example. From left to right: Query image, semi-dense
+correspondences between the query image and the best scoring template,
+and the coarse pose recovered using the PnP algorithm.</figcaption>
+</figure>
+<p><strong>Coarse
+Model</strong>：我们的粗略位姿估计模型经过训练，用于估计查询图像<span
+class="math inline">\(\mathcal{I}_Q\)</span>和模板图像<span
+class="math inline">\(\mathcal{I}_T\)</span>之间的对应关系。和“GigaPose:
+Fast and Robust Novel Object Pose Estimation via One
+Correspondence”相似，我们选取的模板与围绕目标物体裁剪出的训练图像相比，具有相似的面外旋转角度，但面内旋转角度不同。如图5所示，我们的模型旨在估计查询图像和模板之间对于面内旋转具有不变性的对应关系。这种不变性意味着这些模板只需考虑面外旋转情况，从而大幅减少了所需模板的数量。由于我们拥有目标物体的3D模型，我们可以通过将3D模型投影到查询图像和模板图像的图像平面上，来生成这些对应关系。我们的模型经过训练就是为了估计这些生成的2D-2D的对应关系。</p>
+<p><strong>Refiner
+Model</strong>：我们的优化模型的训练方式与之前采用“渲染-比较”方法的研究工作如“CosyPose”、“MegaPose”、“GenFlow”等类似。我们通过向真实位姿<span
+class="math inline">\(\mathbf{P}_\text{gt}\)</span>添加均值为0的高斯噪声来生成含噪声的输入位姿<span
+class="math inline">\(\mathbf{P}_\text{input}\)</span>，其中沿<span
+class="math inline">\(x\)</span>、<span
+class="math inline">\(y\)</span>、<span
+class="math inline">\(z\)</span>轴的平移噪声标准差分别为<span
+class="math inline">\((0.01, 0.01,
+0.05)\)</span>，并且在欧拉角中每个轴的旋转噪声标准差为15度。该模型经过训练，能够从<span
+class="math inline">\(\mathbf{P}_\text{input}\)</span>中预测出<span
+class="math inline">\(\mathbf{P}_\text{gt}\)</span>。</p>
+<p><strong>Selection
+Model</strong>：我们的选择模型经过训练，能够基于含噪输入姿态<span
+class="math inline">\(\mathbf{P}_\text{input}\)</span>来评估查询图像<span
+class="math inline">\(\mathcal{I}_Q\)</span>与参考图像<span
+class="math inline">\(\mathcal{I}_R\)</span>之间的相似度，以便从多个姿态假设中选出最准确的姿态。我们使用二元交叉熵损失函数来训练该模型，对于每个真实姿态<span
+class="math inline">\(\mathbf{P}_\text{gt}\)</span>，使用六个姿态：一个正样本，五个负样本。正样本与真实姿态<span
+class="math inline">\(\mathbf{P}_\text{gt}\)</span>之间的平移差异在<span
+class="math inline">\((0.01, 0.01,
+0.05)\)</span>范围内，旋转差异在5度以内。通过为正样本设置较小的旋转阈值，我们增强了模型区分与真实姿态相近的姿态的能力，从而提高了其判别能力。</p>
+<h3 id="implementation-details">3.5. Implementation Details</h3>
+<p>Co-op的编码器和解码器架构基于“CroCo v2: Improved Cross-view
+Completion Pre-training for Stereo Matching and Optical
+Flow”，这是一个在大规模数据集上针对三维视觉任务训练的视觉基础模型。这使我们能够充分利用CroCo
+v2预训练的优势。粗略位姿估计模型处理分辨率为<span
+class="math inline">\(224 \times
+224\)</span>的输入图像，而优化模型和选择模型则处理分辨率为<span
+class="math inline">\(256 \times
+256\)</span>的图像。有关模型配置、学习率和训练计划的详细信息，请参考补充材料。</p>
+<p><strong>Coarse
+Model</strong>：在我们的粗略估计模型中，我们将半密集对应关系定义为一种混合表示，它结合了补丁级别的分类和偏移回归。因此，粗略估计模型使用两个损失函数进行训练：分类损失<span
+class="math inline">\(\mathcal{L}_{cls}\)</span>和回归损失<span
+class="math inline">\(\mathcal{L}_{reg}\)</span>。</p>
+<p>当把从查询图像中patch中心<span class="math inline">\((i,
+j)\)</span>到模板的真实匹配定义为<span
+class="math inline">\(\mathcal{M}_{gt}^T=(\bar{u},
+\bar{v})\)</span>时，若存在匹配情况，用于<span
+class="math inline">\(\mathcal{L}_{cls}\)</span>的真实索引被定义为<span
+class="math inline">\(\frac{\bar{v}}{16} \times \frac{W}{16} +
+\frac{\bar{u}}{16}\)</span>。此处，<span
+class="math inline">\(\mathcal{W}\)</span>是模板图像的宽度，除以<span
+class="math inline">\(16\)</span>是考虑到因patch大小而导致的图像尺寸缩小。当不存在匹配时，真实索引被定义为<span
+class="math inline">\(\frac{H}{16} \times \frac{W}{16} +
+1\)</span>，它代表着一个额外的“无匹配”类别。因此，<span
+class="math inline">\(\mathcal{L}_{cls}\)</span>被定义为真实索引与模型输出的patch级别概率向量之间的交叉熵损失。</p>
+<p>用于<span
+class="math inline">\(\mathcal{L}_{reg}\)</span>的偏移真实值<span
+class="math inline">\(\mathcal{U}_{gt}\)</span>定义如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq6}
+    \mathcal{U}_{gt} = \frac{\mathcal{M}_{gt}^T}{16} -
+\left\lfloor\frac{\mathcal{M}_{gt}^T}{16}\right\rfloor - 0.5,
+\end{equation}
+\]</span></p>
+<p>其中<span
+class="math inline">\(\mathcal{M}_{gt}^T\)</span>是模板中的真实匹配。减去<span
+class="math inline">\(\left\lfloor\frac{\mathcal{M}_{gt}^T}{16}\right\rfloor\)</span>再减去<span
+class="math inline">\(0.5\)</span>可将偏移量以patch为中心，其范围在<span
+class="math inline">\(-0.5\)</span>到<span
+class="math inline">\(0.5\)</span>之间。这里，<span
+class="math inline">\(\mathcal{U}\)</span>表示模型输出的预测偏移量。然后，回归损失<span
+class="math inline">\(\mathcal{L}_{reg}\)</span>被定义为<span
+class="math inline">\(\mathcal{U}\)</span>和<span
+class="math inline">\(\mathcal{U}_{gt}\)</span>之间的L1损失：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq7}
+    \mathcal{L}_\text{reg} = \Vert \mathcal{U} - \mathcal{U}_{gt}
+\Vert_1.
+\end{equation}
+\]</span></p>
+<p>因此，用于训练粗略模型的总损失<span
+class="math inline">\(\mathcal{L}_\text{coarse}\)</span>定义为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq8}
+    \mathcal{L}_\text{coarse} = \mathcal{L}_\text{cls} +
+\alpha\mathcal{L}_\text{reg}.
+\end{equation}
+\]</span></p>
+<p>在上面的等式中，<span
+class="math inline">\(\alpha\)</span>设置为2。</p>
+<p><strong>Refiner
+Model</strong>：我们的优化模型的训练使用了光流损失、确定性损失和姿态损失，这与“GenFlow”的方法类似。由于我们用拉普拉斯分布对网络的光流输出进行参数化，所以我们通过最小化负对数似然来训练光流。因此，光流损失定义如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq9}
+    \mathcal{L}_{flow} = \sum_u\sum_v\left[\frac{|\mu_{u, v} -
+\bar{\mu}_{u, v}|}{b_{u, v}} + 2\log b_{u, v}\right].
+\end{equation}
+\]</span></p>
+<p>在这个公式中，<span
+class="math inline">\(\mu_{u,v}\)</span>是渲染掩码内像素位置<span
+class="math inline">\((u, v)\)</span>处的光流，<span
+class="math inline">\(\bar{\mu}_{u,v}\)</span>是真实光流。<span
+class="math inline">\(b_{u,v}\)</span>是像素位置<span
+class="math inline">\((u,
+v)\)</span>处的尺度（不确定性）。此外，确定性损失<span
+class="math inline">\(\mathcal{L}_{cert}\)</span>被定义为二元交叉熵损失，用于判断从渲染图像<span
+class="math inline">\(\mathcal{I}_R\)</span>到查询图像<span
+class="math inline">\(\mathcal{I}_Q\)</span>的光流是否落在<span
+class="math inline">\(\mathcal{I}_Q\)</span>的真实掩码内。姿态损失<span
+class="math inline">\(\mathcal{L}_{pose}\)</span>用于量化优化后的姿态与真实姿态之间的差异，按照先前在“MegaPose”和“GenFlow”中使用的方法，它被定义为3D模型上对应3D点之间的距离。关于<span
+class="math inline">\(\mathcal{L}_{pose}\)</span>的详细信息在补充材料中给出。</p>
+<p>优化模型的总体损失定义如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq10}
+    \mathcal{L}_{refiner} = \mathcal{L}_{flow} + \beta\mathcal{L}_{cert}
++ \gamma\mathcal{L}_{pose}.
+\end{equation}
+\]</span></p>
+<p>每个损失的权重<span class="math inline">\(\beta\)</span>和<span
+class="math inline">\(\gamma\)</span>分别设置为5和20。</p>
+<h2 id="experiments">4. Experiments</h2>
+<h3 id="experimental-setup">4.1. Experimental Setup</h3>
+<h3 id="bop-benchmark-results">4.2. BOP Benchmark Results</h3>
+<h4 id="coarse-estimation">4.2.1 Coarse Estimation</h4>
+<h4 id="pose-refinement-1">4.2.2 Pose Refinement</h4>
+<h3 id="ablation-study">4.3. Ablation Study</h3>
+<h2 id="conclusion">5. Conclusion</h2>
+<h2 id="supplementary-material">Supplementary Material</h2>
+<h3 id="training-details">6. Training Details</h3>
+<h3 id="additional-experiments">7. Additional Experiments</h3>
+<h3 id="qualitative-results">8. Qualitative Results</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/supp_coarse.webp"
+alt="Figure 6. Qualitative Results of Coarse Estimation. The first two columns on the left display the model&#39;s query image and the template with the highest similarity score to the query image. The third and fourth columns compare the CNOS [49] segmentation mask with patches that the model did not classify as &#39;no-match&#39;. From the fifth to the last columns, the correspondences between the query image and the template, as well as the resulting pose estimation results, are shown." />
+<figcaption aria-hidden="true">Figure 6. Qualitative Results of Coarse
+Estimation. The first two columns on the left display the model's query
+image and the template with the highest similarity score to the query
+image. The third and fourth columns compare the CNOS [49] segmentation
+mask with patches that the model did not classify as 'no-match'. From
+the fifth to the last columns, the correspondences between the query
+image and the template, as well as the resulting pose estimation
+results, are shown.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/refine_supp.webp"
+alt="Figure 7. Qualitative Results of Pose Refinement. From left to right: query image, initial pose rendering, flow, confidence, flow probability, certainty, sensitivity, and the refined pose (legend: 0.0 1.0). The flow probability and certainty reduce confidence in ambiguous or occluded areas, while sensitivity increases confidence in textured regions and object edges to improve pose refinement." />
+<figcaption aria-hidden="true">Figure 7. Qualitative Results of Pose
+Refinement. From left to right: query image, initial pose rendering,
+flow, confidence, flow probability, certainty, sensitivity, and the
+refined pose (legend: 0.0 1.0). The flow probability and certainty
+reduce confidence in ambiguous or occluded areas, while sensitivity
+increases confidence in textured regions and object edges to improve
+pose refinement.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon/turbo.webp"
+alt="legend: 0.0 - 1.0" />
+<figcaption aria-hidden="true">legend: 0.0 - 1.0</figcaption>
+</figure>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2503.17731" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" title="【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation">https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+              <a href="/tags/2025CVPR/" rel="tag"><i class="fa fa-tag"></i> 2025CVPR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html" rel="prev" title="【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/vps-review/suda-hkt-ty-line-1.html" rel="next" title="【VPS测评】Suda速达云 - [家宽]香港HKT区NAT 一号机 (04:00定时刷新IP) - 香港-KVM-小杯">
+                  【VPS测评】Suda速达云 - [家宽]香港HKT区NAT 一号机 (04:00定时刷新IP) - 香港-KVM-小杯 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

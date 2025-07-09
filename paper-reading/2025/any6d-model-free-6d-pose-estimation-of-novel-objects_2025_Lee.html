@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="We introduce Any6D, a model-free framework for 6D object pose estimation that requires only a single RGB-D anchor image to estimate both the 6D pose and size of unknown objects in novel scenes. Unlike">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="We introduce Any6D, a model-free framework for 6D object pose estimation that requires only a single RGB-D anchor image to estimate both the 6D pose and size of unknown objects in novel scenes. Unlike">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-03T02:44:15.000Z">
+<meta property="article:modified_time" content="2025-04-03T02:44:15.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta property="article:tag" content="2025CVPR">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html","path":"paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html","title":"【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#any6d-model-free-6d-pose-estimation-of-novel-objects"><span class="nav-text">Any6D:
+Model-free 6D Pose Estimation of Novel Objects</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-works"><span class="nav-text">2. Related Works</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-text">3. Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#coarse-object-alignment"><span class="nav-text">3.1. Coarse Object Alignment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fine-object-alignment"><span class="nav-text">3.2. Fine Object Alignment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datasets"><span class="nav-text">4.1. Datasets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#metrics"><span class="nav-text">4.2. Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comparison-with-state-of-the-art"><span class="nav-text">4.3. Comparison with
+State-of-the-art</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qualitative-results"><span class="nav-text">4.4. Qualitative Results</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-studies"><span class="nav-text">4.5. Ablation Studies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">5. Conclusion</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects | Karl的博客">
+      <meta itemprop="description" content="We introduce Any6D, a model-free framework for 6D object pose estimation that requires only a single RGB-D anchor image to estimate both the 6D pose and size of unknown objects in novel scenes. Unlike existing methods that rely on textured 3D models or multiple viewpoints, Any6D leverages a joint object alignment process to enhance 2D-3D alignment and metric scale estimation for improved pose accuracy. Our approach integrates a renderand-compare strategy to generate and refine pose hypotheses, enabling robust performance in scenarios with occlusions, non-overlapping views, diverse lighting conditions, and large cross-environment variations. We evaluate our method on five challenging datasets: REAL275, ToyotaLight, HO3D, YCBINEOAT, and LM-O, demonstrating its effectiveness in significantly outperforming state-of-the-art methods for novel object pose estimation. Project page: https://taeyeop.com/any6d.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-03 10:44:15" itemprop="dateCreated datePublished" datetime="2025-04-03T10:44:15+08:00">2025-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">We introduce Any6D, a model-free framework for 6D object pose estimation that requires only a single RGB-D anchor image to estimate both the 6D pose and size of unknown objects in novel scenes. Unlike existing methods that rely on textured 3D models or multiple viewpoints, Any6D leverages a joint object alignment process to enhance 2D-3D alignment and metric scale estimation for improved pose accuracy. Our approach integrates a renderand-compare strategy to generate and refine pose hypotheses, enabling robust performance in scenarios with occlusions, non-overlapping views, diverse lighting conditions, and large cross-environment variations. We evaluate our method on five challenging datasets: REAL275, ToyotaLight, HO3D, YCBINEOAT, and LM-O, demonstrating its effectiveness in significantly outperforming state-of-the-art methods for novel object pose estimation. Project page: https://taeyeop.com/any6d.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="any6d-model-free-6d-pose-estimation-of-novel-objects">Any6D:
+Model-free 6D Pose Estimation of Novel Objects</h1>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 9%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 44%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Any6D</td>
+<td style="text-align: center;">任意级</td>
+<td style="text-align: center;">RGBDs</td>
+<td style="text-align: center;">RGBDs</td>
+<td style="text-align: center;">相对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.04.05：任意物体方法，输入一张锚点图<span
+class="math inline">\(I_A\)</span>和一张查询图<span
+class="math inline">\(I_Q\)</span>，估计锚点图到查询图的相对位姿。首先基于锚点图，用图生3D模型来生成3D模型<span
+class="math inline">\(O_N\)</span>，然后将<span
+class="math inline">\(O_N\)</span>与<span
+class="math inline">\(I_A\)</span>对齐，对齐的过程会得到变换<span
+class="math inline">\(\mathbf{T}_a \in
+\text{SE}(3)\)</span>和物体大小<span class="math inline">\(s \in
+\mathbb{R}^3\)</span>，使用这两个变换能将<span
+class="math inline">\(O_N\)</span>变换为<span
+class="math inline">\(O_{M^\prime}\)</span>。<span
+class="math inline">\(O_{M^\prime}\)</span>会再次进行优化得到<span
+class="math inline">\(O_M\)</span>和<span
+class="math inline">\(\mathbf{T}_{O_M \to A}\)</span>，然后基于<span
+class="math inline">\(O_M\)</span>和<span
+class="math inline">\(I_Q\)</span>，使用渲染-比较的方法，得到<span
+class="math inline">\(\mathbf{T}_{O_M \to Q}\)</span>。结合<span
+class="math inline">\(\mathbf{T}_{O_M \to A}\)</span>和<span
+class="math inline">\(\mathbf{T}_{O_M \to Q}\)</span>，得到<span
+class="math inline">\(\mathbf{T}_{A \to Q}\)</span>。</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/teaser_png.webp"
+alt="Figure 1. Our method accurately estimates 6D object pose for novel objects on drastically different scenes and viewpoints using only a single RGB-D anchor image. We achieve robust pose estimation without requiring precise CAD models or posed multi-view reference images." />
+<figcaption aria-hidden="true">Figure 1. Our method accurately estimates
+6D object pose for novel objects on drastically different scenes and
+viewpoints using only a single RGB-D anchor image. We achieve robust
+pose estimation without requiring precise CAD models or posed multi-view
+reference images.</figcaption>
+</figure>
+<p>The main contributions of our work are as follows:</p>
+<ul>
+<li>We introduce Any6DPose, a novel framework that enables 6D pose and
+size estimation of novel objects in different scenes from only a single
+reference image.</li>
+<li>We propose a straightforward yet effective object alignment
+technique that addresses the challenges of existing 3D generation
+models, specifically improving 2D-3D alignment and size estimation for
+accurate pose estimation.</li>
+<li>We validate our approach through extensive experiments,
+demonstrating superior performance compared to state-of-the-art methods
+across five benchmark datasets.</li>
+</ul>
+<h2 id="related-works">2. Related Works</h2>
+<h2 id="method">3. Method</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/method_png.webp"
+alt="Figure 2. Overview of the Any6D framework for model-free object pose estimation. First, we reconstruct normalized object shape O_N from the image-to3D model. Then, we estimate accurate object pose and size from anchor image I_A using the proposed object alignment (Sec. 3.1). Next, we use the query image I_Q to estimate the pose with the reconstructed metric-scale object shape O_M (Sec. 3.2)." />
+<figcaption aria-hidden="true">Figure 2. Overview of the Any6D framework
+for model-free object pose estimation. First, we reconstruct normalized
+object shape <span class="math inline">\(O_N\)</span> from the
+image-to3D model. Then, we estimate accurate object pose and size from
+anchor image <span class="math inline">\(I_A\)</span> using the proposed
+object alignment (Sec. 3.1). Next, we use the query image <span
+class="math inline">\(I_Q\)</span> to estimate the pose with the
+reconstructed metric-scale object shape <span
+class="math inline">\(O_M\)</span> (Sec. 3.2).</figcaption>
+</figure>
+<p>给定锚点RGBD图像<span
+class="math inline">\(I_A\)</span>和查询RGBD图像<span
+class="math inline">\(I_Q\)</span>，我们的任务是估计出这两张图像之间的相对位姿。查询图像可能在和锚点图像完全不同的视角和场景下捕获同一对象。我们的任务是估计出<span
+class="math inline">\(I_A\)</span>和<span
+class="math inline">\(I_Q\)</span>之间的相对位姿<span
+class="math inline">\(\mathbf{T}_{A \to Q} \in
+\text{SE}(3)\)</span>，其中<span class="math inline">\(\mathbf{T}_{A \to
+Q}\)</span>定义为一个刚体变换<span class="math inline">\([R |
+t]\)</span>，包含一个旋转<span class="math inline">\(R \in
+\text{SO}(3)\)</span>和平移<span class="math inline">\(t \in
+\mathbb{R}^3\)</span>。</p>
+<p>在先前的方法中，一部分方法使用可见部分匹配来估计两个视角之间同一物体的相对位姿，这些方法在视角之间的重叠较大时有效，但在视角变化较大时性能较差；另一部分方法通过重建3D模型来实现完全到部分的匹配。</p>
+<p>提出的Any6D可以估计锚点图像<span
+class="math inline">\(I_A\)</span>和查询图像<span
+class="math inline">\(I_Q\)</span>之间的相对位姿<span
+class="math inline">\(\mathbf{T}_{A \to
+Q}\)</span>，方法包括两个部分：</p>
+<ol type="1">
+<li>首先使用image-to-3D模型，在不考虑真实世界的比例和位姿的前提下，从锚点图像重建归一化物体模型<span
+class="math inline">\(O_N\)</span>，然后通过确定实际对象大小<span
+class="math inline">\(s \in \mathbb{R}^3\)</span>和位姿<span
+class="math inline">\(\mathbf{T}_{O_M \to
+A}\)</span>来估计度量尺度物体模型<span
+class="math inline">\(O_M\)</span>，并将其在二维和三维空间中进行精确对齐；</li>
+<li>接下来，我们利用重建的度量尺度物体模型<span
+class="math inline">\(O_M\)</span>和查询图像<span
+class="math inline">\(I_Q\)</span>进行姿态估计，通过融合<span
+class="math inline">\(\mathbf{T}_{O_M \to A}\)</span>和<span
+class="math inline">\(\mathbf{T}_{O_M \to Q}\)</span>推到出相对变换<span
+class="math inline">\(\mathbf{T}_{A \to
+Q}\)</span>。Any6D框架的完整工作流程如图2所示。</li>
+</ol>
+<h3 id="coarse-object-alignment">3.1. Coarse Object Alignment</h3>
+<p>据我们所知，现阶段还没有可靠的RGBD单视角度量尺度重建方案可以有效的处理各种对象。所以这里使用“InstantMesh:
+Efficient 3D Mesh Generation from a Single Image with Sparse-view Large
+Reconstruction
+Models”。然而，一个关键的限制在于，3D物体重建只能生成具有归一化尺度的物体模型<span
+class="math inline">\(O_N\)</span>（XYZ轴的范围都是<span
+class="math inline">\([-1,
+1]\)</span>），这意味着重建的模型未针对实际场景进行正确的尺寸缩放或空间定位。所以我们进行了物体对齐：首先估计物体形状<span
+class="math inline">\(O_M\)</span>的粗略尺寸，然后通过联合求解<span
+class="math inline">\(\mathbf{T}_{O_M \to
+A}\)</span>来优化该尺寸。我们的方法涉及在锚点图像<span
+class="math inline">\(I_A\)</span>与归一化形状<span
+class="math inline">\(O_N\)</span>之间进行3D和2D的物体模型对齐，具体包括变换<span
+class="math inline">\(\mathbf{T}_a \in \text{SE}(3)\)</span>和尺寸<span
+class="math inline">\(s \in \mathbb{R}^3\)</span>。</p>
+<p>具体来说，我们基于<span
+class="math inline">\(I_A\)</span>，使用由粗到细的方法来估计物体尺寸<span
+class="math inline">\(s\)</span>。首先通过比较<span
+class="math inline">\(I_A\)</span>和<span
+class="math inline">\(O_N\)</span>之间来自各自物体中心的点云来初始化粗略对象大小。虽然可以使用点的均值来直接估计中心，但是由于锚点图像中的部分视角问题和锚点图像中存在离群点，这种直接估计的方法是不可靠的。如图3(a)和图3(b)所示。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/points_png.webp"
+alt="Figure 3. Visualization of each point clouds and center of mustard object." />
+<figcaption aria-hidden="true">Figure 3. Visualization of each point
+clouds and center of mustard object.</figcaption>
+</figure>
+<p>因为锚点图像中物体的部分可见性，使用简单的bounding
+box轴对齐方法同样也会导致不准确，如图3(c)所示。因此，我们提出使用有向边界框来确定物体中心，如图3(d)所示，这为<span
+class="math inline">\(I_A\)</span>提供了更可靠的粗略中心估计。对于轴对齐，我们将有向边界框与XYZ轴对齐，对不同的旋转角度进行采样，然后计算<span
+class="math inline">\(I_A\)</span>和<span
+class="math inline">\(O_N\)</span>在不同角度旋转后bounding
+box之间的IoU。能够使IoU最大的旋转和缩放组合会把<span
+class="math inline">\(O_N\)</span>变换为粗略对齐的物体模型，并将其更新为初始物体模型<span
+class="math inline">\(O_{M^\prime}\)</span>，随后<span
+class="math inline">\(O_{M^\prime}\)</span>将被用于精确的位姿和尺寸估计。</p>
+<h3 id="fine-object-alignment">3.2. Fine Object Alignment</h3>
+<p>方法首先重建粗略物体模型<span
+class="math inline">\(O_{M^\prime}\)</span>，然后通过物体和大小联合优化来优化位姿和物体大小。</p>
+<p>优化部分的灵感来自“FoundationPose: Unified 6D Pose Estimation and
+Tracking of Novel
+Objects”，但是FoundationPose需要物体的CAD模型，在没有物体CAD模型的情况下，则需要多张有位姿标注的参考图像。因此，我们开发了一个联合模块，将大小估计任务融入到位姿优化过程中。这使我们能够可靠地同时估计大小和位姿。</p>
+<p>优化流程主要包括三个主要模块：位姿估计、大小估计和轴对齐，这些模块在一个统一的过程中协同工作，通过在大小优化和位姿优化这两项任务之间交替进行来实现。我们首先使用<span
+class="math inline">\(O_{M^\prime}\)</span>来估计初始位姿，同时优化物体大小。在FoundationPose中，采样生成位姿假设的过程只在<span
+class="math inline">\(\text{SO}(3)\)</span>中进行，而没有考虑大小的变化。与FoundationPose不同的是，我们的方法除了在<span
+class="math inline">\(\text{SO}(3)\)</span>中采样，还额外采样了不同的大小。具体来说，大小采样在每个轴上的范围为<span
+class="math inline">\(\Delta s \in [s_0, s_1]\)</span>（其中<span
+class="math inline">\(s_0 = 0.6, s_1 =
+1.4\)</span>）。然后我们使用FoundationPose中的模块来优化位姿假设，并将优化后的位姿进行渲染，以与查询图像比较。最优位姿的选择会基于FoundationPose中位姿选择模块给出的比较分数进行选择。当最优大小确定时，我们会将物体大小进行缩放，并进入到位姿优化阶段，包括一个轴对齐步骤，以实现更高的精度。这种更新后的对齐方式利用了大小和位姿的联合估计，比传统的基于IoU的方法具有更高的精度。</p>
+<p>在优化了物体参数之后，我们确定最终的物体位姿<span
+class="math inline">\(T_{O_M \to
+A}\)</span>，它能为重建的物体模型提供精确的对齐。利用锚点图像<span
+class="math inline">\(I_A\)</span>，查询图像<span
+class="math inline">\(I_Q\)</span>和重建的物体模型<span
+class="math inline">\(O_M\)</span>，我们通过组合两个变换来估计相对位姿<span
+class="math inline">\(\mathbf{T}_{A \to
+Q}\)</span>：从物体模型到锚点图像的变换<span
+class="math inline">\(\mathbf{T}_{O_M \to
+A}\)</span>和从物体模型到查询图像的变换<span
+class="math inline">\(\mathbf{T}_{O_M \to
+Q}\)</span>。相对位姿可以表示如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    \mathbf{T}_{A \to Q} = (\mathbf{T}_{O_M \to A})^{-1} \cdot
+\mathbf{T}_{O_M \to Q}
+\end{equation}
+\]</span></p>
+<p>对于位姿选择，我们采用一个两阶段的渲染-比较策略。首先，一个位姿排序网络会通过比较渲染结果和裁剪后的观测图像来评估每个假设，得到一个嵌入向量以量化对齐质量。然后，我们对所有位姿假设的拼接嵌入向量应用自注意力机制，融入全局上下文信息，从而生成最终分数，以便选出最优位姿。</p>
+<h2 id="experiments">4. Experiments</h2>
+<h3 id="datasets">4.1. Datasets</h3>
+<h3 id="metrics">4.2. Metrics</h3>
+<h3 id="comparison-with-state-of-the-art">4.3. Comparison with
+State-of-the-art</h3>
+<h3 id="qualitative-results">4.4. Qualitative Results</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/ho3d_qual_png.webp"
+alt="Figure 4. Qualitative comparison of state-of-the-art methods on the HO3D Dataset. In this challenging scenario, the left anchor image shows only partially visible objects, while the query images are not visible due to occlusion or different viewing angles. This represents the most challenging case for matching. Gedi, being a depth-based method, shows ambiguity when dealing with RGB-based non-symmetric objects." />
+<figcaption aria-hidden="true">Figure 4. Qualitative comparison of
+state-of-the-art methods on the HO3D Dataset. In this challenging
+scenario, the left anchor image shows only partially visible objects,
+while the query images are not visible due to occlusion or different
+viewing angles. This represents the most challenging case for matching.
+Gedi, being a depth-based method, shows ambiguity when dealing with
+RGB-based non-symmetric objects.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/ycbineoat_qual_png.webp"
+alt="Figure 5. Qualitative comparison of state-of-the-art methods on the YCBInEOAT Dataset. In this challenging scenario, the left anchor image shows only partially visible objects, while the query images are not visible due to occlusion or different viewing angles. This represents the most challenging case for matching. Gedi, being a depth-based method, shows ambiguity when dealing with RGB-based non-symmetric objects." />
+<figcaption aria-hidden="true">Figure 5. Qualitative comparison of
+state-of-the-art methods on the YCBInEOAT Dataset. In this challenging
+scenario, the left anchor image shows only partially visible objects,
+while the query images are not visible due to occlusion or different
+viewing angles. This represents the most challenging case for matching.
+Gedi, being a depth-based method, shows ambiguity when dealing with
+RGB-based non-symmetric objects.</figcaption>
+</figure>
+<h3 id="ablation-studies">4.5. Ablation Studies</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee/ablation_png.webp"
+alt="Figure 6. Comparison of shape quality between baseline method and ours." />
+<figcaption aria-hidden="true">Figure 6. Comparison of shape quality
+between baseline method and ours.</figcaption>
+</figure>
+<h2 id="conclusion">5. Conclusion</h2>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2503.18673" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html" title="【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects">https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+              <a href="/tags/2025CVPR/" rel="tag"><i class="fa fa-tag"></i> 2025CVPR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="prev" title="【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" rel="next" title="【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation">
+                  【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

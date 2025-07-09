@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Estimating the 6D object pose from a single RGB image often involves noise and indeterminacy due to challenges such as occlusions and cluttered backgrounds. Meanwhile, diffusion models have shown appe">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose Estimation">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="Estimating the 6D object pose from a single RGB image often involves noise and indeterminacy due to challenges such as occlusions and cluttered backgrounds. Meanwhile, diffusion models have shown appe">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-26T10:18:30.000Z">
+<meta property="article:modified_time" content="2025-02-26T10:18:30.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html","path":"paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html","title":"【论文笔记】6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose Estimation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose Estimation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation"><span class="nav-text">6D-Diff:
+A Keypoint Diffusion Framework for 6D Object Pose Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2. Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-text">3. Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#revisiting-diffusion-models"><span class="nav-text">3.1. Revisiting Diffusion
+Models</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#forward-process"><span class="nav-text">Forward Process</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reverse-process"><span class="nav-text">Reverse Process</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proposed-framework"><span class="nav-text">3.2. Proposed Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#keypoints-distribution-initialization"><span class="nav-text">Keypoints Distribution
+Initialization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#forward-process-1"><span class="nav-text">Forward Process</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reverse-process-1"><span class="nav-text">Reverse Process</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training-and-testing"><span class="nav-text">3.3. Training and Testing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#training"><span class="nav-text">Training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#testing"><span class="nav-text">Testing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#model-architecture"><span class="nav-text">3.4. Model Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#diffusion-model-m_textdiff"><span class="nav-text">Diffusion Model \(M_\text{diff}\)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#keypoints-distribution-initializer"><span class="nav-text">Keypoints Distribution
+Initializer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datasets-evaluation-metrics"><span class="nav-text">4.1. Datasets &amp; Evaluation
+Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation-details"><span class="nav-text">4.2. Implementation Details</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comparison-with-state-of-the-art-methods"><span class="nav-text">4.3. Comparison with
+State-of-the-art Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-studies"><span class="nav-text">4.4. Ablation Studies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">5. Conclusion</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/co-op-correspondence-based-novel-object-pose-estimation_2025_Moon.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-05</time>
+        <br>
+      【论文笔记】Co-op: Correspondence-based Novel Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose Estimation | Karl的博客">
+      <meta itemprop="description" content="Estimating the 6D object pose from a single RGB image often involves noise and indeterminacy due to challenges such as occlusions and cluttered backgrounds. Meanwhile, diffusion models have shown appealing performance in generating high-quality images from random noise with high indeterminacy through step-by-step denoising. Inspired by their denoising capability, we propose a novel diffusion-based framework (6D-Diff) to handle the noise and indeterminacy in object pose estimation for better performance. In our framework, to establish accurate 2D-3D correspondence, we formulate 2D keypoints detection as a reverse diffusion (denoising) process. To facilitate such a denoising process, we design a Mixture-of-Cauchy-based forward diffusion process and condition the reverse process on the object appearance features. Extensive experiments on the LM-O and YCB-V datasets demonstrate the effectiveness of our framework.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose Estimation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-26 18:18:30" itemprop="dateCreated datePublished" datetime="2025-02-26T18:18:30+08:00">2025-02-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>37 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Estimating the 6D object pose from a single RGB image often involves noise and indeterminacy due to challenges such as occlusions and cluttered backgrounds. Meanwhile, diffusion models have shown appealing performance in generating high-quality images from random noise with high indeterminacy through step-by-step denoising. Inspired by their denoising capability, we propose a novel diffusion-based framework (6D-Diff) to handle the noise and indeterminacy in object pose estimation for better performance. In our framework, to establish accurate 2D-3D correspondence, we formulate 2D keypoints detection as a reverse diffusion (denoising) process. To facilitate such a denoising process, we design a Mixture-of-Cauchy-based forward diffusion process and condition the reverse process on the object appearance features. Extensive experiments on the LM-O and YCB-V datasets demonstrate the effectiveness of our framework.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation">6D-Diff:
+A Keypoint Diffusion Framework for 6D Object Pose Estimation</h1>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 6%" />
+<col style="width: 10%" />
+<col style="width: 32%" />
+<col style="width: 32%" />
+<col style="width: 9%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">6D-Diff</td>
+<td style="text-align: center;">实例级</td>
+<td style="text-align: center;">RGB + CAD</td>
+<td style="text-align: center;">RGB + CAD（应该是需要CAD的）</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.02.26：<strong>代码未开源</strong>，方法倒是看懂了，从扩散模型中获得灵感，学习一个去除关键点噪声的反向过程，得到2D-3D对应关系，然后使用PnP求解位姿</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig1.webp"
+alt="Figure 1. Overview of our proposed 6D-Diff framework. As shown, given the 3D keypoints from the object 3D CAD model, we aim to detect the corresponding 2D keypoints in the image to obtain the 6D object pose. Note that when detecting keypoints, there are often challenges such as occlusions (including self-occlusions) and cluttered backgrounds that can introduce noise and indeterminacy into the process, impacting the accuracy of pose prediction." />
+<figcaption aria-hidden="true">Figure 1. Overview of our proposed
+6D-Diff framework. As shown, given the 3D keypoints from the object 3D
+CAD model, we aim to detect the corresponding 2D keypoints in the image
+to obtain the 6D object pose. Note that when detecting keypoints, there
+are often challenges such as occlusions (including self-occlusions) and
+cluttered backgrounds that can introduce noise and indeterminacy into
+the process, impacting the accuracy of pose prediction.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig_demo.webp"
+alt="Figure 2. Above we show two examples of keypoint heatmaps, which serve as the intermediate representation [4, 5, 44] in our framework. The red dots indicate the ground-truth locations of the keypoints. In the example (a), the target object is the pink cat, which is heavily occluded in the image and is shown in a different pose compared to the 3D model. As shown above, due to occlusions and cluttered backgrounds, the keypoint heatmaps are noisy, which reflects the noise and indeterminacy during the keypoints detection process." />
+<figcaption aria-hidden="true">Figure 2. Above we show two examples of
+keypoint heatmaps, which serve as the intermediate representation [4, 5,
+44] in our framework. The red dots indicate the ground-truth locations
+of the keypoints. In the example (a), the target object is the pink cat,
+which is heavily occluded in the image and is shown in a different pose
+compared to the 3D model. As shown above, due to occlusions and
+cluttered backgrounds, the keypoint heatmaps are noisy, which reflects
+the noise and indeterminacy during the keypoints detection
+process.</figcaption>
+</figure>
+<p>Our work makes the following contributions:</p>
+<ol type="1">
+<li>We propose a novel 6D-Diff framework, in which we formulate
+keypoints detection for 6D object pose estimation as a reverse diffusion
+process to effectively eliminate the noise and indeterminacy in object
+pose estimation.</li>
+<li>To take advantage of the intermediate representation that encodes
+useful prior distribution knowledge for handling this task, we propose a
+novel MoC-based diffusion process.</li>
+<li>Besides, we facilitate the model learning by utilizing object
+features.</li>
+</ol>
+<h2 id="related-work">2. Related Work</h2>
+<h2 id="method">3. Method</h2>
+<p>总结：</p>
+<ul>
+<li><p>训练：</p>
+<ol type="1">
+<li>给定RGB和物体CAD，先使用已有的目标检测将ROI框出来，然后在CAD上使用FPS选3D点（方法中选了<span
+class="math inline">\(N = 128\)</span>个），由于GT
+Pose已知，所以可以将3D点投影到图像2D点上，得到2D点的坐标；</li>
+<li>使用这些2D点，基于“Making Deep Heatmaps Robust to Partial Occlusions
+for 3D Object Pose Estimation”的方法生成热图（<span
+class="math inline">\(N = 128\)</span>个），同时得到外观特征<span
+class="math inline">\(f_\text{app}\)</span>；</li>
+<li>将得到的热图转换为概率分布<span
+class="math inline">\(D_K\)</span>（只有一个），然后使用EM算法将其描述为柯西混合（MoC）分布<span
+class="math inline">\(\hat{D}_K\)</span>；</li>
+<li>由于有真实的2D关键点坐标<span class="math inline">\(d_0 \in
+\mathbb{R}^{N \times 2}\)</span>，我们可以从柯西混合分布<span
+class="math inline">\(\hat{D}_K\)</span>中基于<span
+class="math inline">\(\hat{d}_k = \sqrt{\bar{\alpha}_k}d_0 + (1 -
+\sqrt{\bar{\alpha}_k})\mu^{\text{MoC}} + \sqrt{1 -
+\bar{\alpha}_k}\epsilon^\text{MoC}\)</span>采样噪声得到<span
+class="math inline">\(\{\hat{d}_1, \cdots,
+\hat{d}_K\}\)</span>，我们采样<span class="math inline">\(M =
+5\)</span>次，可以得到<span class="math inline">\(M\)</span>组<span
+class="math inline">\(\{\hat{d}_1, \cdots, \hat{d}_K\}\)</span>，即<span
+class="math inline">\(\{\hat{d}_1^i, \cdots, \hat{d}_K^i\}_{i =
+1}^M\)</span>；</li>
+<li>然后基于这<span class="math inline">\(M =
+5\)</span>组数据，迭代去噪，得到<span class="math inline">\(M =
+5\)</span>个结果，取平均，得到2D-3D对应关系，使用PnP求解位姿；</li>
+</ol></li>
+<li><p>测试：</p>
+<ol type="1">
+<li>给定RGB，生成热图，初始化<span
+class="math inline">\(D_K\)</span>，转换到<span
+class="math inline">\(\hat{D}_K\)</span>；</li>
+<li>从<span class="math inline">\(\hat{D}_K\)</span>中采样<span
+class="math inline">\(M = 5\)</span>组<span
+class="math inline">\(d_K\)</span>，得到<span
+class="math inline">\(\{\hat{d}_K^i\}_{i = 1}^M\)</span>；</li>
+<li>使用反向过程去噪，得到<span class="math inline">\(\{\hat{d}_0^i\}_{i
+= 1}^M\)</span>；</li>
+<li>取平均，得到2D-3D对应关系，使用PnP求解位姿。</li>
+</ol></li>
+</ul>
+<h3 id="revisiting-diffusion-models">3.1. Revisiting Diffusion
+Models</h3>
+<!-- 扩散模型是一种概率生成模型，由前向过程和反向过程组成。
+
+给定一个原始样本$d_0$（通常是一张清晰的图像），前向过程就是将这个样本$d_0$逐渐加噪变为噪声（通常是高斯噪声）$d_K \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$（即$d_0 \to d_1 \to \cdots \to d_K$）的过程。
+
+而反向过程则是为$d_K$去噪直至还原为原始样本$d_0$（即$d_K \to d_{K - 1} \to \cdots \to d_0$）的过程。
+
+每个过程都被定义为一个马尔可夫链。 -->
+<p>扩散模型是一种概率生成模型，它由两个部分组成，即正向过程和反向过程。具体来说，给定一个原始样本<span
+class="math inline">\(d_0\)</span>（例如，一张干净的图像），将样本<span
+class="math inline">\(d_0\)</span>朝着噪声（通常是高斯噪声）<span
+class="math inline">\(d_K \sim \mathcal{N}(\mathbf{0},
+\mathbf{I})\)</span>进行迭代扩散的过程（即<span
+class="math inline">\(d_0 \to d_1 \to \cdots \to
+d_K\)</span>）被称为正向过程。相反，将噪声<span
+class="math inline">\(d_K\)</span>朝着样本<span
+class="math inline">\(d_0\)</span>进行迭代去噪的过程（即<span
+class="math inline">\(d_K \to d_{K - 1} \to \cdots \to
+d_0\)</span>）被称为反向过程。每个过程都被定义为一个马尔可夫链。</p>
+<h4 id="forward-process">Forward Process</h4>
+<!-- 扩散模型的目标是直接从一个采样出的高斯噪声中还原出对应的原始样本，要实现这个目标，我们可以把前向过程中每一步的噪声全部保存下来，作为反向过程的GT，让反向过程中的每一步都预测一步噪声，从而逐渐去噪还原出原始样本。
+
+文中将这些中间步骤结果表示为$\{d_k\}_{k = 1}^{K - 1}$，其中，$K$表示加噪/去噪的次数。
+
+从$d_1$到$d_K$的后验分布$q(d_{1 : K} | d_0)$可表示为：
+
+$$
+\begin{equation}\label{eq1}
+    \begin{aligned}
+        q(d_{1 : K} | d_0) &= \prod_{k = 1}^K q(d_k | d_{k - 1}) \\
+        q(d_k | d_{k - 1}) &= \mathcal{N}(d_k; \sqrt{1 - \beta_k}d_{k - 1}, \beta_k\mathbf{I})
+    \end{aligned}
+\end{equation}
+$$
+
+其中，$\{\beta_k \in (0, 1)\}_{k = 1}^K$表示一组固定的方差控制器，它们控制着在不同步骤中注入噪声的规模。注意，$q(d_k | d_{k - 1})$表示在给定$d_{k - 1}$的条件下，$d_k$的条件概率密度函数，$\mathcal{N}(d_k; \sqrt{1 - \beta_k}d_{k - 1}, \beta_k\mathbf{I})$表示$d_k$服从一个正态分布，这个正态分布的均值是$\sqrt{1 - \beta_k}d_{k - 1}$，方差是$\beta_k\mathbf{I}$。
+
+根据公式\eqref{eq1}，我们可以推导出$q(d_k | d_0)$的闭式形式如下：
+
+$$
+\begin{equation}\label{eq2}
+    q(d_k | d_0) = \mathcal{N}(d_k; \sqrt{\bar{\alpha}_k}d_0, (1 - \bar{\alpha}_k)\mathbf{I})
+\end{equation}
+$$
+
+其中，$\alpha_k = 1 - \beta_k$，$\bar{\alpha}_k = \prod_{s = 1}^k \alpha_s$。根据公式\eqref{eq2}，$d_k$可以表示为：
+
+$$
+\begin{equation}\label{eq3}
+    d_k = \sqrt{\bar{\alpha}_k}d_0 + \sqrt{1 - \bar{\alpha}_k}\epsilon
+\end{equation}
+$$
+
+其中，$\epsilon \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$。
+
+> 推导过程如下：
+>
+> 当$k = 1$时，有$q(d_1 | d_0) = \mathcal{N}(d_1; \sqrt{1 - \beta_1}d_0, \beta_1\mathbf{I})$，根据正态分布的性质，如果$X \sim \mathcal{N}(\mu, \sigma^2)$，那么我们可以将$X$表示为：$X = \mu + \sigma\epsilon$，其中$\epsilon \sim \mathcal{N}(0, 1)$，那么有：
+>
+> $$
+> d_1 = \sqrt{1 - \beta_1}d_0 + \sqrt{\beta_1}\epsilon_1,
+> $$
+>
+> 当$k = 2$时，有：
+>
+> $$
+> d_2 = \sqrt{1 - \beta_2}d_1 + \sqrt{\beta_2}\epsilon_2,
+> $$
+>
+> 将$d_1$代入$d_2$，有：
+>
+> $$
+> \begin{aligned}
+> d_2 &= \sqrt{1 - \beta_2}\left(\sqrt{1 - \beta_1}d_0 + \sqrt{\beta_1}\epsilon_1\right) + \sqrt{\beta_2}\epsilon_2, \\
+> d_2 &= \sqrt{(1 - \beta_1)(1 - \beta_2)}d_0 + \sqrt{\beta_1(1 - \beta_2)}\epsilon_1 + \sqrt{\beta_2}\epsilon_2,
+> \end{aligned}
+> $$
+>
+> 注意，对于两个正态分布$X \sim \mathcal{N}(\mu_1, \sigma_1^2)$和$Y \sim \mathcal{N}(\mu_2, \sigma_2^2)$，如果它们独立，那么这两个正态分布的线性组合仍然是正态分布，即$aX + bY \sim \mathcal{N}(a\mu_1 + b\mu_2, a^2\sigma_1^2 + b^2\sigma_2^2)$（也可写为$aX + bY \sim (a\mu_1 + b\mu_2) + \sqrt{a^2\sigma_1^2 + b^2\sigma_2^2}\epsilon$），由于$\epsilon_1, \epsilon_2 \sim \mathcal{N}(0, 1)$，所以简化$d_2$得到：
+>
+> $$
+> d_2 = \sqrt{(1 - \beta_1)(1 - \beta_2)}d_0 + \sqrt{\beta_1(1 - \beta_2) + \beta_2}\epsilon,
+> $$
+>
+> 令$\alpha_k = 1 - \beta_k$，有：
+>
+> $$
+> d_2 = \sqrt{\alpha_1\alpha_2}d_0 + \sqrt{1 - \alpha_1\alpha_2}\epsilon,
+> $$
+>
+> 令$\bar{\alpha}_k = \prod_{s = 1}^k \alpha_s$，根据数学归纳法，有：
+>
+> $$
+> d_k = \sqrt{\bar{\alpha}_k}d_0 + \sqrt{1 - \bar{\alpha}_k}\epsilon,
+> $$
+>
+> 推导结束。
+
+根据公式\eqref{eq3}，我们可以观察到，当扩散步骤的数量$K$足够大且$\bar{\alpha}_K$相应地减小到几乎为零时，$d_K$的分布近似为标准高斯分布，即$d_K \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$。这意味着$d_0$逐渐被破坏成高斯噪声，这符合扩散过程的非平衡热力学现象。 -->
+<p>为了获取用于训练扩散模型的监督信号，以便模型能够逐步学习执行反向过程，我们需要获取中间步骤结果<span
+class="math inline">\(\{d_k\}_{k = 1}^{K -
+1}\)</span>。因此，首先要执行正向过程，以生成这些用于训练的中间步骤结果。具体而言，从<span
+class="math inline">\(d_1\)</span>到<span
+class="math inline">\(d_K\)</span>的后验分布<span
+class="math inline">\(q(d_{1 : K} | d_0)\)</span>可表示为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    \begin{aligned}
+        q(d_{1 : K} | d_0) &amp;= \prod_{k = 1}^K q(d_k | d_{k - 1}) \\
+        q(d_k | d_{k - 1}) &amp;= \mathcal{N}(d_k; \sqrt{1 -
+\beta_k}d_{k - 1}, \beta_k\mathbf{I})
+    \end{aligned}
+\end{equation}
+\]</span></p>
+<p>其中，<span class="math inline">\(\{\beta_k \in (0, 1)\}_{k =
+1}^{K}\)</span>表示一组固定的方差控制器，它们控制着在不同步骤中注入噪声的规模。根据公式<span
+class="math inline">\(\eqref{eq1}\)</span>，我们可以推导出<span
+class="math inline">\(q(d_k | d_0)\)</span>的闭式形式如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq2}
+    q(d_k | d_0) = \mathcal{N}(d_k; \sqrt{\bar{\alpha}_k}d_0, (1 -
+\bar{\alpha}_k)\mathbf{I})
+\end{equation}
+\]</span></p>
+<p>其中，<span class="math inline">\(\alpha_k = 1 -
+\beta_k\)</span>，<span class="math inline">\(\bar{\alpha}_k = \prod_{s
+= 1}^k \alpha_s\)</span>。根据公式<span
+class="math inline">\(\eqref{eq2}\)</span>，<span
+class="math inline">\(d_k\)</span>可以表示为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq3}
+    d_k = \sqrt{\bar{\alpha}_k}d_0 + \sqrt{1 - \bar{\alpha}_k}\epsilon
+\end{equation}
+\]</span></p>
+<p>其中，<span class="math inline">\(\epsilon \sim
+\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span>。</p>
+<blockquote>
+<p>公式<span
+class="math inline">\(\eqref{eq3}\)</span>的推导过程如下：</p>
+<p>当<span class="math inline">\(k = 1\)</span>时，有<span
+class="math inline">\(q(d_1 | d_0) = \mathcal{N}(d_1; \sqrt{1 -
+\beta_1}d_0, \beta_1\mathbf{I})\)</span>，根据正态分布的性质，如果<span
+class="math inline">\(X \sim \mathcal{N}(\mu,
+\sigma^2)\)</span>，那么我们可以将<span
+class="math inline">\(X\)</span>表示为：<span class="math inline">\(X =
+\mu + \sigma\epsilon\)</span>，其中<span class="math inline">\(\epsilon
+\sim \mathcal{N}(0, 1)\)</span>，那么有：</p>
+<p><span class="math display">\[
+d_1 = \sqrt{1 - \beta_1}d_0 + \sqrt{\beta_1}\epsilon_1,
+\]</span></p>
+<p>当<span class="math inline">\(k = 2\)</span>时，有：</p>
+<p><span class="math display">\[
+d_2 = \sqrt{1 - \beta_2}d_1 + \sqrt{\beta_2}\epsilon_2,
+\]</span></p>
+<p>将<span class="math inline">\(d_1\)</span>代入<span
+class="math inline">\(d_2\)</span>，有：</p>
+<p><span class="math display">\[
+\begin{aligned}
+d_2 &amp;= \sqrt{1 - \beta_2}\left(\sqrt{1 - \beta_1}d_0 +
+\sqrt{\beta_1}\epsilon_1\right) + \sqrt{\beta_2}\epsilon_2, \\
+d_2 &amp;= \sqrt{(1 - \beta_1)(1 - \beta_2)}d_0 + \sqrt{\beta_1(1 -
+\beta_2)}\epsilon_1 + \sqrt{\beta_2}\epsilon_2,
+\end{aligned}
+\]</span></p>
+<p>注意，对于两个正态分布<span class="math inline">\(X \sim
+\mathcal{N}(\mu_1, \sigma_1^2)\)</span>和<span class="math inline">\(Y
+\sim \mathcal{N}(\mu_2,
+\sigma_2^2)\)</span>，如果它们独立，那么这两个正态分布的线性组合仍然是正态分布，即<span
+class="math inline">\(aX + bY \sim \mathcal{N}(a\mu_1 + b\mu_2,
+a^2\sigma_1^2 + b^2\sigma_2^2)\)</span>（也可写为<span
+class="math inline">\(aX + bY \sim (a\mu_1 + b\mu_2) +
+\sqrt{a^2\sigma_1^2 + b^2\sigma_2^2}\epsilon\)</span>），由于<span
+class="math inline">\(\epsilon_1, \epsilon_2 \sim \mathcal{N}(0,
+1)\)</span>，所以简化<span class="math inline">\(d_2\)</span>得到：</p>
+<p><span class="math display">\[
+d_2 = \sqrt{(1 - \beta_1)(1 - \beta_2)}d_0 + \sqrt{\beta_1(1 - \beta_2)
++ \beta_2}\epsilon,
+\]</span></p>
+<p>令<span class="math inline">\(\alpha_k = 1 -
+\beta_k\)</span>，有：</p>
+<p><span class="math display">\[
+d_2 = \sqrt{\alpha_1\alpha_2}d_0 + \sqrt{1 - \alpha_1\alpha_2}\epsilon,
+\]</span></p>
+<p>令<span class="math inline">\(\bar{\alpha}_k = \prod_{s = 1}^k
+\alpha_s\)</span>，根据数学归纳法，有：</p>
+<p><span class="math display">\[
+d_k = \sqrt{\bar{\alpha}_k}d_0 + \sqrt{1 - \bar{\alpha}_k}\epsilon,
+\]</span></p>
+<p>推导结束。</p>
+</blockquote>
+<p>根据公式<span
+class="math inline">\(\eqref{eq3}\)</span>，我们可以观察到，当扩散步骤的数量<span
+class="math inline">\(K\)</span>足够大且<span
+class="math inline">\(\bar{\alpha}_K\)</span>相应地减小到几乎为零时，<span
+class="math inline">\(d_K\)</span>的分布近似为标准高斯分布，即<span
+class="math inline">\(d_K \sim \mathcal{N}(\mathbf{0},
+\mathbf{I})\)</span>。这意味着<span
+class="math inline">\(d_0\)</span>逐渐被破坏成高斯噪声，这符合扩散过程的非平衡热力学现象。</p>
+<h4 id="reverse-process">Reverse Process</h4>
+<p>借助在正向过程中获取的中间步骤结果<span
+class="math inline">\(\{d_k\}_{k = 1}^{K -
+1}\)</span>，对扩散模型进行训练，使其学习执行反向过程。具体而言，在反向过程中，每一步都可以表示为一个函数<span
+class="math inline">\(f\)</span>，该函数将<span
+class="math inline">\(d_k\)</span>和扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>作为输入，并生成<span
+class="math inline">\(d_{k - 1}\)</span>作为输出，即<span
+class="math inline">\(d_{k - 1} = f(d_k, M_\text{diff})\)</span>。</p>
+<p>在训练完扩散模型之后，在推理阶段，我们无需执行正向过程。相反，我们仅执行反向过程，该过程使用经过训练的扩散模型将一个随机高斯噪声<span
+class="math inline">\(d_K \sim \mathcal{N}(\mathbf{0},
+\mathbf{I})\)</span>转换为所需分布的样本<span
+class="math inline">\(d_0\)</span>。</p>
+<h3 id="proposed-framework">3.2. Proposed Framework</h3>
+<p>与先前的研究类似，我们的框架通过两阶段的流程来预测物体的6D位姿。具体来说：</p>
+<ol type="1">
+<li>我们首先在物体的CAD模型上选择<span
+class="math inline">\(N\)</span>个3D关键点，并在图像中检测相应的<span
+class="math inline">\(N\)</span>个2D关键点；</li>
+<li>然后我们使用PnP求解器来计算6D位姿。在这里，我们主要关注第一阶段，目标是得出更精确的关键点检测结果。</li>
+</ol>
+<p>在检测2D关键点时，诸如遮挡和杂乱背景等因素会给这一过程带来噪声和不确定性，并影响检测结果的准确性。为了解决这个问题，受到扩散模型能够通过迭代减少初始分布（例如标准高斯分布）中的不确定性和噪声，从而生成所需分布的确定性且高质量样本这一特性的启发，我们将关键点检测过程表述为：通过扩散模型，从一个不确定的初始分布（<span
+class="math inline">\(D_K\)</span>）生成关键点坐标的确定性分布（<span
+class="math inline">\(D_0\)</span>）。</p>
+<p>此外，为了有效地适应物体6D位姿估计任务，我们框架中的扩散模型并不像大多数现有的扩散模型研究工作那样，从常见的初始分布（即标准高斯分布）开始反向过程。相反，受近期一些物体6D位姿估计研究工作的启发，我们首先提取一个中间表示（例如热图），并使用这个表示来初始化一个关键点坐标分布（即<span
+class="math inline">\(D_K\)</span>），它将作为反向过程的起点。这样的中间表示对有关关键点坐标的有用先验分布信息进行了编码。因此，通过从这个表示开始反向过程，我们有效地利用了该表示中的分布先验信息，来帮助扩散模型恢复准确的关键点坐标。接下来，我们首先描述如何初始化关键点分布<span
+class="math inline">\(D_K\)</span>，然后讨论我们新框架中相应的正向过程和反向过程。</p>
+<h4 id="keypoints-distribution-initialization">Keypoints Distribution
+Initialization</h4>
+<p>我们利用提取的热图来初始化关键点坐标分布<span
+class="math inline">\(D_K\)</span>。具体而言，与“ZebraPose: Coarse to
+Fine Surface Encoding for 6DoF Object Pose
+Estimation”类似，我们首先使用现成的目标检测器（例如，Faster
+RCNN）来检测目标物体的边界框，然后从输入图像中裁剪出检测到的感兴趣区域（ROI）。我们将该感兴趣区域输入到一个子网络（即关键点分布初始化器）中，以预测出若干热图，其中每个热图对应一个2D关键点。然后，我们对每个热图进行归一化处理，将其转换为概率分布。通过这种方式，每个归一化后的热图自然地表示了相应关键点坐标的分布，因此我们可以使用这些热图来初始化<span
+class="math inline">\(D_K\)</span>。</p>
+<h4 id="forward-process-1">Forward Process</h4>
+<p>在完成分布初始化之后，下一步是通过执行反向过程（<span
+class="math inline">\(D_K \to D_{K - 1} \to \cdots \to
+D_0\)</span>）来迭代地减少已初始化分布<span
+class="math inline">\(D_K\)</span>中的噪声和不确定性。为了训练扩散模型执行这样的反向过程，我们需要获取在这个过程中生成的分布（即<span
+class="math inline">\(\{D_k\}_{k = 1}^{K -
+1}\)</span>）作为监督信号。因此，我们首先需要执行正向过程，以便从<span
+class="math inline">\(\{D_k\}_{k = 1}^{K -
+1}\)</span>中获取样本。具体来说，给定真实关键点坐标分布<span
+class="math inline">\(D_0\)</span>，我们将正向过程定义为：<span
+class="math inline">\(D_0 \to D_1 \to \cdots \to D_K\)</span>，其中<span
+class="math inline">\(K\)</span>是扩散步骤的数量。在这个正向过程中，我们迭代地向确定性分布<span
+class="math inline">\(D_0\)</span>中添加噪声，也就是说，增加生成分布的不确定性，以便将其转换为具有不确定性的已初始化分布<span
+class="math inline">\(D_K\)</span>。通过这个过程，我们可以在这个过程中生成<span
+class="math inline">\(\{D_k\}_{k = 1}^{K -
+1}\)</span>，并将它们用作监督信号，来训练扩散模型执行反向过程。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig2.webp"
+alt="Figure 3. Illustration of our framework. During testing, given an input image, we first crop the Region of Interest (ROI) from the image through an object detector. After that, we feed the cropped ROI to the keypoints distribution initializer to obtain the heatmaps that can provide useful distribution priors about keypoints, to initialize D_K. Meanwhile, we can obtain object appearance features f_\text{app}. Next, we pass f_\text{app} into the encoder, and the output of the encoder will serve as conditional information to aid the reverse process in the decoder. We sample M sets of 2D keypoints coordinates from D_K, and feed these M sets of coordinates into the decoder to perform the reverse process iteratively together with the step embedding f_k. At the final reverse step (K-th step), we average \{d_0\}_{i = 1}^M as the final keypoints coordinates prediction \mathbf{d}_0, and use d_0 to compute the 6D pose with the pre-selected 3D keypoints via a PnP solver." />
+<figcaption aria-hidden="true">Figure 3. Illustration of our framework.
+During testing, given an input image, we first crop the Region of
+Interest (ROI) from the image through an object detector. After that, we
+feed the cropped ROI to the keypoints distribution initializer to obtain
+the heatmaps that can provide useful distribution priors about
+keypoints, to initialize <span class="math inline">\(D_K\)</span>.
+Meanwhile, we can obtain object appearance features <span
+class="math inline">\(f_\text{app}\)</span>. Next, we pass <span
+class="math inline">\(f_\text{app}\)</span> into the encoder, and the
+output of the encoder will serve as conditional information to aid the
+reverse process in the decoder. We sample <span
+class="math inline">\(M\)</span> sets of 2D keypoints coordinates from
+<span class="math inline">\(D_K\)</span>, and feed these <span
+class="math inline">\(M\)</span> sets of coordinates into the decoder to
+perform the reverse process iteratively together with the step embedding
+<span class="math inline">\(f_k\)</span>. At the final reverse step
+(K-th step), we average <span class="math inline">\(\{d_0\}_{i =
+1}^M\)</span> as the final keypoints coordinates prediction <span
+class="math inline">\(\mathbf{d}_0\)</span>, and use <span
+class="math inline">\(d_0\)</span> to compute the 6D pose with the
+pre-selected 3D keypoints via a PnP solver.</figcaption>
+</figure>
+<p>然而，在我们的框架中，我们的目标并非通过正向过程将真实关键点坐标分布<span
+class="math inline">\(D_0\)</span>转化为标准高斯分布，因为我们初始化的分布<span
+class="math inline">\(D_K\)</span>并非随机噪声。相反，正如之前所讨论的，<span
+class="math inline">\(D_K\)</span>是由热图初始化的（如图3所示），这是因为热图能够提供关于关键点坐标分布的粗略估计。为了有效地利用<span
+class="math inline">\(D_K\)</span>中的这些先验信息来推动反向过程，我们希望扩散模型从<span
+class="math inline">\(D_K\)</span>而非随机高斯噪声开始反向过程（去噪过程）。因此，现有生成式扩散模型中的基本正向过程（在3.1节中描述）并不适用于我们的框架，这促使我们为我们的任务设计一个新的正向过程。</p>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig5.webp"
+alt="Figure 4. Visualization of the denoising process of a sample with our framework. In this example, the target object is the yellow duck and for clarity, we here show three keypoints only. The red dots indicate the ground-truth locations of these three keypoints. The noisy heatmap before denoising reflects that factors like occlusions and clutter in the scene can introduce noise and indeterminacy when detecting keypoints. As shown, our diffusion model can effectively and smoothly reduce the noise and indeterminacy in the initial distribution step by step, finally recovering a high-quality and determinate distribution of keypoints coordinates. (Better viewed in color)" />
+<figcaption aria-hidden="true">Figure 4. Visualization of the denoising
+process of a sample with our framework. In this example, the target
+object is the yellow duck and for clarity, we here show three keypoints
+only. The red dots indicate the ground-truth locations of these three
+keypoints. The noisy heatmap before denoising reflects that factors like
+occlusions and clutter in the scene can introduce noise and
+indeterminacy when detecting keypoints. As shown, our diffusion model
+can effectively and smoothly reduce the noise and indeterminacy in the
+initial distribution step by step, finally recovering a high-quality and
+determinate distribution of keypoints coordinates. (Better viewed in
+color)</figcaption>
+</figure>
+<p>然而，设计这样一个正向过程并非易事，因为初始化的分布<span
+class="math inline">\(D_K\)</span>是基于提取的热图得到的，因此<span
+class="math inline">\(D_K\)</span>可能会很复杂且不规则，如图4所示。所以，将<span
+class="math inline">\(D_K\)</span>建模为高斯分布可能会导致潜在的较大误差。为了应对这一挑战，鉴于柯西混合（MoC）模型能够有效且可靠地描述复杂且难以处理的分布，我们利用柯西混合模型来描述<span
+class="math inline">\(D_K\)</span>。基于所描述的分布，我们随后可以执行相应的基于柯西混合模型的正向过程。</p>
+<p>具体来说，我们将柯西混合（MoC）分布中柯西核的数量记为<span
+class="math inline">\(U\)</span>，并使用期望最大化（EM）类型的算法来优化柯西混合模型的参数<span
+class="math inline">\(\eta^\text{MoC}\)</span>，从而将分布<span
+class="math inline">\(D_K\)</span>描述为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq4}
+    \eta_*^{\text{MoC}} = \text{EM}\left(\prod_{v = 1}^V \sum_{u = 1}^U
+\pi_u \text{Cauchy}(d_K^v|\mu_u, \gamma_u)\right)
+\end{equation}
+\]</span></p>
+<p>其中，<span class="math inline">\(\{d_K^v\}_{v =
+1}^V\)</span>表示从分布<span
+class="math inline">\(D_K\)</span>中采样得到的<span
+class="math inline">\(V\)</span>组关键点坐标。请注意，每组关键点坐标<span
+class="math inline">\(d_K^v\)</span>包含所有<span
+class="math inline">\(N\)</span>个关键点坐标（即<span
+class="math inline">\(d_K^v \in \mathbb{R}^{N \times
+2}\)</span>）。<span class="math inline">\(\pi_u\)</span>表示第<span
+class="math inline">\(u\)</span>个柯西核的权重（<span
+class="math inline">\(\sum_{u = 1}^U\pi_u=1\)</span>），并且<span
+class="math inline">\(\eta^\text{MoC}=\{\mu_1, \gamma_1, \cdots, \mu_U,
+\gamma_U\}\)</span>表示柯西混合模型参数，其中<span
+class="math inline">\(\mu_u\)</span>和<span
+class="math inline">\(\gamma_u\)</span>分别是第<span
+class="math inline">\(u\)</span>个柯西核的位置和尺度。通过上述优化，我们可以使用优化后的参数<span
+class="math inline">\(\eta^\text{MoC}_*\)</span>将<span
+class="math inline">\(D_K\)</span>建模为已描述的分布（<span
+class="math inline">\(\hat{D}_K\)</span>）。给定<span
+class="math inline">\(\hat{D}_K\)</span>，我们的目标是从真实关键点坐标分布<span
+class="math inline">\(D_0\)</span>开始执行正向过程，以便在经过<span
+class="math inline">\(K\)</span>步正向扩散后，生成的分布达到<span
+class="math inline">\(\hat{D}_K\)</span>。为此，我们对公式<span
+class="math inline">\(\eqref{eq3}\)</span>（<span
+class="math inline">\(d_k = \sqrt{\bar{\alpha}_k}d_0 + \sqrt{1 -
+\bar{\alpha}_k}\epsilon\)</span>）做如下修改：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq5}
+    \hat{d}_k = \sqrt{\bar{\alpha}_k}d_0 + (1 -
+\sqrt{\bar{\alpha}_k})\mu^{\text{MoC}} + \sqrt{1 -
+\bar{\alpha}_k}\epsilon^\text{MoC}
+\end{equation}
+\]</span></p>
+<p>其中，<span class="math inline">\(\hat{d}_{k}\in\mathbb{R}^{N \times
+2}\)</span>表示从生成的分布<span
+class="math inline">\(\hat{D}_k\)</span>中得到的一个样本（即一组<span
+class="math inline">\(N\)</span>个关键点坐标），<span
+class="math inline">\(\mu^\text{MoC}=\sum_{u = 1}^U \mathbb{1}_{u}
+\mu_{u}\)</span>，并且<span class="math inline">\(\epsilon^\text{MoC}
+\sim \text{Cauchy}(\mathbf{0}, \sum_{u = 1}^U (\mathbb{1}_u
+\gamma_{u}))\)</span>。请注意，<span
+class="math inline">\(\mathbb{1}_u\)</span>是一个0-1指示符，<span
+class="math inline">\(\sum_{u = 1}^U \mathbb{1}_u = 1\)</span>且<span
+class="math inline">\(\text{Prob}(\mathbb{1}_u = 1) =
+\pi_u\)</span>。</p>
+<p>从公式<span
+class="math inline">\(\eqref{eq5}\)</span>中我们可以看到，当<span
+class="math inline">\(K\)</span>足够大且<span
+class="math inline">\(\bar{\alpha}_K\)</span>相应地减小到几乎为零时，<span
+class="math inline">\(\hat{d}_K\)</span>的分布达到柯西混合（MoC）分布，即<span
+class="math inline">\(\hat{d}_K = \mu^\text{MoC} + \epsilon^\text{MoC}
+\sim \text{Cauchy}(\sum_{u = 1}^U (\mathbb{1}_u \mu_u), \sum_{u = 1}^U
+(\mathbb{1}_u
+\gamma_u))\)</span>。在上述基于柯西混合模型的正向过程之后，我们可以将生成的<span
+class="math inline">\(\{\hat{D}_k\}_{k = 1}^{K -
+1}\)</span>用作监督信号，来训练扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>以学习反向过程。关于公式<span
+class="math inline">\(\eqref{eq5}\)</span>的更多详细信息可以在补充材料中找到。这样的正向过程仅用于生成训练扩散模型的监督信号，而在测试期间我们只需要执行反向过程。</p>
+<h4 id="reverse-process-1">Reverse Process</h4>
+<p>在反向过程中，我们旨在从初始分布<span
+class="math inline">\(D_K\)</span>中恢复出期望的确定性关键点分布<span
+class="math inline">\(D_0\)</span>。如上文所述，我们通过柯西混合（MoC）模型对<span
+class="math inline">\(D_K\)</span>进行描述，然后生成<span
+class="math inline">\(\{\hat{D}_k\}_{k = 1}^{K -
+1}\)</span>作为监督信号，以优化扩散模型，使其学习执行反向过程（<span
+class="math inline">\(\hat{D}_K \to \hat{D}_{K - 1} \to \cdots \to
+D_0\)</span>）。在这个反向过程中，模型通过迭代减少<span
+class="math inline">\(\hat{D}_K\)</span>中的噪声和不确定性，从而生成<span
+class="math inline">\(D_0\)</span>。</p>
+<p>然而，直接从<span
+class="math inline">\(\hat{D}_K\)</span>执行反向过程来生成<span
+class="math inline">\(D_0\)</span>仍然可能存在困难，因为<span
+class="math inline">\(\hat{D}_K\)</span>中缺少物体的外观特征。这些特征有助于基于输入图像来约束模型的反向过程，从而得到准确的预测结果。因此，我们进一步利用来自图像的外观特征作为上下文信息，以在反向过程中引导扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>。具体来说，我们重新利用从关键点分布初始化器中提取的特征作为外观特征<span
+class="math inline">\(f_\text{app}\)</span>，并将<span
+class="math inline">\(f_\text{app}\)</span>输入到扩散模型中，如图3所示。</p>
+<p>我们的反向过程旨在从不确定分布<span
+class="math inline">\(\hat{D}_K\)</span>（训练期间）或<span
+class="math inline">\(D_K\)</span>（测试期间）生成一个确定分布<span
+class="math inline">\(D_0\)</span>。下面我们描述一下测试期间的反向过程。我们首先从输入图像中获取<span
+class="math inline">\(f_\text{app}\)</span>。然后，为了帮助扩散模型学习在每个反向步骤中执行去噪操作，按照“Denoising
+Diffusion Probabilistic Models”的方法，我们生成唯一的步骤嵌入<span
+class="math inline">\(f_D^k\)</span>，以便将步骤编号（<span
+class="math inline">\(k\)</span>）信息注入到模型中。这样，给定从第<span
+class="math inline">\(k\)</span>步的<span
+class="math inline">\(D_k\)</span>中抽取的一组含噪关键点坐标<span
+class="math inline">\(d_k \in \mathbb{R}^{N \times
+2}\)</span>，我们使用以步骤嵌入<span
+class="math inline">\(f_D^k\)</span>和物体外观特征<span
+class="math inline">\(f_\text{app}\)</span>为条件的扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>，从<span
+class="math inline">\(d_k\)</span>中恢复出<span
+class="math inline">\(d_{k - 1}\)</span>，如下所示：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq6}
+    d_{k - 1} = M_\text{diff}(d_k, f_\text{app}, f_D^k)
+\end{equation}
+\]</span></p>
+<h3 id="training-and-testing">3.3. Training and Testing</h3>
+<h4 id="training">Training</h4>
+<p>按照“PVNet: Pixel-wise Voting Network for 6DoF Pose
+Estimation”的方法，我们首先使用最远点采样（FPS）算法从物体的CAD模型表面选取<span
+class="math inline">\(N\)</span>个3D关键点。然后，我们分以下两个阶段进行训练过程。</p>
+<p>在第一阶段，为了初始化分布<span
+class="math inline">\(D_K\)</span>，我们对关键点分布初始化器进行优化。</p>
+<ol type="1">
+<li><p>具体而言，对于每个训练样本，给定预先选择的<span
+class="math inline">\(N\)</span>个3D关键点，我们可以利用真实的物体6D位姿来获取相应的<span
+class="math inline">\(N\)</span>个2D关键点的真实坐标。</p></li>
+<li><p>然后，对于每个关键点，基于其相应的真实坐标，我们按照“Making Deep
+Heatmaps Robust to Partial Occlusions for 3D Object Pose
+Estimation”的方法生成一个真实热图，用于训练初始化器。</p></li>
+<li><p>因此，对于每个训练样本，我们生成<span
+class="math inline">\(N\)</span>个真实热图（一个热图对应一个2D关键点）。通过这种方式，用于优化初始化器的损失函数<span
+class="math inline">\(L_\text{init}\)</span>可以表示为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq7}
+     L_\text{init} = \Vert\mathbf{H}_\text{pred} -
+\mathbf{H}_\text{GT}\Vert_2^2
+\end{equation}
+\]</span></p>
+<p>其中，<span
+class="math inline">\(\mathbf{H}_\text{pred}\)</span>和<span
+class="math inline">\(\mathbf{H}_\text{GT}\)</span>分别表示预测的热图和真实的热图。</p></li>
+</ol>
+<p>在第二阶段，我们对扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>进行优化。对于每个训练样本，为了优化<span
+class="math inline">\(M_\text{diff}\)</span>，我们执行以下步骤：</p>
+<ol type="1">
+<li><p>首先，将输入图像输入到一个现成的目标检测器中，然后把检测到的感兴趣区域（ROI）输入到已训练好的初始化器中，以获得<span
+class="math inline">\(N\)</span>个热图。同时，我们也能得到外观特征<span
+class="math inline">\(f_\text{app}\)</span>。</p></li>
+<li><p>利用这<span
+class="math inline">\(N\)</span>个预测的热图来初始化<span
+class="math inline">\(D_K\)</span>，并使用期望最大化（EM）类型的算法将<span
+class="math inline">\(D_K\)</span>描述为柯西混合（MoC）分布<span
+class="math inline">\(\hat{D}_K\)</span>。</p></li>
+<li><p>基于<span
+class="math inline">\(\hat{D}_K\)</span>，我们使用真实关键点坐标<span
+class="math inline">\(d_0\)</span>，通过正向过程（公式<span
+class="math inline">\(\eqref{eq5}\)</span>，即<span
+class="math inline">\(\hat{d}_k = \sqrt{\bar{\alpha}_k}d_0 + (1 -
+\sqrt{\bar{\alpha}_k})\mu^{\text{MoC}} + \sqrt{1 -
+\bar{\alpha}_k}\epsilon^\text{MoC}\)</span>）直接生成<span
+class="math inline">\(M\)</span>组<span
+class="math inline">\((\hat{d}_1, \cdots, \hat{d}_K)\)</span>（即<span
+class="math inline">\(\{\hat{d}_1^i, \cdots, \hat{d}_K^i\}_{i =
+1}^M\)</span>）。</p></li>
+<li><p>接着，我们的目标是优化扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>，以从<span
+class="math inline">\(\hat{d}_k^i\)</span>迭代地恢复出<span
+class="math inline">\(\hat{d}_{k -
+1}^i\)</span>。遵循先前的扩散模型研究工作“Denoising Diffusion
+Probabilistic Models”，我们将用于优化<span
+class="math inline">\(M_\text{diff}\)</span>的损失<span
+class="math inline">\(L_\text{diff}\)</span>表述如下（对于所有的<span
+class="math inline">\(i\)</span>，<span
+class="math inline">\(\hat{d}_0^i = d_0\)</span>）：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq8}
+     L_\text{diff} = \sum_{i = 1}^M \sum_{k = 1}^K \Vert
+M_\text{diff}(\hat{d}_k^i, f_\text{app}, f_D^k) - \hat{d}_{k -
+1}^i\Vert_2^2
+\end{equation}
+\]</span></p></li>
+</ol>
+<h4 id="testing">Testing</h4>
+<p>在测试阶段，对于每个测试样本，将输入图像依次输入到目标检测器和关键点分布初始化器中，我们可以初始化分布<span
+class="math inline">\(D_K\)</span>，同时获取外观特征<span
+class="math inline">\(f_\text{app}\)</span>。接着，我们执行反向过程。在反向过程中，我们从<span
+class="math inline">\(D_K\)</span>中采样<span
+class="math inline">\(M\)</span>组含噪的关键点坐标（即<span
+class="math inline">\(\{d_K^i\}_{i =
+1}^M\)</span>），并将它们输入到已训练好的扩散模型中。这里我们采样<span
+class="math inline">\(M\)</span>组关键点坐标，是因为我们要从一个分布（<span
+class="math inline">\(D_K\)</span>）转换到另一个分布（<span
+class="math inline">\(D_0\)</span>）。然后，模型迭代地执行反向步骤。经过<span
+class="math inline">\(K\)</span>步反向扩散后，我们得到<span
+class="math inline">\(M\)</span>组预测的关键点坐标（即<span
+class="math inline">\(\{d_0^i\}_{i =
+1}^M\)</span>）。为了得到最终的关键点坐标预测结果<span
+class="math inline">\(d_0\)</span>，我们计算这<span
+class="math inline">\(M\)</span>个预测结果的均值。最后，我们可以像文献“PVNet:
+Pixel-wise Voting Network for 6DoF Pose
+Estimation”那样，使用PnP来计算物体的6D位姿。</p>
+<h3 id="model-architecture">3.4. Model Architecture</h3>
+<p>我们的框架主要由扩散模型（<span
+class="math inline">\(M_\text{diff}\)</span>）和关键点分布初始化器组成。</p>
+<h4 id="diffusion-model-m_textdiff">Diffusion Model <span
+class="math inline">\(M_\text{diff}\)</span></h4>
+<p>如图3所示，我们提出的扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>主要由一个Transformer编解码器架构组成。外观特征<span
+class="math inline">\(f_\text{app}\)</span>被输入到编码器中，用于提取上下文信息，以辅助解码器进行反向过程。步骤嵌入<span
+class="math inline">\(f_D^k\)</span>和<span
+class="math inline">\(\{d_k^i\}_{i = 1}^M\)</span>（训练期间为<span
+class="math inline">\(\{\hat{d}_k^i\}_{i =
+1}^M\)</span>）被输入到解码器中进行反向过程。编码器和解码器均包含由三个Transformer层组成的堆叠结构。</p>
+<p>更具体地说，对于编码器部分，我们首先通过一个1×1卷积层将<span
+class="math inline">\(f_\text{app} \in \mathbb{R}^{16 \times 16 \times
+512}\)</span>映射为一个潜在嵌入<span class="math inline">\(e_\text{app}
+\in \mathbb{R}^{16 \times 16 \times
+128}\)</span>。为了保留空间信息，我们按照“Attention Is All You
+Need”的方法，进一步将位置编码融入到<span
+class="math inline">\(e_\text{app}\)</span>中。之后，我们将<span
+class="math inline">\(e_\text{app}\)</span>展平为一个特征序列（<span
+class="math inline">\(\mathbb{R}^{256 \times
+128}\)</span>），并将其输入到编码器中。包含所提取物体信息的编码器输出<span
+class="math inline">\(f_\text{enc}\)</span>将被输入到解码器中，以辅助反向过程。需要注意的是，在测试期间，对于每个样本，我们仅需执行一次上述计算过程，即可获得相应的<span
+class="math inline">\(f_\text{enc}\)</span>。</p>
+<p>解码器部分会迭代地执行反向过程。为了简化表示，下面我们描述针对单个样本<span
+class="math inline">\(d_k\)</span>而非<span
+class="math inline">\(M\)</span>个样本（<span
+class="math inline">\(\{d_1^i, \cdots, d_K^i\}_{i =
+1}^M\)</span>）的反向过程。具体而言，在第<span
+class="math inline">\(k\)</span>个反向步骤中，为了将当前步骤编号（<span
+class="math inline">\(k\)</span>）的信息注入到解码器中，我们首先按照“Denoising
+Diffusion Probabilistic Models”的方法，使用正弦函数生成步骤嵌入<span
+class="math inline">\(f_D^k \in \mathbb{R}^{1 \times
+128}\)</span>。同时，我们使用一个全连接（FC）层将输入<span
+class="math inline">\(d_k \in \mathbb{R}^{N \times
+2}\)</span>映射为一个潜在嵌入<span class="math inline">\(e_k \in
+\mathbb{R}^{N \times 128}\)</span>。然后，我们沿着第一个维度将<span
+class="math inline">\(f_D^k\)</span>和<span
+class="math inline">\(e_k\)</span>拼接起来，并将其输入到解码器中。通过在每一层利用交叉注意力机制与编码器输出<span
+class="math inline">\(f_\text{enc}\)</span>（所提取的物体信息）进行交互，解码器会生成<span
+class="math inline">\(f_\text{dec}\)</span>，<span
+class="math inline">\(f_\text{dec}\)</span>会进一步通过一个全连接层被映射为关键点坐标预测<span
+class="math inline">\(d_{k - 1} \in \mathbb{R}^{N \times
+2}\)</span>。接着，我们将<span class="math inline">\(d_{k -
+1}\)</span>作为输入反馈给解码器，以执行下一个反向步骤。</p>
+<h4 id="keypoints-distribution-initializer">Keypoints Distribution
+Initializer</h4>
+<p>初始化器采用了ResNet-34骨干网络，这在6D位姿估计方法中是常用的（如文献“ZebraPose:
+Coarse to Fine Surface Encoding for 6DoF Object Pose
+Estimation”）。为了生成热图以初始化分布<span
+class="math inline">\(D_K\)</span>，我们在ResNet-34骨干网络之后添加了两个反卷积层，随后再接一个1×1卷积层，进而得到预测热图<span
+class="math inline">\(\mathbf{H}_\text{pred} \in \mathbb{R}^{N \times
+\frac{H}{4} \times \frac{W}{4}}\)</span>，其中<span
+class="math inline">\(H\)</span>和<span
+class="math inline">\(W\)</span>分别表示输入感兴趣区域（ROI）图像的高度和宽度。此外，ResNet-34骨干网络输出的特征，再结合通过文献“CheckerPose:
+Progressive Dense Keypoint Localization for Object Pose Estimation with
+Graph Neural Network”中的方法所获取的特征，被用作物体外观特征<span
+class="math inline">\(f_\text{app}\)</span>。</p>
+<h2 id="experiments">4. Experiments</h2>
+<h3 id="datasets-evaluation-metrics">4.1. Datasets &amp; Evaluation
+Metrics</h3>
+<h3 id="implementation-details">4.2. Implementation Details</h3>
+<p>我们在英伟达V100 GPU上开展实验。我们将预先选定的三维关键点数量<span
+class="math inline">\(N\)</span>设为128。在训练过程中，参照文献“CDPN:
+Coordinates-Based Disentangled Pose Network for Real-Time RGB-Based
+6-DoF Object Pose
+Estimation”，我们采用动态缩放策略来生成增强的感兴趣区域（ROI）图像。在测试阶段，我们使用由CDPNv2提供的基于Faster
+RCNN和FCOS的检测框。裁剪后的ROI图像被调整为<span class="math inline">\(3
+\times 256 \times 256\)</span>的尺寸（<span class="math inline">\(H = W
+=
+256\)</span>）。在正向扩散过程中，我们通过包含9个柯西核的柯西混合（MoC）模型（<span
+class="math inline">\(U = 9\)</span>）来描述<span
+class="math inline">\(D_K\)</span>。我们使用Adam优化器对扩散模型<span
+class="math inline">\(M_\text{diff}\)</span>进行1500个轮次的优化，初始学习率设为<span
+class="math inline">\(4 \times
+10^{-5}\)</span>。此外，我们将采样集的数量<span
+class="math inline">\(M\)</span>设为5，扩散步数<span
+class="math inline">\(K\)</span>设为100。参照文献“ZebraPose: Coarse to
+Fine Surface Encoding for 6DoF Object Pose
+Estimation”，我们使用Progressive-X作为PnP求解器。需要注意的是，在测试阶段，我们没有采用全部<span
+class="math inline">\(K\)</span>步来执行反向过程，而是使用了最近提出的扩散加速方法DDIM来加速这一过程。借助DDIM加速，在测试时我们仅需执行10步就能完成反向过程。</p>
+<h3 id="comparison-with-state-of-the-art-methods">4.3. Comparison with
+State-of-the-art Methods</h3>
+<table>
+<caption>
+Table 1. Comparisons with RGB-based 6D object pose estimation methods on
+the LM-O dataset. (<sup>∗</sup>) denotes symmetric objects.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+PVNet [44]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+HybridPose [51]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+RePose [24]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+DeepIM [33]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+GDR-Net [61]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+SO-Pose [8]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+CRT-6D [4]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+ZebraPose [53]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+CheckerPose [35]
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Ours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+ape
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+15.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+20.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+31.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+59.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+46.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+48.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+53.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+57.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+58.3
+</td>
+<td style="text-align: center;">
+<strong>60.6</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+can
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+63.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+75.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+80.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+63.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+90.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+85.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+92.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+95.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+95.7
+</td>
+<td style="text-align: center;">
+<strong>97.9</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+cat
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+16.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+24.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+25.6
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+26.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+40.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+32.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+42.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+60.6
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+62.3
+</td>
+<td style="text-align: center;">
+<strong>63.2</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+driller
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+65.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+70.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+73.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+55.6
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+82.6
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+77.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+81.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+94.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+93.7
+</td>
+<td style="text-align: center;">
+<strong>96.6</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+duck
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+25.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+27.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+43.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+52.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+46.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+48.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+44.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+64.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+<strong>69.9</strong>
+</td>
+<td style="text-align: center;">
+67.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+eggbox<sup>∗</sup>
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+50.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+52.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+51.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+63.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+54.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+52.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+62.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+70.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+70.0
+</td>
+<td style="text-align: center;">
+<strong>73.5</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+glue<sup>∗</sup>
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.6
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+53.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+54.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+71.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+75.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+78.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+80.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+88.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+86.4
+</td>
+<td style="text-align: center;">
+<strong>92.0</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+holepuncher
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+39.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+54.2
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+53.6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+52.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+60.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+75.3
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+74.3
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+83.0
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+83.8
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>85.5</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+Mean
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+40.8
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+47.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+51.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+55.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+62.2
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+62.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+66.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+76.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+77.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>79.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu/fig3.webp"
+alt="Figure 5. Qualitative results. Green bounding boxes represent the ground-truth poses and blue bounding boxes represent the predicted poses of our method. As shown, even facing severe occlusions, clutter in the scene or varying environment, our framework can still accurately recover the object poses, showing the effectiveness of our method for handling the noise and indeterminacy caused by various factors in object pose estimation." />
+<figcaption aria-hidden="true">Figure 5. Qualitative results. Green
+bounding boxes represent the ground-truth poses and blue bounding boxes
+represent the predicted poses of our method. As shown, even facing
+severe occlusions, clutter in the scene or varying environment, our
+framework can still accurately recover the object poses, showing the
+effectiveness of our method for handling the noise and indeterminacy
+caused by various factors in object pose estimation.</figcaption>
+</figure>
+<table>
+<caption>
+Table 2. Comparisons with RGB-based 6D object pose estimation methods on
+the YCB-V dataset. (-) indicates the corresponding result is not
+reported in the original paper.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+ADD(-S)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+AUC of ADD-S
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+AUC of ADD(-S)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+SegDriven[21]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+39.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SingleStage[22]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+53.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+CosyPose [29]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+89.8
+</td>
+<td style="text-align: center;">
+84.5
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+RePose [24]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+62.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+88.5
+</td>
+<td style="text-align: center;">
+82.0
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+GDR-Net [61]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+60.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+<strong>91.6</strong>
+</td>
+<td style="text-align: center;">
+84.4
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SO-Pose [8]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+56.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+90.9
+</td>
+<td style="text-align: center;">
+83.9
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+ZebraPose [53]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+80.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+90.1
+</td>
+<td style="text-align: center;">
+85.3
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+CheckerPose [35]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+81.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+91.3
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+86.4
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+Ours
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+<strong>83.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+91.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>87.0</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ablation-studies">4.4. Ablation Studies</h3>
+<table>
+<caption>
+Table 3. Evaluation on the effectiveness of the denoising process.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ADD(-S)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Variant A
+</td>
+<td style="text-align: center;">
+49.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Variant B
+</td>
+<td style="text-align: center;">
+57.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+Variant C
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+61.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+6D-Diff
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>79.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 4. Evaluation on the effectiveness of the object appearance
+features <span class="math inline">\(f_\text{app}\)</span>.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ADD(-S)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+w/o <span class="math inline">\(f_\text{app}\)</span>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+74.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+6D-Diff
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>79.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 5. Evaluation on the effectiveness of the MoC design.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ADD(-S)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+Standard diffusion w/o MoC
+</td>
+<td style="text-align: center;">
+73.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+Heatmaps as condition
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+76.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+6D-Diff
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>79.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">5. Conclusion</h2>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2401.00029" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html" title="【论文笔记】6D-Diff: A Keypoint Diffusion Framework for 6D Object Pose Estimation">https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/vps-review/wap_ac-sg2-256-vps.html" rel="prev" title="【VPS测评】wap.ac - SG2 256 VPS">
+                  <i class="fa fa-angle-left"></i> 【VPS测评】wap.ac - SG2 256 VPS
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/vps-review/legendvps-sg-bgp-512m.html" rel="next" title="【VPS测评】LegendVPS - SG-BGP-512M">
+                  【VPS测评】LegendVPS - SG-BGP-512M <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2024/6d-diff-a-keypoint-diffusion-framework-for-6d-object-pose-estimation_2024_Xu.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

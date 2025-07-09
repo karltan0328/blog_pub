@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Category-level 6D object pose estimation aims to estimate the rotation, translation and size of unseen instances within specific categories. In this area, dense correspondence-based methods have achie">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="Category-level 6D object pose estimation aims to estimate the rotation, translation and size of unseen instances within specific categories. In this area, dense correspondence-based methods have achie">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-19T07:44:19.000Z">
+<meta property="article:modified_time" content="2025-02-20T17:55:15.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html","path":"paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html","title":"【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation"><span class="nav-text">Instance-Adaptive
+and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose
+Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-works"><span class="nav-text">2. Related Works</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#instance-level-6d-object-pose-estimation"><span class="nav-text">2.1. Instance-level 6D
+object pose estimation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#category-level-6d-object-pose-estimation"><span class="nav-text">2.2. Category-level 6D
+object pose estimation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#methodology"><span class="nav-text">3. Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#overview"><span class="nav-text">3.1. Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#feature-extractor"><span class="nav-text">3.2. Feature Extractor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#instance-adaptive-keypoint-detector"><span class="nav-text">3.3. Instance-Adaptive
+Keypoint Detector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#geometric-aware-feature-aggregator"><span class="nav-text">3.4. Geometric-Aware Feature
+Aggregator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posesize-estimator"><span class="nav-text">3.5. Pose&amp;Size Estimator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#overall-loss-function"><span class="nav-text">3.6. Overall Loss Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4. Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#comparison-with-state-of-the-art-methods"><span class="nav-text">4.1. Comparison with
+State-of-the-Art Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-studies"><span class="nav-text">4.2. Ablation Studies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#visualization"><span class="nav-text">4.3. Visualization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#conclusion"><span class="nav-text">5. Conclusion</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/any6d-model-free-6d-pose-estimation-of-novel-objects_2025_Lee.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-03</time>
+        <br>
+      【论文笔记】Any6D: Model-free 6D Pose Estimation of Novel Objects
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation | Karl的博客">
+      <meta itemprop="description" content="Category-level 6D object pose estimation aims to estimate the rotation, translation and size of unseen instances within specific categories. In this area, dense correspondence-based methods have achieved leading performance. However, they do not explicitly consider the local and global geometric information of different instances, resulting in poor generalization ability to unseen instances with significant shape variations. To deal with this problem, we propose a novel Instance-Adaptive and GeometricAware Keypoint Learning method for category-level 6D object pose estimation (AG-Pose), which includes two key designs: (1) The first design is an Instance-Adaptive Keypoint Detection module, which can adaptively detect a set of sparse keypoints for various instances to represent their geometric structures. (2) The second design is a GeometricAware Feature Aggregation module, which can efficiently integrate the local and global geometric information into keypoint features. These two modules can work together to establish robust keypoint-level correspondences for unseen instances, thus enhancing the generalization ability of the model.Experimental results on CAMERA25 and REAL275 datasets show that the proposed AG-Pose outperforms state-of-the-art methods by a large margin without category-specific shape priors. Code will be released at https://github.com/Leeiieeo/AG-Pose.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-19 15:44:19" itemprop="dateCreated datePublished" datetime="2025-02-19T15:44:19+08:00">2025-02-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-21 01:55:15" itemprop="dateModified" datetime="2025-02-21T01:55:15+08:00">2025-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>21 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Category-level 6D object pose estimation aims to estimate the rotation, translation and size of unseen instances within specific categories. In this area, dense correspondence-based methods have achieved leading performance. However, they do not explicitly consider the local and global geometric information of different instances, resulting in poor generalization ability to unseen instances with significant shape variations. To deal with this problem, we propose a novel Instance-Adaptive and GeometricAware Keypoint Learning method for category-level 6D object pose estimation (AG-Pose), which includes two key designs: (1) The first design is an Instance-Adaptive Keypoint Detection module, which can adaptively detect a set of sparse keypoints for various instances to represent their geometric structures. (2) The second design is a GeometricAware Feature Aggregation module, which can efficiently integrate the local and global geometric information into keypoint features. These two modules can work together to establish robust keypoint-level correspondences for unseen instances, thus enhancing the generalization ability of the model.Experimental results on CAMERA25 and REAL275 datasets show that the proposed AG-Pose outperforms state-of-the-art methods by a large margin without category-specific shape priors. Code will be released at https://github.com/Leeiieeo/AG-Pose.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation">Instance-Adaptive
+and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose
+Estimation</h1>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 6%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 43%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">AG-Pose</td>
+<td style="text-align: center;">类别级</td>
+<td style="text-align: center;">RGBD + 物体类别</td>
+<td style="text-align: center;">RGBD + 物体类别</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}, \mathbf{s}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.02.19：给我的感觉是一个纯粹的网络方法，没有涉及到什么数学的东西，但是在类别级效果很好</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/motivation_v7.webp"
+alt="Figure 1. a) The visualization for the correspondence error map and final pose estimation of the dense correspondence-based method, DPDN [17]. Green/red indicates small/large errors and GT/predicted bounding box. b) Points belonging to different parts of the same instance may exhibit similar visual features. Thus, the local geometric information is essential to distinguish them from each other. c) Points belonging to different instances may exhibit similar local geometric structures. Therefore, the global geometric information is crucial for correctly mapping them to the corresponding NOCS coordinates." />
+<figcaption aria-hidden="true">Figure 1. a) The visualization for the
+correspondence error map and final pose estimation of the dense
+correspondence-based method, DPDN [17]. Green/red indicates small/large
+errors and GT/predicted bounding box. b) Points belonging to different
+parts of the same instance may exhibit similar visual features. Thus,
+the local geometric information is essential to distinguish them from
+each other. c) Points belonging to different instances may exhibit
+similar local geometric structures. Therefore, the global geometric
+information is crucial for correctly mapping them to the corresponding
+NOCS coordinates.</figcaption>
+</figure>
+<p>In summary, our contributions are as follows:</p>
+<ul>
+<li>We propose a novel instance-adaptive and geometricaware keypoint
+learning method for category-level 6D object pose estimation, which can
+better generalize to unseen instances with large shape variations. To
+the best of our knowledge, this is the first adaptive keypoint-based
+method for category-level 6D object pose estimation.</li>
+<li>We evaluate our framework on widely adopted CAMERA25 and REAL275
+datasets, and results demonstrate that the proposed method sets a new
+state-of-the-art performance without using categorical shape
+priors.</li>
+</ul>
+<h2 id="related-works">2. Related Works</h2>
+<h3 id="instance-level-6d-object-pose-estimation">2.1. Instance-level 6D
+object pose estimation</h3>
+<h3 id="category-level-6d-object-pose-estimation">2.2. Category-level 6D
+object pose estimation</h3>
+<h2 id="methodology">3. Methodology</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/method_v4.webp"
+alt="Figure 2. a) Overview of the proposed AG-Pose. b) Illustration of the IAKD module. We initialize a set of category-shared learnable queries and convert them into instance-adaptive detectors by integrating the object features. The instance-adaptive detectors are then used to detect keypoints for the object. To guide the learning of the IAKD module, we futher design the L_{div} and L_{ocd} to constrain the distribution of keypoints. c) Illustration of the GAFA module. Our GAFA can efficiently integrate the geometric information into keypoint features through a two-stage feature aggregation process." />
+<figcaption aria-hidden="true">Figure 2. a) Overview of the proposed
+AG-Pose. b) Illustration of the IAKD module. We initialize a set of
+category-shared learnable queries and convert them into
+instance-adaptive detectors by integrating the object features. The
+instance-adaptive detectors are then used to detect keypoints for the
+object. To guide the learning of the IAKD module, we futher design the
+<span class="math inline">\(L_{div}\)</span> and <span
+class="math inline">\(L_{ocd}\)</span> to constrain the distribution of
+keypoints. c) Illustration of the GAFA module. Our GAFA can efficiently
+integrate the geometric information into keypoint features through a
+two-stage feature aggregation process.</figcaption>
+</figure>
+<h3 id="overview">3.1. Overview</h3>
+<p>输入RGB-D，先使用MaskRCNN语义分割，得到分割后的RGB图<span
+class="math inline">\(\mathbf{I}_{obj} \in \mathbb{R}^{H \times W \times
+3}\)</span>和点云<span class="math inline">\(\mathbf{P}_{obj} \in
+\mathbb{R}^{N \times 3}\)</span>（<span
+class="math inline">\(N\)</span>为点云中点的数量）。</p>
+<p><span
+class="math inline">\(\mathbf{P}_{obj}\)</span>会根据相机内参进行反向投影。</p>
+<p>以<span class="math inline">\(\mathbf{I}_{obj}\)</span>和<span
+class="math inline">\(\mathbf{P}_{obj}\)</span>为输入，得到<span
+class="math inline">\(\mathbf{R} \in SO(3)\)</span>、<span
+class="math inline">\(\mathbf{t} \in \mathbb{R}^3\)</span>、<span
+class="math inline">\(\mathbf{s} \in \mathbb{R}\)</span>。</p>
+<p>AG-Pose模型框架如图2(a)所示。</p>
+<h3 id="feature-extractor">3.2. Feature Extractor</h3>
+<ol type="1">
+<li>对于<span
+class="math inline">\(\mathbf{P}_{obj}\)</span>，使用PointNet++从<span
+class="math inline">\(\mathbf{P}_{obj}\)</span>中提取特征，得到<span
+class="math inline">\(\mathbf{F}_P \in \mathbb{R}^{N \times
+C_1}\)</span>；</li>
+<li>对于<span
+class="math inline">\(\mathbf{I}_{obj}\)</span>，遵循“DenseFusion: 6D
+Object Pose Estimation by Iterative Dense Fusion”，使用PSP Network with
+ResNet-18提取特征，得到<span class="math inline">\(\mathbf{F}_I \in
+\mathbb{R}^{N \times C_2}\)</span>；</li>
+<li>将<span class="math inline">\(\mathbf{F}_P\)</span>和<span
+class="math inline">\(\mathbf{F}_I\)</span>进行concat，得到<span
+class="math inline">\(\mathbf{F}_{obj} \in \mathbb{R}^{N \times
+C}\)</span>。</li>
+</ol>
+<h3 id="instance-adaptive-keypoint-detector">3.3. Instance-Adaptive
+Keypoint Detector</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/fig_filter_v3.webp"
+alt="Figure 3. Illustration of the outlier filter process." />
+<figcaption aria-hidden="true">Figure 3. Illustration of the outlier
+filter process.</figcaption>
+</figure>
+<ol type="1">
+<li>目标是使用稀疏关键点来表示不同实例的形状；</li>
+<li>但是问题是推理过程中无法得到实例模型；</li>
+<li>所以有了IAKD，以实现检测具有不同形状的实例的关键点。</li>
+</ol>
+<p>IAKD模块架构如图2(b)所示。</p>
+<ol type="1">
+<li>初始化了类别共享的可学习查询<span
+class="math inline">\(\mathbf{Q}_{cat} \in \mathbb{R}^{N_{kpt} \times
+C}\)</span>，每一个都代表了一个关键点检测器；</li>
+<li>使用交叉注意力让<span
+class="math inline">\(\mathbf{Q}_{cat}\)</span>作为Q，<span
+class="math inline">\(\mathbf{F}_{obj}\)</span>作为K和V，得到<span
+class="math inline">\(\mathbf{Q}_{ins} \in \mathbb{R}^{N_{kpt} \times
+C}\)</span>；</li>
+<li>计算<span class="math inline">\(\mathbf{Q}_{ins}\)</span>和<span
+class="math inline">\(\mathbf{F}_{obj}\)</span>的余弦相似度，得到<span
+class="math inline">\(\mathbf{H} \in \mathbb{R}^{N_{kpt} \times
+N}\)</span>；</li>
+<li>接下来开始选点选特征，将<span
+class="math inline">\(\mathbf{H}\)</span>分别与<span
+class="math inline">\(\mathbf{P}_{obj}\)</span>和<span
+class="math inline">\(\mathbf{F}_{obj}\)</span>进行相乘，得到<span
+class="math inline">\(\mathbf{P}_{kpt} \in \mathbb{R}^{N_{kpt} \times
+3}\)</span>和<span class="math inline">\(\mathbf{F}_{kpt} \in
+\mathbb{R}^{N_{kpt} \times C}\)</span>。</li>
+</ol>
+<p>训练过程中发现关键点往往很聚集，且经常集中分布在非表面或异常值点上。</p>
+<ul>
+<li><p>为了解决关键点聚集问题，设计了损失函数<span
+class="math inline">\(L_{div}\)</span>：</p>
+<p><span class="math display">\[
+  L_{div} = \sum_{i = 1}^{N_{kpt}} \sum_{j = 1, j \neq i}^{N_{kpt}}
+\mathbf{d}(\mathbf{P}_{kpt}^{(i)}, \mathbf{P}_{kpt}^{(j)}),
+  \]</span></p>
+<p>其中：</p>
+<p><span class="math display">\[
+  \mathbf{d}(\mathbf{P}_{kpt}^{(i)}, \mathbf{P}_{kpt}^{(j)}) =
+\max\left\{th_1 - \Vert \mathbf{P}_{kpt}^{(i)} - \mathbf{P}_{kpt}^{(j)}
+\Vert_2, 0\right\},
+  \]</span></p>
+<p>其中，<span class="math inline">\(th_1\)</span>是一个超参数，<span
+class="math inline">\(\mathbf{P}_{kpt}^{(i)}\)</span>代表第<span
+class="math inline">\(i\)</span>个关键点；</p></li>
+<li><p>为了解决关键点集中分布在非表面或异常值点上的问题，首先用<span
+class="math inline">\(\mathbf{R}_{gt}\)</span>、<span
+class="math inline">\(\mathbf{t}_{gt}\)</span>和<span
+class="math inline">\(\mathbf{s}_{gt}\)</span>将<span
+class="math inline">\(\mathbf{P}_{obj}\)</span>转换到NOCS空间中，然后使用实例模型<span
+class="math inline">\(\mathrm{M}_{obj} \in \mathbb{R}^{M \times
+3}\)</span>去除异常值点，得到<span
+class="math inline">\(\mathbf{P}_{obj}^\star\)</span>，最后设计了损失函数<span
+class="math inline">\(L_{ocd}\)</span>：</p>
+<p><span class="math display">\[
+  \mathbf{P}_{obj}^\star = \left\{x_i|x_i \in \mathbf{P}_{obj} \text{
+and } \min_{y_j \in \mathrm{M}_{obj}} \Vert \frac{1}{\Vert
+\mathbf{s}_{gt} \Vert_2}\mathbf{R}_{gt}(x_i - \mathbf{t}_{gt}) - y_j
+\Vert_2 &lt; th_2\right\},
+  \]</span></p>
+<p>其中，<span class="math inline">\(th_2\)</span>是一个超参数；</p>
+<p>最后，<span class="math inline">\(L_{ocd}\)</span>计算如下：</p>
+<p><span class="math display">\[
+  L_{ocd} = \frac{1}{|\mathbf{P}_{kpt}|} \sum_{x_i \in \mathbf{P}_{kpt}}
+\min_{y_j \in \mathbf{P}_{obj}^\star} \Vert x_i - y_j \Vert_2.
+  \]</span></p></li>
+</ul>
+<p>通过将关键点限制为接近<span
+class="math inline">\(\mathbf{P}_{obj}^\star\)</span>，IAKD模块可以在推理过程中自动学习过滤掉异常值点。</p>
+<h3 id="geometric-aware-feature-aggregator">3.4. Geometric-Aware Feature
+Aggregator</h3>
+<p>使用IAKD检测到关键点后，可以直接预测这些关键点在NOCS空间中的坐标，但是这样会缺少几何信息，所以有了GAFA模块。</p>
+<p>GAFA模块架构如图2(c)所示。</p>
+<ol type="1">
+<li><p>对于每个关键点，首先在<span
+class="math inline">\(\mathbf{P}_{obj}\)</span>中选出<span
+class="math inline">\(K\)</span>个邻居和这<span
+class="math inline">\(K\)</span>个邻居在<span
+class="math inline">\(\mathbf{F}_{obj}\)</span>中对应的特征，得到<span
+class="math inline">\(\mathbf{P}_{knn} \in \mathbb{R}^{N_{kpt} \times K
+\times 3}\)</span>和<span class="math inline">\(\mathbf{F}_{knn} \in
+\mathbb{R}^{N_{kpt} \times K \times C}\)</span>；</p></li>
+<li><p>表示全局几何信息和局部几何信息：</p>
+<ul>
+<li><p>全局几何信息可以使用关键点之间的相对位置来表示；</p></li>
+<li><p>局部几何信息可以使用关键点与其相邻点之间的相对位置来表示；</p></li>
+<li><p>分别使用<span class="math inline">\(\alpha\)</span>和<span
+class="math inline">\(\beta\)</span>来表示局部几何信息<span
+class="math inline">\(f_l\)</span>和全局几何信息<span
+class="math inline">\(f_g\)</span>：</p>
+<p><span class="math display">\[
+\alpha_{i, j} = MLP(\mathbf{P}_{kpt}^{(i)} - \mathbf{P}_{knn}^{(i, j)}),
+f_l^{(i)} = AvgPool(\alpha_{i, :}),
+\]</span></p>
+<p><span class="math display">\[
+\beta_{i, j} = MLP(\mathbf{P}_{kpt}^{(i)} - \mathbf{P}_{kpt}^{(j)}),
+f_g^{(i)} = AvgPool(\beta_{i, :}),
+\]</span></p>
+<p>其中，<span class="math inline">\(f_l^{(i)}, f_g^{(i)} \in
+\mathbb{R}^{1 \times C}\)</span>，<span
+class="math inline">\(\mathbf{P}_{knn}^{(i, j)}\)</span>是<span
+class="math inline">\(\mathbf{P}_{kpt}^{(i)}\)</span>的第<span
+class="math inline">\(j\)</span>个邻居；</p></li>
+</ul></li>
+<li><p>将关键点特征<span
+class="math inline">\(\mathbf{Q}_{ins}\)</span>与<span
+class="math inline">\(f_l\)</span>结合，计算关键点与相邻点之间的局部相关得分<span
+class="math inline">\(\mathbf{A}\)</span>，用于聚合来自相邻点的特征，第<span
+class="math inline">\(i\)</span>个关键点特征<span
+class="math inline">\(\mathbf{Q}_{ins}^{(i)}\)</span>的局部特征聚合过程如下：</p>
+<p><span class="math display">\[
+\mathbf{A} = sim\left(MLP\left(cat\left[\mathbf{Q}_{ins}^{(i)},
+f_l^{(i)}\right]\right), \mathbf{F}_{knn}^{(i)}\right),
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{Q}_{ins}^{(i)} = MLP\left(softmax(\mathbf{A}) \times
+\mathbf{F}_{knn}^{(i)} + \mathbf{Q}_{ins}^{(i)}\right),
+\]</span></p>
+<p>上述操作并行执行，以提取具有代表性的局部几何特征；</p></li>
+<li><p>还需要将全局几何特征<span
+class="math inline">\(f_g\)</span>与关键点特征<span
+class="math inline">\(\mathbf{Q}_{ins}\)</span>结合：</p>
+<p><span class="math display">\[
+\mathbf{Q}_{ins}^{global} = AvgPool(\mathbf{Q}_{ins}),
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{Q}_{ins}^{(i)} = MLP\left(concat\left[\mathbf{Q}_{ins}^{(i)},
+\mathbf{Q}_{ins}^{global}, f_g^{(i)}\right]\right),
+\]</span></p>
+<p>其中，<span class="math inline">\(\mathbf{Q}_{ins}^{global} \in
+\mathbb{R}^{1 \times C}\)</span>是<span
+class="math inline">\(\mathbf{Q}_{ins}\)</span>的全局特征；</p></li>
+<li><p>上述两阶段聚合允许关键点自适应地聚合来自相邻点的局部几何特征和来自其他关键点的全局几何信息。</p></li>
+</ol>
+<h3 id="posesize-estimator">3.5. Pose&amp;Size Estimator</h3>
+<p>然后使用MLP从<span
+class="math inline">\(\mathbf{Q}_{ins}\)</span>中预测NOCS坐标点<span
+class="math inline">\(\mathbf{P}_{kpt}^{nocs} \in \mathbb{R}^{N_{kpt}
+\times 3}\)</span>，并通过关键点对应来回归最终的位姿和大小<span
+class="math inline">\(\mathbf{R}, \mathbf{t}, \mathbf{s}\)</span>：</p>
+<p><span class="math display">\[
+\mathbf{P}_{kpt}^{nocs} = MLP(\mathbf{Q}_{ins}),
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{f}_{pose} = concat\left[\mathbf{P}_{kpt}, \mathbf{F}_{kpt},
+\mathbf{P}_{kpt}^{nocs}, \mathbf{Q}_{ins}\right],
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{R}, \mathbf{t}, \mathbf{s} = MLP_R(\mathbf{f}_{pose}),
+MLP_t(\mathbf{f}_{pose}), MLP_s(\mathbf{f}_{pose}).
+\]</span></p>
+<h3 id="overall-loss-function">3.6. Overall Loss Function</h3>
+<p>总的损失函数为：</p>
+<p><span class="math display">\[
+L_{all} = \lambda_1 L_{ocd} + \lambda_2 L_{div} + \lambda_3 L_{nocs} +
+\lambda_4 L_{pose},
+\]</span></p>
+<p>其中，<span class="math inline">\(\lambda_1, \lambda_2, \lambda_3,
+\lambda_4\)</span>为超参数，对于<span
+class="math inline">\(L_{pose}\)</span>，这里使用<span
+class="math inline">\(L_1\)</span>损失：</p>
+<p><span class="math display">\[
+L_{pose} = \Vert\mathbf{R}_{gt} - \mathbf{R}\Vert_2 +
+\Vert\mathbf{t}_{gt} - \mathbf{t}\Vert_2 + \Vert\mathbf{s}_{gt} -
+\mathbf{s}\Vert_2.
+\]</span></p>
+<p>使用<span class="math inline">\(\mathbf{R}_{gt}, \mathbf{t}_{gt},
+\mathbf{s}_{gt}\)</span>将相机坐标系下的<span
+class="math inline">\(\mathbf{P}_{kpt}\)</span>转换到NOCS空间中，得到关键点的GT
+NOCS坐标<span
+class="math inline">\(\mathbf{P}_{kpt}^{gt}\)</span>，然后使用<span
+class="math inline">\(SmoothL_1\)</span>损失：</p>
+<p><span class="math display">\[
+\mathbf{P}_{kpt}^{gt} = \frac{1}{\Vert \mathbf{s}_{gt}
+\Vert_2}\mathbf{R}_{gt}(\mathbf{P}_{kpt} - \mathbf{t}_{gt}),
+\]</span></p>
+<p><span class="math display">\[
+L_{nocs} = SmoothL_1(\mathbf{P}_{kpt}^{gt}, \mathbf{P}_{kpt}^{nocs}).
+\]</span></p>
+<h2 id="experiments">4. Experiments</h2>
+<h3 id="comparison-with-state-of-the-art-methods">4.1. Comparison with
+State-of-the-Art Methods</h3>
+<table>
+<caption>
+Table 1. Quantitative comparisons with state-of-the-art methods on the
+REAL275 dataset.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Use of Shape Priors
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+IoU<sub>50</sub>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+IoU<sub>75</sub>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+NOCS [33]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+78
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+30.1
+</td>
+<td style="text-align: center;">
+7.2
+</td>
+<td style="text-align: center;">
+10
+</td>
+<td style="text-align: center;">
+13.8
+</td>
+<td style="text-align: center;">
+25.2
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+DualPoseNet [16]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+79.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+62.2
+</td>
+<td style="text-align: center;">
+29.3
+</td>
+<td style="text-align: center;">
+35.9
+</td>
+<td style="text-align: center;">
+50
+</td>
+<td style="text-align: center;">
+66.8
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+GPV-Pose [5]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+64.4
+</td>
+<td style="text-align: center;">
+32
+</td>
+<td style="text-align: center;">
+42.9
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+73.3
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+IST-Net [18]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+82.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+76.6
+</td>
+<td style="text-align: center;">
+47.5
+</td>
+<td style="text-align: center;">
+53.4
+</td>
+<td style="text-align: center;">
+72.1
+</td>
+<td style="text-align: center;">
+80.5
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+Query6DoF [35]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+82.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+76.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+49
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+58.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+68.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+83
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SPD [28]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+77.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+53.2
+</td>
+<td style="text-align: center;">
+19.3
+</td>
+<td style="text-align: center;">
+21.4
+</td>
+<td style="text-align: center;">
+43.2
+</td>
+<td style="text-align: center;">
+54.1
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SGPA [2]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+80.1
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+61.9
+</td>
+<td style="text-align: center;">
+35.9
+</td>
+<td style="text-align: center;">
+39.6
+</td>
+<td style="text-align: center;">
+61.3
+</td>
+<td style="text-align: center;">
+70.7
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SAR-Net [15]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+79.3
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+62.4
+</td>
+<td style="text-align: center;">
+31.6
+</td>
+<td style="text-align: center;">
+42.3
+</td>
+<td style="text-align: center;">
+50.3
+</td>
+<td style="text-align: center;">
+68.3
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+RBP-Pose [42]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+67.8
+</td>
+<td style="text-align: center;">
+38.2
+</td>
+<td style="text-align: center;">
+48.1
+</td>
+<td style="text-align: center;">
+63.1
+</td>
+<td style="text-align: center;">
+79.2
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+DPDN [17]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+83.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+76
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+46
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+50.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+70.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+78.4
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+AG-Pose
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>83.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+<strong>79.5</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>54.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>61.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>74.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>83.1</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 2. Quantitative comparisons with state-of-the-art methods on the
+CAMERA25 dataset.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Use of Shape Prior
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+IoU<sub>50</sub>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+IoU<sub>75</sub>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+NOCS [33]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+83.9
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+69.5
+</td>
+<td style="text-align: center;">
+32.3
+</td>
+<td style="text-align: center;">
+40.9
+</td>
+<td style="text-align: center;">
+48.2
+</td>
+<td style="text-align: center;">
+64.4
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+DualPoseNet [16]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+92.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+86.4
+</td>
+<td style="text-align: center;">
+64.7
+</td>
+<td style="text-align: center;">
+70.7
+</td>
+<td style="text-align: center;">
+77.2
+</td>
+<td style="text-align: center;">
+84.7
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+GPV-Pose [5]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center;">
+93.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+88.3
+</td>
+<td style="text-align: center;">
+72.1
+</td>
+<td style="text-align: center;">
+79.1
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+89
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+Query6DoF [35]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+91.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+88.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>78</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>83.1</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+83.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+90
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SPD [28]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+93.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+83.1
+</td>
+<td style="text-align: center;">
+54.3
+</td>
+<td style="text-align: center;">
+59
+</td>
+<td style="text-align: center;">
+73.3
+</td>
+<td style="text-align: center;">
+81.5
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SGPA [2]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+93.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+88.1
+</td>
+<td style="text-align: center;">
+70.7
+</td>
+<td style="text-align: center;">
+74.5
+</td>
+<td style="text-align: center;">
+82.7
+</td>
+<td style="text-align: center;">
+88.4
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+SAR-Net [15]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center;">
+86.8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+79
+</td>
+<td style="text-align: center;">
+66.7
+</td>
+<td style="text-align: center;">
+70.9
+</td>
+<td style="text-align: center;">
+75.3
+</td>
+<td style="text-align: center;">
+80.3
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+RBP-Pose [42]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+93.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+89
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+73.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+79.6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+82.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+89.5
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+AG-Pose
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+✗
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>93.8</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+<strong>91.3</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+77.8
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+82.8
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>85.5</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>91.6</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/nocs_err_bar_proportion.webp"
+alt="Figure 4. Comparisons of NOCS error distributions." />
+<figcaption aria-hidden="true">Figure 4. Comparisons of NOCS error
+distributions.</figcaption>
+</figure>
+<h3 id="ablation-studies">4.2. Ablation Studies</h3>
+<table>
+<caption>
+Table 3. Comparisons between the IAKD and FPS.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Setting
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+FPS
+</td>
+<td style="text-align: center;">
+46.2
+</td>
+<td style="text-align: center;">
+55.5
+</td>
+<td style="text-align: center;">
+67.0
+</td>
+<td style="text-align: center;">
+80.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+IAKD
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>54.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>61.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>74.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>83.1</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 4. Ablation studies on the number of keypoints.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+<span class="math inline">\(N_{kpt}\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+16
+</td>
+<td style="text-align: center;">
+47.9
+</td>
+<td style="text-align: center;">
+55.1
+</td>
+<td style="text-align: center;">
+68.8
+</td>
+<td style="text-align: center;">
+79.8
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+32
+</td>
+<td style="text-align: center;">
+48.8
+</td>
+<td style="text-align: center;">
+55.7
+</td>
+<td style="text-align: center;">
+73.1
+</td>
+<td style="text-align: center;">
+82.9
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+64
+</td>
+<td style="text-align: center;">
+51
+</td>
+<td style="text-align: center;">
+57.2
+</td>
+<td style="text-align: center;">
+72.8
+</td>
+<td style="text-align: center;">
+82
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+96
+</td>
+<td style="text-align: center;">
+<strong>54.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>61.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>74.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>83.1</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+128
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+52.8
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+59.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+74.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>83.7</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 5. Ablation studies on the proposed loss functions.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Loss
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+<span class="math inline">\(L_{div} + L_{ocd}\)</span>
+</td>
+<td style="text-align: center;">
+<strong>54.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>61.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>74.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>83.1</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+<span class="math inline">\(L_{div} + L_{ucd}\)</span>
+</td>
+<td style="text-align: center;">
+49.8
+</td>
+<td style="text-align: center;">
+57.3
+</td>
+<td style="text-align: center;">
+74.4
+</td>
+<td style="text-align: center;">
+82.0
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+<span class="math inline">\(L_{div}\)</span>
+</td>
+<td style="text-align: center;">
+46.4
+</td>
+<td style="text-align: center;">
+53
+</td>
+<td style="text-align: center;">
+71
+</td>
+<td style="text-align: center;">
+81.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+<span class="math inline">\(L_{ocd}\)</span>
+</td>
+<td style="text-align: center;">
+30
+</td>
+<td style="text-align: center;">
+36.1
+</td>
+<td style="text-align: center;">
+55.0
+</td>
+<td style="text-align: center;">
+68.6
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+None
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+29.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+35.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+56.4
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+69.6
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 6. Ablation study on two-stage feature aggregation.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Setting
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+Full
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>54.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>61.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>74.7</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>83.1</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+w/o GAFA
+</td>
+<td style="text-align: center;">
+47.1
+</td>
+<td style="text-align: center;">
+55.3
+</td>
+<td style="text-align: center;">
+70.2
+</td>
+<td style="text-align: center;">
+80.9
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+w/o Local
+</td>
+<td style="text-align: center;">
+49
+</td>
+<td style="text-align: center;">
+57.8
+</td>
+<td style="text-align: center;">
+71.2
+</td>
+<td style="text-align: center;">
+82.2
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+w/o Global
+</td>
+<td style="text-align: center;">
+50.1
+</td>
+<td style="text-align: center;">
+55.8
+</td>
+<td style="text-align: center;">
+74.5
+</td>
+<td style="text-align: center;">
+82.7
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+w/ vanilla attn
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+53
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+61
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+72.2
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+82.1
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>
+Table 7. Ablation study on proposed GAFA.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+K=8
+</td>
+<td style="text-align: center;">
+49.9
+</td>
+<td style="text-align: center;">
+57.6
+</td>
+<td style="text-align: center;">
+73.1
+</td>
+<td style="text-align: center;">
+82.5
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+K=16
+</td>
+<td style="text-align: center;">
+<strong>54.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>61.7</strong>
+</td>
+<td style="text-align: center;">
+<strong>74.7</strong>
+</td>
+<td style="text-align: center;">
+83.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black;">
+K=24
+</td>
+<td style="text-align: center;">
+54.1
+</td>
+<td style="text-align: center;">
+61.1
+</td>
+<td style="text-align: center;">
+73.7
+</td>
+<td style="text-align: center;">
+<strong>83.2</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+K=32
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+52.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+59.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+73.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+82.8
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="visualization">4.3. Visualization</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin/qualitative_visualization_v3.webp"
+alt="Figure 5. Qualitative comparisons between our method and DPDN [17] on REAL275 dataset. We visualize the correspondence error maps and pose estimation results of our AG-Pose and DPDN. Red/green indicates large/small errors and predicted/gt bounding boxes." />
+<figcaption aria-hidden="true">Figure 5. Qualitative comparisons between
+our method and DPDN [17] on REAL275 dataset. We visualize the
+correspondence error maps and pose estimation results of our AG-Pose and
+DPDN. Red/green indicates large/small errors and predicted/gt bounding
+boxes.</figcaption>
+</figure>
+<h3 id="conclusion">5. Conclusion</h3>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2403.19527" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" title="【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation">https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/installation/embrace-rss.html" rel="prev" title="拥抱RSS">
+                  <i class="fa fa-angle-left"></i> 拥抱RSS
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="next" title="【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation">
+                  【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

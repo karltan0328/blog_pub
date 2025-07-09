@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】Attention Is All You Need">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-20T02:29:05.000Z">
+<meta property="article:modified_time" content="2025-01-23T08:29:05.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2017NIPS">
+<meta property="article:tag" content="Attention">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html","path":"paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html","title":"【论文笔记】Attention Is All You Need"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】Attention Is All You Need | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#attention-is-all-you-need"><span class="nav-text">Attention Is All You Need</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background"><span class="nav-text">2 Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#model-architecture"><span class="nav-text">3 Model Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#encoder-and-decoder-stacks"><span class="nav-text">3.1 Encoder and Decoder Stacks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#attention"><span class="nav-text">3.2 Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#scaled-dot-product-attention"><span class="nav-text">3.2.1 Scaled Dot-Product
+Attention</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#multi-head-attention"><span class="nav-text">3.2.2 Multi-Head Attention</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#applications-of-attention-in-our-model"><span class="nav-text">3.2.3 Applications of
+Attention in our Model</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#position-wise-feed-forward-networks"><span class="nav-text">3.3 Position-wise
+Feed-Forward Networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#embeddings-and-softmax"><span class="nav-text">3.4 Embeddings and Softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#positional-encoding"><span class="nav-text">3.5 Positional Encoding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-self-attention"><span class="nav-text">4 Why Self-Attention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#training"><span class="nav-text">5 Training</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#training-data-and-batching"><span class="nav-text">5.1 Training Data and Batching</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hardware-and-schedule"><span class="nav-text">5.2 Hardware and Schedule</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimizer"><span class="nav-text">5.3 Optimizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#regularization"><span class="nav-text">5.4 Regularization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#results"><span class="nav-text">6 Results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#machine-translation"><span class="nav-text">6.1 Machine Translation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#model-variations"><span class="nav-text">6.2 Model Variations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#english-constituency-parsing"><span class="nav-text">6.3 English Constituency
+Parsing</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">7 Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attention-visualizations"><span class="nav-text">Attention Visualizations</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron.html" rel="bookmark">
+        <time class="popular-posts-time">2025-01-20</time>
+        <br>
+      【论文笔记】Emerging Properties in Self-Supervised Vision Transformers
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/test.html" rel="bookmark">
+        <time class="popular-posts-time">2025-01-01</time>
+        <br>
+      测试文章
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html" rel="bookmark">
+        <time class="popular-posts-time">2025-01-20</time>
+        <br>
+      【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/paper-reading-records.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-22</time>
+        <br>
+      论文阅读记录
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】Attention Is All You Need | Karl的博客">
+      <meta itemprop="description" content="The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】Attention Is All You Need
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-20 10:29:05" itemprop="dateCreated datePublished" datetime="2025-01-20T10:29:05+08:00">2025-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-01-23 16:29:05" itemprop="dateModified" datetime="2025-01-23T16:29:05+08:00">2025-01-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="attention-is-all-you-need">Attention Is All You Need</h1>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1 Introduction</h2>
+<h2 id="background">2 Background</h2>
+<h2 id="model-architecture">3 Model Architecture</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/ModalNet-21.webp"
+alt="Figure 1: The Transformer - model architecture." />
+<figcaption aria-hidden="true">Figure 1: The Transformer - model
+architecture.</figcaption>
+</figure>
+<h3 id="encoder-and-decoder-stacks">3.1 Encoder and Decoder Stacks</h3>
+<h3 id="attention">3.2 Attention</h3>
+<h4 id="scaled-dot-product-attention">3.2.1 Scaled Dot-Product
+Attention</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/fig2.webp"
+alt="Figure 2: (left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel." />
+<figcaption aria-hidden="true">Figure 2: (left) Scaled Dot-Product
+Attention. (right) Multi-Head Attention consists of several attention
+layers running in parallel.</figcaption>
+</figure>
+<h4 id="multi-head-attention">3.2.2 Multi-Head Attention</h4>
+<h4 id="applications-of-attention-in-our-model">3.2.3 Applications of
+Attention in our Model</h4>
+<h3 id="position-wise-feed-forward-networks">3.3 Position-wise
+Feed-Forward Networks</h3>
+<h3 id="embeddings-and-softmax">3.4 Embeddings and Softmax</h3>
+<h3 id="positional-encoding">3.5 Positional Encoding</h3>
+<h2 id="why-self-attention">4 Why Self-Attention</h2>
+<table>
+<caption style="text-align: left;">
+Table 1: Maximum path lengths, per-layer complexity and minimum number
+of sequential operations for different layer types. <span
+class="math inline">\(n\)</span> is the sequence length, <span
+class="math inline">\(d\)</span> is the representation dimension, <span
+class="math inline">\(k\)</span> is the kernel size of convolutions and
+<span class="math inline">\(r\)</span> the size of the neighborhood in
+restricted self-attention.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Layer Type
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Complexity per Layer
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Sequential Operations
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Maximum Path Length
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Self-Attention
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(n^2 \cdot d)\)</span>
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(1)\)</span>
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(1)\)</span>
+</td>
+</tr>
+<tr>
+<td>
+Recurrent
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(n \cdot d^2)\)</span>
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(n)\)</span>
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(n)\)</span>
+</td>
+</tr>
+<tr>
+<td>
+Convolutional
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(k \cdot n \cdot d^2)\)</span>
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(1)\)</span>
+</td>
+<td style="text-align: center;">
+<span class="math inline">\(O(log_k(n))\)</span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Self-Attention (restricted)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<span class="math inline">\(O(r \cdot n \cdot d)\)</span>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<span class="math inline">\(O(1)\)</span>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<span class="math inline">\(O(n/r)\)</span>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="training">5 Training</h2>
+<h3 id="training-data-and-batching">5.1 Training Data and Batching</h3>
+<h3 id="hardware-and-schedule">5.2 Hardware and Schedule</h3>
+<h3 id="optimizer">5.3 Optimizer</h3>
+<h3 id="regularization">5.4 Regularization</h3>
+<h2 id="results">6 Results</h2>
+<h3 id="machine-translation">6.1 Machine Translation</h3>
+<table>
+<caption style="text-align: left;">
+Table 2: The Transformer achieves better BLEU scores than previous
+state-of-the-art models on the English-to-German and English-to-French
+newstest2014 tests at a fraction of the training cost.
+</caption>
+<thead>
+<tr>
+<th rowspan="2" style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Model
+</th>
+<th colspan="2" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+BLEU
+</th>
+<th colspan="2" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Training Cost (FLOPs)
+</th>
+</tr>
+<tr>
+<th style="text-align: center; border-bottom: 1px solid black;">
+EN-DE
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+EN-FR
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+EN-DE
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+EN-FR
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ByteNet [18]
+</td>
+<td style="text-align: center;">
+23.75
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td>
+Deep-Att + PosUnk [39]
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+39.2
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+1.0 · 10<sup>20</sup>
+</td>
+</tr>
+<tr>
+<td>
+GNMT + RL [38]
+</td>
+<td style="text-align: center;">
+24.6
+</td>
+<td style="text-align: center;">
+39.92
+</td>
+<td style="text-align: center;">
+2.3 · 10<sup>19</sup>
+</td>
+<td style="text-align: center;">
+1.4 · 10<sup>20</sup>
+</td>
+</tr>
+<tr>
+<td>
+ConvS2S [9]
+</td>
+<td style="text-align: center;">
+25.16
+</td>
+<td style="text-align: center;">
+40.46
+</td>
+<td style="text-align: center;">
+9.6 · 10<sup>18</sup>
+</td>
+<td style="text-align: center;">
+1.5 · 10<sup>20</sup>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+MoE [32]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+26.03
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+40.56
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+2.0 · 10<sup>19</sup>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+1.2 · 10<sup>20</sup>
+</td>
+</tr>
+<tr>
+<td>
+Deep-Att + PosUnk Ensemble [39]
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+40.4
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+8.0 · 10<sup>20</sup>
+</td>
+</tr>
+<tr>
+<td>
+GNMT + RL Ensemble [38]
+</td>
+<td style="text-align: center;">
+26.30
+</td>
+<td style="text-align: center;">
+41.16
+</td>
+<td style="text-align: center;">
+1.8 · 10<sup>20</sup>
+</td>
+<td style="text-align: center;">
+1.1 · 10<sup>21</sup>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+ConvS2S Ensemble [9]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+26.36
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>41.29</strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+7.7 · 10<sup>19</sup>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+1.2 · 10<sup>21</sup>
+</td>
+</tr>
+<tr>
+<td>
+Transformer (base model)
+</td>
+<td style="text-align: center;">
+27.3
+</td>
+<td style="text-align: center;">
+38.1
+</td>
+<td style="text-align: center;" colspan="2">
+<strong>3.3 · 10<sup>18</sup></strong>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Transformer (big)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>28.4</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>41.8</strong>
+</td>
+<td colspan="2" style="text-align: center; border-bottom: 2px solid black;">
+2.3 · 10<sup>19</sup>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="model-variations">6.2 Model Variations</h3>
+<table>
+<caption style="text-align: left;">
+Table 3: Variations on the Transformer architecture. Unlisted values are
+identical to those of the base model. All metrics are on the
+English-to-German translation development set, newstest2013. Listed
+perplexities are per-wordpiece, according to our byte-pair encoding, and
+should not be compared to per-word perplexities.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(N\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(d_\text{model}\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(d_\text{ff}\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(h\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(d_k\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(d_v\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(P_{drop}\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+<span class="math inline">\(\epsilon_{ls}\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black">
+train steps
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+PPL (dev)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+BLEU (dev)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+params ×10<sup>6</sup>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black">
+base
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+512
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+2048
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+8
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+64
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+64
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+0.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+0.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+100K
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+4.92
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+25.8
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+65
+</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+(A)
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+1
+</td>
+<td style="text-align: center;">
+512
+</td>
+<td style="text-align: center;">
+512
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.29
+</td>
+<td style="text-align: center;">
+24.9
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+4
+</td>
+<td style="text-align: center;">
+128
+</td>
+<td style="text-align: center;">
+128
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.00
+</td>
+<td style="text-align: center;">
+25.5
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+16
+</td>
+<td style="text-align: center;">
+32
+</td>
+<td style="text-align: center;">
+32
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+4.91
+</td>
+<td style="text-align: center;">
+25.8
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+32
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+16
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+16
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+5.01
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+25.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+(B)
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+16
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.16
+</td>
+<td style="text-align: center;">
+25.1
+</td>
+<td style="text-align: center;">
+58
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+32
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+5.01
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+25.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+60
+</td>
+</tr>
+<tr>
+<td rowspan="7" style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+(C)
+</td>
+<td style="text-align: center;">
+2
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+6.11
+</td>
+<td style="text-align: center;">
+23.7
+</td>
+<td style="text-align: center;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+4
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.19
+</td>
+<td style="text-align: center;">
+25.3
+</td>
+<td style="text-align: center;">
+50
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+8
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+4.88
+</td>
+<td style="text-align: center;">
+25.5
+</td>
+<td style="text-align: center;">
+80
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+256
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+32
+</td>
+<td style="text-align: center;">
+32
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.75
+</td>
+<td style="text-align: center;">
+24.5
+</td>
+<td style="text-align: center;">
+28
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+1024
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+128
+</td>
+<td style="text-align: center;">
+128
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+4.66
+</td>
+<td style="text-align: center;">
+26.0
+</td>
+<td style="text-align: center;">
+168
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+1024
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.12
+</td>
+<td style="text-align: center;">
+25.4
+</td>
+<td style="text-align: center;">
+53
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+4096
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+4.75
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+26.2
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+90
+</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+(D)
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+5.77
+</td>
+<td style="text-align: center;">
+24.6
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+0.2
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+4.95
+</td>
+<td style="text-align: center;">
+25.5
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+</td>
+<td style="text-align: center;">
+4.67
+</td>
+<td style="text-align: center;">
+25.3
+</td>
+<td style="text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+0.2
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+5.47
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+25.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+(E)
+</td>
+<td colspan="9" style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+positional embedding instead of sinusoids
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+4.92
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+25.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black">
+big
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+1024
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+4096
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+16
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black">
+300K
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>4.33</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<strong>26.4</strong>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+213
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="english-constituency-parsing">6.3 English Constituency
+Parsing</h3>
+<table>
+<caption style="text-align: left;">
+Table 4: The Transformer generalizes well to English constituency
+parsing (Results are on Section 23 of WSJ).
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black">
+Parser
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black">
+Training
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+WSJ 23 F1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+Vinyals &amp; Kaiser el al. (2014) [37]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+WSJ only, discriminative
+</td>
+<td style="text-align: center;">
+88.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+Petrov et al. (2006) [29]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+WSJ only, discriminative
+</td>
+<td style="text-align: center;">
+90.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+Zhu et al. (2013) [40]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+WSJ only, discriminative
+</td>
+<td style="text-align: center;">
+90.4
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+Dyer et al. (2016) [8]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+WSJ only, discriminative
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+91.7
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+Transformer (4 layers)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+WSJ only, discriminative
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+91.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+Zhu et al. (2013) [40]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+semi-supervised
+</td>
+<td style="text-align: center;">
+91.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+Huang &amp; Harper (2009) [14]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+semi-supervised
+</td>
+<td style="text-align: center;">
+91.3
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+McClosky et al. (2006) [26]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+semi-supervised
+</td>
+<td style="text-align: center;">
+92.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+Vinyals &amp; Kaiser el al. (2014) [37]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+semi-supervised
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+92.1
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+Transformer (4 layers)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">
+semi-supervised
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+92.7
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-right: 1px solid black">
+Luong et al. (2015) [23]
+</td>
+<td style="text-align: center; border-right: 1px solid black">
+multi-task
+</td>
+<td style="text-align: center;">
+93.0
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black">
+Dyer et al. (2016) [8]
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black">
+generative
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+93.3
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">7 Conclusion</h2>
+<h2 id="attention-visualizations">Attention Visualizations</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/making_more_difficult5_new.webp"
+alt="Figure 3: An example of the attention mechanism following long-distance dependencies in the encoder self-attention in layer 5 of 6. Many of the attention heads attend to a distant dependency of the verb &#39;making&#39;, completing the phrase &#39;making...more difficult&#39;. Attentions here shown only for the word &#39;making&#39;. Different colors represent different heads. Best viewed in color." />
+<figcaption aria-hidden="true">Figure 3: An example of the attention
+mechanism following long-distance dependencies in the encoder
+self-attention in layer 5 of 6. Many of the attention heads attend to a
+distant dependency of the verb 'making', completing the phrase
+'making...more difficult'. Attentions here shown only for the word
+'making'. Different colors represent different heads. Best viewed in
+color.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/anaphora_resolution_new.webp"
+alt="Figure 4: Two attention heads, also in layer 5 of 6, apparently involved in anaphora resolution. Top: Full attentions for head 5. Bottom: Isolated attentions from just the word &#39;its&#39; for attention heads 5 and 6. Note that the attentions are very sharp for this word." />
+<figcaption aria-hidden="true">Figure 4: Two attention heads, also in
+layer 5 of 6, apparently involved in anaphora resolution. Top: Full
+attentions for head 5. Bottom: Isolated attentions from just the word
+'its' for attention heads 5 and 6. Note that the attentions are very
+sharp for this word.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/anaphora_resolution2_new.webp"
+alt="Figure 4: Two attention heads, also in layer 5 of 6, apparently involved in anaphora resolution. Top: Full attentions for head 5. Bottom: Isolated attentions from just the word &#39;its&#39; for attention heads 5 and 6. Note that the attentions are very sharp for this word." />
+<figcaption aria-hidden="true">Figure 4: Two attention heads, also in
+layer 5 of 6, apparently involved in anaphora resolution. Top: Full
+attentions for head 5. Bottom: Isolated attentions from just the word
+'its' for attention heads 5 and 6. Note that the attentions are very
+sharp for this word.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/attending_to_head_new.webp"
+alt="Figure 5: Many of the attention heads exhibit behaviour that seems related to the structure of the sentence. We give two such examples above, from two different heads from the encoder self-attention at layer 5 of 6. The heads clearly learned to perform different tasks." />
+<figcaption aria-hidden="true">Figure 5: Many of the attention heads
+exhibit behaviour that seems related to the structure of the sentence.
+We give two such examples above, from two different heads from the
+encoder self-attention at layer 5 of 6. The heads clearly learned to
+perform different tasks.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani/attending_to_head2_new.webp"
+alt="Figure 5: Many of the attention heads exhibit behaviour that seems related to the structure of the sentence. We give two such examples above, from two different heads from the encoder self-attention at layer 5 of 6. The heads clearly learned to perform different tasks." />
+<figcaption aria-hidden="true">Figure 5: Many of the attention heads
+exhibit behaviour that seems related to the structure of the sentence.
+We give two such examples above, from two different heads from the
+encoder self-attention at layer 5 of 6. The heads clearly learned to
+perform different tasks.</figcaption>
+</figure>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/1706.03762" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html" title="【论文笔记】Attention Is All You Need">https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2017NIPS/" rel="tag"><i class="fa fa-tag"></i> 2017NIPS</a>
+              <a href="/tags/Attention/" rel="tag"><i class="fa fa-tag"></i> Attention</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/installation/modify-dns-for-bandwagonhost-vps-to-unlock-chatgpt.html" rel="prev" title="为搬瓦工VPS修改DNS以解锁ChatGPT">
+                  <i class="fa fa-angle-left"></i> 为搬瓦工VPS修改DNS以解锁ChatGPT
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html" rel="next" title="【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale">
+                  【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

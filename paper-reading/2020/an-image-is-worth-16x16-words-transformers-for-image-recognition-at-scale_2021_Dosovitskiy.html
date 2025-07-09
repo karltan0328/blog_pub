@@ -1,0 +1,3056 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="While the Transformer architecture has become the de-facto standard for natural language processing tasks, its applications to computer vision remain limited. In vision, attention is either applied in">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="While the Transformer architecture has become the de-facto standard for natural language processing tasks, its applications to computer vision remain limited. In vision, attention is either applied in">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-20T05:28:41.000Z">
+<meta property="article:modified_time" content="2025-01-24T08:39:05.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2021ICLR">
+<meta property="article:tag" content="Attention">
+<meta property="article:tag" content="ViT">
+<meta property="article:tag" content="Oral">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html","path":"paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html","title":"【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale"><span class="nav-text">An
+Image is Worth 16x16 Words: Transformers for Image Recognition at
+Scale</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-work"><span class="nav-text">2 Related Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-text">3 Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vision-transformer-vit"><span class="nav-text">3.1 Vision Transformer (ViT)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fine-tuning-and-higher-resolution"><span class="nav-text">3.2 Fine-tuning And Higher
+Resolution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-text">4 Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setup"><span class="nav-text">4.1 Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comparison-to-state-of-the-art"><span class="nav-text">4.2 Comparison to State of the
+Art</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pre-training-data-requirements"><span class="nav-text">4.3 Pre-training Data
+Requirements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scaling-study"><span class="nav-text">4.4 Scaling Study</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inspecting-vision-transformer"><span class="nav-text">4.5 Inspecting Vision
+Transformer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#self-supervision"><span class="nav-text">4.6 Self-supervision</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">5 Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#appendix"><span class="nav-text">Appendix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-multihead-self-attention"><span class="nav-text">A Multihead Self-attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-experiment-details"><span class="nav-text">B Experiment Details</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#b.1-training"><span class="nav-text">B.1 Training</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#b.1.1-fine-tuning"><span class="nav-text">B.1.1 Fine-tuning</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b.1.2-self-supervision"><span class="nav-text">B.1.2 Self-supervision</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-additional-results"><span class="nav-text">C Additional Results</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-additional-analyses"><span class="nav-text">D Additional Analyses</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#d.1-sgd-vs.-adam-for-resnets"><span class="nav-text">D.1 Sgd Vs. Adam For Resnets</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.2-transformer-shape"><span class="nav-text">D.2 Transformer Shape</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.3-head-type-and-class-token"><span class="nav-text">D.3 Head Type And Class
+Token</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.4-positional-embedding"><span class="nav-text">D.4 Positional Embedding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.5-empirical-computational-costs"><span class="nav-text">D.5 Empirical Computational
+Costs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.6-axial-attention"><span class="nav-text">D.6 Axial Attention</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.7-attention-distance"><span class="nav-text">D.7 Attention Distance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.8-attention-maps"><span class="nav-text">D.8 Attention Maps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.9-objectnet-results"><span class="nav-text">D.9 Objectnet Results</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d.10-vtab-breakdown"><span class="nav-text">D.10 VTAB Breakdown</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron.html" rel="bookmark">
+        <time class="popular-posts-time">2025-01-20</time>
+        <br>
+      【论文笔记】Emerging Properties in Self-Supervised Vision Transformers
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html" rel="bookmark">
+        <time class="popular-posts-time">2025-01-20</time>
+        <br>
+      【论文笔记】Attention Is All You Need
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2025/one2any-one-reference-6d-pose-estimation-for-any-object_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-09</time>
+        <br>
+      【论文笔记】One2Any: One-Reference 6D Pose Estimation for Any Object
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | Karl的博客">
+      <meta itemprop="description" content="While the Transformer architecture has become the de-facto standard for natural language processing tasks, its applications to computer vision remain limited. In vision, attention is either applied in conjunction with convolutional networks, or used to replace certain components of convolutional networks while keeping their overall structure in place. We show that this reliance on CNNs is not necessary and a pure transformer applied directly to sequences of image patches can perform very well on image classification tasks. When pre-trained on large amounts of data and transferred to multiple mid-sized or small image recognition benchmarks (ImageNet, CIFAR-100, VTAB, etc.), Vision Transformer (ViT) attains excellent results compared to state-of-the-art convolutional networks while requiring substantially fewer computational resources to train.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-20 13:28:41" itemprop="dateCreated datePublished" datetime="2025-01-20T13:28:41+08:00">2025-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-01-24 16:39:05" itemprop="dateModified" datetime="2025-01-24T16:39:05+08:00">2025-01-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>32 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">While the Transformer architecture has become the de-facto standard for natural language processing tasks, its applications to computer vision remain limited. In vision, attention is either applied in conjunction with convolutional networks, or used to replace certain components of convolutional networks while keeping their overall structure in place. We show that this reliance on CNNs is not necessary and a pure transformer applied directly to sequences of image patches can perform very well on image classification tasks. When pre-trained on large amounts of data and transferred to multiple mid-sized or small image recognition benchmarks (ImageNet, CIFAR-100, VTAB, etc.), Vision Transformer (ViT) attains excellent results compared to state-of-the-art convolutional networks while requiring substantially fewer computational resources to train.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale">An
+Image is Worth 16x16 Words: Transformers for Image Recognition at
+Scale</h1>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1 Introduction</h2>
+<h2 id="related-work">2 Related Work</h2>
+<h2 id="method">3 Method</h2>
+<h3 id="vision-transformer-vit">3.1 Vision Transformer (ViT)</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/model_scheme.webp"
+alt="Figure 1: Model overview. We split an image into fixed-size patches, linearly embed each of them, add position embeddings, and feed the resulting sequence of vectors to a standard Transformer encoder. In order to perform classification, we use the standard approach of adding an extra learnable &quot;classification token&quot; to the sequence. The illustration of the Transformer encoder was inspired by Vaswani et al. (2017)." />
+<figcaption aria-hidden="true">Figure 1: Model overview. We split an
+image into fixed-size patches, linearly embed each of them, add position
+embeddings, and feed the resulting sequence of vectors to a standard
+Transformer encoder. In order to perform classification, we use the
+standard approach of adding an extra learnable "classification token" to
+the sequence. The illustration of the Transformer encoder was inspired
+by Vaswani et al. (2017).</figcaption>
+</figure>
+<p>结合代码对ViT结构进行解释，代码详见<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS1yZXNlYXJjaC92aXNpb25fdHJhbnNmb3JtZXIvYmxvYi9tYWluL3ZpdF9qYXgvbW9kZWxzX3ZpdC5weSNMMjEx">models_vit.py第211行<i class="fa fa-external-link-alt"></i></span>，具体<code>VisionTransformer</code>类的代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VisionTransformer</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;VisionTransformer.&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    num_classes: <span class="built_in">int</span></span><br><span class="line">    patches: <span class="type">Any</span></span><br><span class="line">    transformer: <span class="type">Any</span></span><br><span class="line">    hidden_size: <span class="built_in">int</span></span><br><span class="line">    resnet: <span class="type">Optional</span>[<span class="type">Any</span>] = <span class="literal">None</span></span><br><span class="line">    representation_size: <span class="type">Optional</span>[<span class="built_in">int</span>] = <span class="literal">None</span></span><br><span class="line">    classifier: <span class="built_in">str</span> = <span class="string">&#x27;token&#x27;</span></span><br><span class="line">    head_bias_init: <span class="built_in">float</span> = <span class="number">0.</span></span><br><span class="line">    encoder: <span class="type">Type</span>[nn.Module] = Encoder</span><br><span class="line">    model_name: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @nn.compact</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, *, train</span>):</span><br><span class="line">        x = inputs</span><br><span class="line">        <span class="comment"># (Possibly partial) ResNet root.</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.resnet <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            width = <span class="built_in">int</span>(<span class="number">64</span> * <span class="variable language_">self</span>.resnet.width_factor)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Root block.</span></span><br><span class="line">            x = models_resnet.StdConv(</span><br><span class="line">                features=width,</span><br><span class="line">                kernel_size=(<span class="number">7</span>, <span class="number">7</span>),</span><br><span class="line">                strides=(<span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">                use_bias=<span class="literal">False</span>,</span><br><span class="line">                name=<span class="string">&#x27;conv_root&#x27;</span>)(x)</span><br><span class="line">            x = nn.GroupNorm(name=<span class="string">&#x27;gn_root&#x27;</span>)(x)</span><br><span class="line">            x = nn.relu(x)</span><br><span class="line">            x = nn.max_pool(x, window_shape=(<span class="number">3</span>, <span class="number">3</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">&#x27;SAME&#x27;</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># ResNet stages.</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.resnet.num_layers:</span><br><span class="line">                x = models_resnet.ResNetStage(</span><br><span class="line">                    block_size=<span class="variable language_">self</span>.resnet.num_layers[<span class="number">0</span>],</span><br><span class="line">                    nout=width,</span><br><span class="line">                    first_stride=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">                    name=<span class="string">&#x27;block1&#x27;</span>)(x)</span><br><span class="line">                <span class="keyword">for</span> i, block_size <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="variable language_">self</span>.resnet.num_layers[<span class="number">1</span>:], <span class="number">1</span>):</span><br><span class="line">                    x = models_resnet.ResNetStage(</span><br><span class="line">                        block_size=block_size,</span><br><span class="line">                        nout=width * <span class="number">2</span>**i,</span><br><span class="line">                        first_stride=(<span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">                        name=<span class="string">f&#x27;block<span class="subst">&#123;i + <span class="number">1</span>&#125;</span>&#x27;</span>)(x)</span><br><span class="line"></span><br><span class="line">        n, h, w, c = x.shape</span><br><span class="line"></span><br><span class="line">        <span class="comment"># We can merge s2d+emb into a single conv; it&#x27;s the same.</span></span><br><span class="line">        x = nn.Conv(</span><br><span class="line">            features=<span class="variable language_">self</span>.hidden_size,</span><br><span class="line">            kernel_size=<span class="variable language_">self</span>.patches.size,</span><br><span class="line">            strides=<span class="variable language_">self</span>.patches.size,</span><br><span class="line">            padding=<span class="string">&#x27;VALID&#x27;</span>,</span><br><span class="line">            name=<span class="string">&#x27;embedding&#x27;</span>)(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Here, x is a grid of embeddings.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># (Possibly partial) Transformer.</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.transformer <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            n, h, w, c = x.shape</span><br><span class="line">            x = jnp.reshape(x, [n, h * w, c])</span><br><span class="line"></span><br><span class="line">            <span class="comment"># If we want to add a class token, add it here.</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.classifier <span class="keyword">in</span> [<span class="string">&#x27;token&#x27;</span>, <span class="string">&#x27;token_unpooled&#x27;</span>]:</span><br><span class="line">                cls = <span class="variable language_">self</span>.param(<span class="string">&#x27;cls&#x27;</span>, nn.initializers.zeros, (<span class="number">1</span>, <span class="number">1</span>, c))</span><br><span class="line">                cls = jnp.tile(cls, [n, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">                x = jnp.concatenate([cls, x], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">            x = <span class="variable language_">self</span>.encoder(name=<span class="string">&#x27;Transformer&#x27;</span>, **<span class="variable language_">self</span>.transformer)(x, train=train)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.classifier == <span class="string">&#x27;token&#x27;</span>:</span><br><span class="line">            x = x[:, <span class="number">0</span>]</span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>.classifier == <span class="string">&#x27;gap&#x27;</span>:</span><br><span class="line">            x = jnp.mean(x, axis=<span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">1</span>, x.ndim - <span class="number">1</span>)))  <span class="comment"># (1,) or (1,2)</span></span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>.classifier <span class="keyword">in</span> [<span class="string">&#x27;unpooled&#x27;</span>, <span class="string">&#x27;token_unpooled&#x27;</span>]:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">f&#x27;Invalid classifier=<span class="subst">&#123;self.classifier&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.representation_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            x = nn.Dense(features=<span class="variable language_">self</span>.representation_size, name=<span class="string">&#x27;pre_logits&#x27;</span>)(x)</span><br><span class="line">            x = nn.tanh(x)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            x = IdentityLayer(name=<span class="string">&#x27;pre_logits&#x27;</span>)(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.num_classes:</span><br><span class="line">            x = nn.Dense(</span><br><span class="line">                features=<span class="variable language_">self</span>.num_classes,</span><br><span class="line">                name=<span class="string">&#x27;head&#x27;</span>,</span><br><span class="line">                kernel_init=nn.initializers.zeros,</span><br><span class="line">                bias_init=nn.initializers.constant(<span class="variable language_">self</span>.head_bias_init))(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>原文：</p>
+<p>An overview of the model is depicted in Figure 1. The standard
+Transformer receives as input a 1D sequence of token embeddings. To
+handle 2D images, we reshape the image <span
+class="math inline">\(\mathbf{x} \in \mathbb{R}^{H \times W \times
+C}\)</span> into a sequence of flattened 2D patches <span
+class="math inline">\(\mathbf{x}_p \in \mathbb{R}^{N \times (P^2 \cdot
+C)}\)</span>, where <span class="math inline">\((H, W)\)</span> is the
+resolution of the original image, <span class="math inline">\(C\)</span>
+is the number of channels, <span class="math inline">\((P, P)\)</span>
+is the resolution of each image patch, and <span class="math inline">\(N
+= \frac{H}{P} \times \frac{W}{P} = \frac{HW}{P^2}\)</span> is the
+resulting number of patches, which also serves as the effective input
+sequence length for the Transformer. <strong>The Transformer uses
+constant latent vector size <span class="math inline">\(D\)</span>
+through all of its layers, so we flatten the patches and map to <span
+class="math inline">\(D\)</span> dimensions with a trainable linear
+projection (Eq. 1). We refer to the output of this projection as the
+patch embeddings.</strong></p>
+</blockquote>
+<p>根据原文中的说法，输入一张维度为<span
+class="math inline">\(\mathbf{x} \in \mathbb{R}^{H \times W \times
+C}\)</span>的图像后，ViT会将输入的形状reshape为<span
+class="math inline">\(\mathbf{x}_p \in \mathbb{R}^{N \times (P^2 \cdot
+C)}\)</span>，其中<span class="math inline">\((H,
+W)\)</span>为原图像的分辨率，<span
+class="math inline">\(C\)</span>为通道数，<span
+class="math inline">\((P, P)\)</span>为每个patch的分辨率，<span
+class="math inline">\(N = \frac{H}{P} \times \frac{W}{P} =
+\frac{HW}{P^2}\)</span>为patch的数量，这一步没有涉及到网络操作，总的像素数<span
+class="math inline">\(H \times W \times C = N \times (P^2 \cdot
+C)\)</span>不变，所以直接用reshape操作即可。</p>
+<p>后续的代码中涉及到了batch_size，为了前后统一，这里为输入图像增加一个batch_size维度，即<span
+class="math inline">\(\mathbf{x} \in \mathbb{R}^{n \times H \times W
+\times C}\)</span>，其中<span
+class="math inline">\(n\)</span>为batch_size。</p>
+<p>在reshape之后，<span
+class="math inline">\(\mathbf{x}_p\)</span>的维度是<span
+class="math inline">\(\mathbb{R}^{n \times N \times (P^2 \cdot
+C)}\)</span>，以Transformer的视角来看，<span
+class="math inline">\(n\)</span>幅图像被表示为<span
+class="math inline">\(n\)</span>个句子，每个句子中有<span
+class="math inline">\(N\)</span>个单词，每个单词用长度为<span
+class="math inline">\(P^2 \cdot
+C\)</span>的向量来表示。但是ViT没有直接将<span
+class="math inline">\(\mathbf{x}_p\)</span>输入进Transformer中，而是使用一个线性投影<span
+class="math inline">\(\mathbf{E} \in \mathbb{R}^{(P^2 \cdot C) \times
+D}\)</span>将<span class="math inline">\(\mathbf{x}_p \in \mathbb{R}^{n
+\times N \times (P^2 \cdot C)}\)</span>投影到<span
+class="math inline">\(\mathbb{R}^{n \times N \times
+D}\)</span>，也就是将每个单词用长度为<span
+class="math inline">\(D\)</span>的向量表示。并且，由于该篇论文中ViT做的是有监督分类任务，所以会在每一个句子前面加上一个类别标签<span
+class="math inline">\(\mathbf{x}_\text{class}\)</span>。在最后，Transformer的输入是<span
+class="math inline">\(\mathbf{z}_0 = [\mathbf{x}_\text{class};
+\mathbf{x}_p^1\mathbf{E}; \cdots; \mathbf{x}_p^N\mathbf{E}] +
+\mathbf{E}_{pos} \in \mathbb{R}^{n \times (N + 1) \times
+D}\)</span>，其中，<span
+class="math inline">\(\mathbf{x}_p^i\)</span>的维度为<span
+class="math inline">\(\mathbb{R}^{n \times 1 \times D}\)</span>，<span
+class="math inline">\(\mathbf{E}_{pos} \in \mathbb{R}^{(N + 1) \times
+D}\)</span>是位置编码。</p>
+<p>但是实际上，ViT中所谓的线性投影是一个CNN，对应于上述代码的49-55行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VisionTransformer</span>(nn.Module):</span><br><span class="line">    <span class="comment"># ... existing code ...</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, *, train</span>):</span><br><span class="line">        <span class="comment"># ... existing code ...</span></span><br><span class="line">        <span class="comment"># We can merge s2d+emb into a single conv; it&#x27;s the same.</span></span><br><span class="line">        x = nn.Conv(</span><br><span class="line">            features=<span class="variable language_">self</span>.hidden_size,</span><br><span class="line">            kernel_size=<span class="variable language_">self</span>.patches.size,</span><br><span class="line">            strides=<span class="variable language_">self</span>.patches.size,</span><br><span class="line">            padding=<span class="string">&#x27;VALID&#x27;</span>,</span><br><span class="line">            name=<span class="string">&#x27;embedding&#x27;</span>)(x)</span><br><span class="line">        <span class="comment"># ... existing code ...</span></span><br><span class="line">    <span class="comment"># ... existing code ...</span></span><br></pre></td></tr></table></figure>
+<p>ViT的原仓库是用TensorFlow实现的，其中<code>features</code>是卷积核数量，<code>kernel_size</code>是卷积核大小，<code>strides</code>是步长，<code>padding</code>是填充方式，<code>name</code>是层名。这里的<code>self.hidden_size</code>就是上文提到的<span
+class="math inline">\(D\)</span>，<code>self.patches.size</code>就是上文提到的<span
+class="math inline">\(P\)</span>。该卷积操作的卷积核大小和步长大小相同，所以将输入图片经过这个卷积操作后，每一个patch都会被映射成一个<span
+class="math inline">\(D\)</span>维的向量，且patch和patch之间没有重合部分，那么最后输出的维度是<span
+class="math inline">\(\mathbb{R}^{n \times \frac{H}{P} \times
+\frac{W}{P} \times D}\)</span>。</p>
+<p>线性投影后，ViT会对序列进行reshape，并在序列前面加上一个类别标签<span
+class="math inline">\(\mathbf{x}_\text{class}\)</span>，对应于上述代码的59-70行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VisionTransformer</span>(nn.Module):</span><br><span class="line">    <span class="comment"># ... existing code ...</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, *, train</span>):</span><br><span class="line">        <span class="comment"># ... existing code ...</span></span><br><span class="line">        <span class="comment"># (Possibly partial) Transformer.</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.transformer <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            n, h, w, c = x.shape</span><br><span class="line">            x = jnp.reshape(x, [n, h * w, c])</span><br><span class="line"></span><br><span class="line">            <span class="comment"># If we want to add a class token, add it here.</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.classifier <span class="keyword">in</span> [<span class="string">&#x27;token&#x27;</span>, <span class="string">&#x27;token_unpooled&#x27;</span>]:</span><br><span class="line">                cls = <span class="variable language_">self</span>.param(<span class="string">&#x27;cls&#x27;</span>, nn.initializers.zeros, (<span class="number">1</span>, <span class="number">1</span>, c))</span><br><span class="line">                cls = jnp.tile(cls, [n, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">                x = jnp.concatenate([cls, x], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">            x = <span class="variable language_">self</span>.encoder(name=<span class="string">&#x27;Transformer&#x27;</span>, **<span class="variable language_">self</span>.transformer)(x, train=train)</span><br><span class="line">        <span class="comment"># ... existing code ...</span></span><br><span class="line">    <span class="comment"># ... existing code ...</span></span><br></pre></td></tr></table></figure>
+<p>在<code>n, h, w, c = x.shape</code>中，<code>n</code>是batch_size，<code>h</code>为特征图的高度<span
+class="math inline">\(\frac{H}{P}\)</span>，<code>w</code>为特征图的宽度<span
+class="math inline">\(\frac{W}{P}\)</span>，<code>c</code>为特征图的通道数<span
+class="math inline">\(D\)</span>，经过reshape后，batch_size不变，特征图的高度<span
+class="math inline">\(\frac{H}{P}\)</span>和宽度<span
+class="math inline">\(\frac{W}{P}\)</span>相乘，得到<span
+class="math inline">\(N\)</span>，即patch的数量，至此，reshape操作和线性映射操作结束，得到序列的维度为<span
+class="math inline">\(\mathbb{R}^{n \times N \times D}\)</span>。</p>
+<p>接下来是在序列前面加上一个类别标签<span
+class="math inline">\(\mathbf{x}_\text{class}\)</span>，<code>cls = self.param('cls', nn.initializers.zeros, (1, 1, c))</code>创建了一个维度为<span
+class="math inline">\(\mathbb{R}^{1 \times 1 \times
+D}\)</span>的类别标签，<code>cls = jnp.tile(cls, [n, 1, 1])</code>将类别标签在第0维复制<span
+class="math inline">\(n\)</span>次，得到维度为<span
+class="math inline">\(\mathbb{R}^{n \times 1 \times
+D}\)</span>的类别标签，最后，<code>x = jnp.concatenate([cls, x], axis=1)</code>将<span
+class="math inline">\(\mathbb{R}^{n \times 1 \times
+D}\)</span>的类别标签和<span class="math inline">\(\mathbb{R}^{n \times
+N \times D}\)</span>的序列在维度1拼接起来，得到维度为<span
+class="math inline">\(\mathbb{R}^{n \times (N + 1) \times
+D}\)</span>的输入序列。</p>
+<p>但是此时还没有加入位置编码，在该篇论文ViT的实现中，位置编码是在调用<code>encoder</code>时加入的。</p>
+<p><code>x = self.encoder(name='Transformer', **self.transformer)(x, train=train)</code>中调用了<code>encoder</code>，<code>encoder</code>是<code>Encoder</code>类的实例，<code>Encoder</code>类的定义在<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS1yZXNlYXJjaC92aXNpb25fdHJhbnNmb3JtZXIvYmxvYi9tYWluL3ZpdF9qYXgvbW9kZWxzX3ZpdC5weSNMMTU5">models_vit.py第159行<i class="fa fa-external-link-alt"></i></span>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Encoder</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Transformer Model Encoder for sequence to sequence translation.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Attributes:</span></span><br><span class="line"><span class="string">        num_layers: number of layers</span></span><br><span class="line"><span class="string">        mlp_dim: dimension of the mlp on top of attention block</span></span><br><span class="line"><span class="string">        num_heads: Number of heads in nn.MultiHeadDotProductAttention</span></span><br><span class="line"><span class="string">        dropout_rate: dropout rate.</span></span><br><span class="line"><span class="string">        attention_dropout_rate: dropout rate in self attention.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    num_layers: <span class="built_in">int</span></span><br><span class="line">    mlp_dim: <span class="built_in">int</span></span><br><span class="line">    num_heads: <span class="built_in">int</span></span><br><span class="line">    dropout_rate: <span class="built_in">float</span> = <span class="number">0.1</span></span><br><span class="line">    attention_dropout_rate: <span class="built_in">float</span> = <span class="number">0.1</span></span><br><span class="line">    add_position_embedding: <span class="built_in">bool</span> = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @nn.compact</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, x, *, train</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Applies Transformer model on the inputs.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            x: Inputs to the layer.</span></span><br><span class="line"><span class="string">            train: Set to `True` when training.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            output of a transformer encoder.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">assert</span> x.ndim == <span class="number">3</span>  <span class="comment"># (batch, len, emb)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.add_position_embedding:</span><br><span class="line">            x = AddPositionEmbs(</span><br><span class="line">                posemb_init=nn.initializers.normal(stddev=<span class="number">0.02</span>),  <span class="comment"># from BERT.</span></span><br><span class="line">                name=<span class="string">&#x27;posembed_input&#x27;</span>)(x)</span><br><span class="line">            x = nn.Dropout(rate=<span class="variable language_">self</span>.dropout_rate)(x, deterministic=<span class="keyword">not</span> train)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Input Encoder</span></span><br><span class="line">        <span class="keyword">for</span> lyr <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.num_layers):</span><br><span class="line">            x = Encoder1DBlock(</span><br><span class="line">                mlp_dim=<span class="variable language_">self</span>.mlp_dim,</span><br><span class="line">                dropout_rate=<span class="variable language_">self</span>.dropout_rate,</span><br><span class="line">                attention_dropout_rate=<span class="variable language_">self</span>.attention_dropout_rate,</span><br><span class="line">                name=<span class="string">f&#x27;encoderblock_<span class="subst">&#123;lyr&#125;</span>&#x27;</span>,</span><br><span class="line">                num_heads=<span class="variable language_">self</span>.num_heads)(x, deterministic=<span class="keyword">not</span> train)</span><br><span class="line">        encoded = nn.LayerNorm(name=<span class="string">&#x27;encoder_norm&#x27;</span>)(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> encoded</span><br></pre></td></tr></table></figure>
+<p>其中第33行还有一个<code>AddPositionEmbs</code>类，位置编码是在该步操作中加入的，<code>AddPositionEmbs</code>类的定义在<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS1yZXNlYXJjaC92aXNpb25fdHJhbnNmb3JtZXIvYmxvYi9tYWluL3ZpdF9qYXgvbW9kZWxzX3ZpdC5weSNMMzc=">models_vit.py第37行<i class="fa fa-external-link-alt"></i></span>中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddPositionEmbs</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Adds learned positional embeddings to the inputs.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Attributes:</span></span><br><span class="line"><span class="string">        posemb_init: positional embedding initializer.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    posemb_init: <span class="type">Callable</span>[[PRNGKey, Shape, Dtype], Array]</span><br><span class="line">    param_dtype: Dtype = jnp.float32</span><br><span class="line"></span><br><span class="line"><span class="meta">    @nn.compact</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Applies the AddPositionEmbs module.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            inputs: Inputs to the layer.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            Output tensor with shape `(bs, timesteps, in_dim)`.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># inputs.shape is (batch_size, seq_len, emb_dim).</span></span><br><span class="line">        <span class="keyword">assert</span> inputs.ndim == <span class="number">3</span>, (<span class="string">&#x27;Number of dimensions should be 3,&#x27;</span></span><br><span class="line">                                 <span class="string">&#x27; but it is: %d&#x27;</span> % inputs.ndim)</span><br><span class="line">        pos_emb_shape = (<span class="number">1</span>, inputs.shape[<span class="number">1</span>], inputs.shape[<span class="number">2</span>])</span><br><span class="line">        pe = <span class="variable language_">self</span>.param(</span><br><span class="line">            <span class="string">&#x27;pos_embedding&#x27;</span>, <span class="variable language_">self</span>.posemb_init, pos_emb_shape, <span class="variable language_">self</span>.param_dtype)</span><br><span class="line">        <span class="keyword">return</span> inputs + pe</span><br></pre></td></tr></table></figure>
+<p>输入到Transformer的encoder之前，<code>AddPositionEmbs</code>类为输入序列添加了位置编码，注意，ViT中的位置编码是可学习的位置编码，而不是像原版Transformer中那样使用正余弦函数生成位置编码。在添加位置编码后，维度为<span
+class="math inline">\(\mathbb{R}^{n \times (N + 1) \times
+D}\)</span>的数据被输入到Transformer的encoder中，得到输出序列。</p>
+<p>最后，执行分类任务，对应于上述代码的72-93行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VisionTransformer</span>(nn.Module):</span><br><span class="line">    <span class="comment"># ... existing code ...</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, *, train</span>):</span><br><span class="line">        <span class="comment"># ... existing code ...</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.classifier == <span class="string">&#x27;token&#x27;</span>:</span><br><span class="line">            x = x[:, <span class="number">0</span>]</span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>.classifier == <span class="string">&#x27;gap&#x27;</span>:</span><br><span class="line">            x = jnp.mean(x, axis=<span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">1</span>, x.ndim - <span class="number">1</span>)))  <span class="comment"># (1,) or (1,2)</span></span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>.classifier <span class="keyword">in</span> [<span class="string">&#x27;unpooled&#x27;</span>, <span class="string">&#x27;token_unpooled&#x27;</span>]:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">f&#x27;Invalid classifier=<span class="subst">&#123;self.classifier&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.representation_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            x = nn.Dense(features=<span class="variable language_">self</span>.representation_size, name=<span class="string">&#x27;pre_logits&#x27;</span>)(x)</span><br><span class="line">            x = nn.tanh(x)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            x = IdentityLayer(name=<span class="string">&#x27;pre_logits&#x27;</span>)(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.num_classes:</span><br><span class="line">            x = nn.Dense(</span><br><span class="line">                features=<span class="variable language_">self</span>.num_classes,</span><br><span class="line">                name=<span class="string">&#x27;head&#x27;</span>,</span><br><span class="line">                kernel_init=nn.initializers.zeros,</span><br><span class="line">                bias_init=nn.initializers.constant(<span class="variable language_">self</span>.head_bias_init))(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>由于Transformer
+encoder处理前后数据的维度不变，所以输出维度仍然为<span
+class="math inline">\(\mathbb{R}^{n \times (N + 1) \times
+D}\)</span>，<code>x = x[:, 0]</code>将所有<span
+class="math inline">\(n\)</span>个句子的类别标签取出，得到维度为<span
+class="math inline">\(\mathbb{R}^{n \times
+D}\)</span>的输出。最后输入到<code>Dense</code>中得到分类向量。</p>
+<h3 id="fine-tuning-and-higher-resolution">3.2 Fine-tuning And Higher
+Resolution</h3>
+<h2 id="experiments">4 Experiments</h2>
+<h3 id="setup">4.1 Setup</h3>
+<table>
+<caption>
+Table 1: Details of Vision Transformer model variants.
+</caption>
+<thead>
+<tr>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Model
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Layers
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Hidden size <span class="math inline">\(D\)</span>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+MLP size
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Heads
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Params
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">
+ViT-Base
+</td>
+<td style="text-align: center;">
+12
+</td>
+<td style="text-align: center;">
+768
+</td>
+<td style="text-align: center;">
+3072
+</td>
+<td style="text-align: center;">
+12
+</td>
+<td style="text-align: center;">
+86M
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+ViT-Large
+</td>
+<td style="text-align: center;">
+24
+</td>
+<td style="text-align: center;">
+1024
+</td>
+<td style="text-align: center;">
+4096
+</td>
+<td style="text-align: center;">
+16
+</td>
+<td style="text-align: center;">
+307M
+</td>
+</tr>
+<tr>
+<td style="text-align: center; border-bottom: 2px solid black;">
+ViT-Huge
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+32
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+1280
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+5120
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+16
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+632M
+</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption style="text-align: left;">
+Table 2: Comparison with state of the art on popular image
+classification benchmarks. We report mean and standard deviation of the
+accuracies, averaged over three fine-tuning runs. Vision Transformer
+models pre-trained on the JFT-300M dataset outperform ResNet-based
+baselines on all datasets, while taking substantially less computational
+resources to pre-train. ViT pre-trained on the smaller public
+ImageNet-21k dataset performs well too. <sup>∗</sup>Slightly improved
+88.5% result reported in Touvron et al. (2020).
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Ours-JFT<br>(ViT-H/14)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Ours-JFT<br>(ViT-L/16)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Ours-i21k<br>(ViT-L/16)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+BiT-L<br>(ResNet152x4)
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Noisy Student<br>(EfficientNet-L2)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ImageNet
+</td>
+<td style="text-align: center;">
+<strong>88.55 <sub>±0.04</sub></strong>
+</td>
+<td style="text-align: center;">
+87.76 <sub>±0.03</sub>
+</td>
+<td style="text-align: center;">
+85.30 <sub>±0.02</sub>
+</td>
+<td style="text-align: center;">
+87.54 <sub>±0.02</sub>
+</td>
+<td style="text-align: center;">
+88.4/88.5<sup>∗</sup>
+</td>
+</tr>
+<tr>
+<td>
+ImageNet ReaL
+</td>
+<td style="text-align: center;">
+<strong>90.72 <sub>±0.05</sub></strong>
+</td>
+<td style="text-align: center;">
+90.54 <sub>±0.03</sub>
+</td>
+<td style="text-align: center;">
+88.62 <sub>±0.05</sub>
+</td>
+<td style="text-align: center;">
+90.54
+</td>
+<td style="text-align: center;">
+90.55
+</td>
+</tr>
+<tr>
+<td>
+CIFAR-10
+</td>
+<td style="text-align: center;">
+<strong>99.50 <sub>±0.06</sub></strong>
+</td>
+<td style="text-align: center;">
+99.42 <sub>±0.03</sub>
+</td>
+<td style="text-align: center;">
+99.15 <sub>±0.03</sub>
+</td>
+<td style="text-align: center;">
+99.37 <sub>±0.06</sub>
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+CIFAR-100
+</td>
+<td style="text-align: center;">
+<strong>94.55 <sub>±0.04</sub></strong>
+</td>
+<td style="text-align: center;">
+93.90 <sub>±0.05</sub>
+</td>
+<td style="text-align: center;">
+93.25 <sub>±0.05</sub>
+</td>
+<td style="text-align: center;">
+93.51 <sub>±0.08</sub>
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+Oxford-IIIT Pets
+</td>
+<td style="text-align: center;">
+<strong>97.56 <sub>±0.03</sub></strong>
+</td>
+<td style="text-align: center;">
+97.32 <sub>±0.11</sub>
+</td>
+<td style="text-align: center;">
+94.67 <sub>±0.15</sub>
+</td>
+<td style="text-align: center;">
+96.62 <sub>±0.23</sub>
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+Oxford Flowers-102
+</td>
+<td style="text-align: center;">
+99.68 <sub>±0.02</sub>
+</td>
+<td style="text-align: center;">
+<strong>99.74 <sub>±0.00</sub></strong>
+</td>
+<td style="text-align: center;">
+99.61 <sub>±0.02</sub>
+</td>
+<td style="text-align: center;">
+99.63 <sub>±0.03</sub>
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+VTAB (19 tasks)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<strong>77.63 <sub>±0.23</sub></strong>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+76.28 <sub>±0.46</sub>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+72.72 <sub>±0.21</sub>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+76.29 <sub>±1.70</sub>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+TPUv3-core-days
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+2.5k
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.68k
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.23k
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+9.9k
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+12.3k
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="comparison-to-state-of-the-art">4.2 Comparison to State of the
+Art</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/vit-vtab.webp"
+alt="Figure 2: Breakdown of VTAB performance in Natural, Specialized, and Structured task groups." />
+<figcaption aria-hidden="true">Figure 2: Breakdown of VTAB performance
+in Natural, Specialized, and Structured task groups.</figcaption>
+</figure>
+<h3 id="pre-training-data-requirements">4.3 Pre-training Data
+Requirements</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/transvolution-i1k-scaling.webp"
+alt="Figure 3: Transfer to ImageNet. While large ViT models perform worse than BiT ResNets (shaded area) when pre-trained on small datasets, they shine when pre-trained on larger datasets. Similarly, larger ViT variants overtake smaller ones as the dataset grows." />
+<figcaption aria-hidden="true">Figure 3: Transfer to ImageNet. While
+large ViT models perform worse than BiT ResNets (shaded area) when
+pre-trained on small datasets, they shine when pre-trained on larger
+datasets. Similarly, larger ViT variants overtake smaller ones as the
+dataset grows.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/imagenet_5shot.webp"
+alt="Figure 4: Linear few-shot evaluation on ImageNet versus pre-training size. ResNets perform better with smaller pre-training datasets but plateau sooner than ViT, which performs better with larger pre-training. ViT-b is ViT-B with all hidden dimensions halved." />
+<figcaption aria-hidden="true">Figure 4: Linear few-shot evaluation on
+ImageNet versus pre-training size. ResNets perform better with smaller
+pre-training datasets but plateau sooner than ViT, which performs better
+with larger pre-training. ViT-b is ViT-B with all hidden dimensions
+halved.</figcaption>
+</figure>
+<table>
+<caption style="text-align: left;">
+Table 5: Top1 accuracy (in %) of Vision Transformer on various datasets
+when pre-trained on ImageNet, ImageNet-21k or JFT300M. These values
+correspond to Figure 3 in the main text. Models are fine-tuned at 384
+resolution. Note that the ImageNet results are computed without
+additional techniques (Polyak averaging and 512 resolution images) used
+to achieve results in Table 2.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+</th>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ViT-B/16
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ViT-B/32
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ViT-L/16
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ViT-L/32
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ViT-H/14
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="6" style="border-bottom: 1px solid black;">
+ImageNet
+</td>
+<td>
+CIFAR-10
+</td>
+<td style="text-align: center;">
+98.13
+</td>
+<td style="text-align: center;">
+97.77
+</td>
+<td style="text-align: center;">
+97.86
+</td>
+<td style="text-align: center;">
+97.94
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+CIFAR-100
+</td>
+<td style="text-align: center;">
+87.13
+</td>
+<td style="text-align: center;">
+86.31
+</td>
+<td style="text-align: center;">
+86.35
+</td>
+<td style="text-align: center;">
+87.07
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+ImageNet
+</td>
+<td style="text-align: center;">
+77.91
+</td>
+<td style="text-align: center;">
+73.38
+</td>
+<td style="text-align: center;">
+76.53
+</td>
+<td style="text-align: center;">
+71.16
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+ImageNet ReaL
+</td>
+<td style="text-align: center;">
+83.57
+</td>
+<td style="text-align: center;">
+79.56
+</td>
+<td style="text-align: center;">
+82.19
+</td>
+<td style="text-align: center;">
+77.83
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td>
+Oxford Flowers-102
+</td>
+<td style="text-align: center;">
+89.49
+</td>
+<td style="text-align: center;">
+85.43
+</td>
+<td style="text-align: center;">
+89.66
+</td>
+<td style="text-align: center;">
+86.36
+</td>
+<td style="text-align: center;">
+-
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+Oxford-IIIT-Pets
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+93.81
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+92.04
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+93.64
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+91.35
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+</tr>
+<tr>
+<td rowspan="6" style="border-bottom: 1px solid black;">
+ImageNet-21k
+</td>
+<td>
+CIFAR-10
+</td>
+<td style="text-align: center;">
+98.95
+</td>
+<td style="text-align: center;">
+98.79
+</td>
+<td style="text-align: center;">
+99.16
+</td>
+<td style="text-align: center;">
+99.13
+</td>
+<td style="text-align: center;">
+99.27
+</td>
+</tr>
+<tr>
+<td>
+CIFAR-100
+</td>
+<td style="text-align: center;">
+91.67
+</td>
+<td style="text-align: center;">
+91.97
+</td>
+<td style="text-align: center;">
+93.44
+</td>
+<td style="text-align: center;">
+93.04
+</td>
+<td style="text-align: center;">
+93.82
+</td>
+</tr>
+<tr>
+<td>
+ImageNet
+</td>
+<td style="text-align: center;">
+83.97
+</td>
+<td style="text-align: center;">
+81.28
+</td>
+<td style="text-align: center;">
+85.15
+</td>
+<td style="text-align: center;">
+80.99
+</td>
+<td style="text-align: center;">
+85.13
+</td>
+</tr>
+<tr>
+<td>
+ImageNet ReaL
+</td>
+<td style="text-align: center;">
+88.35
+</td>
+<td style="text-align: center;">
+86.63
+</td>
+<td style="text-align: center;">
+88.40
+</td>
+<td style="text-align: center;">
+85.65
+</td>
+<td style="text-align: center;">
+88.70
+</td>
+</tr>
+<tr>
+<td>
+Oxford Flowers-102
+</td>
+<td style="text-align: center;">
+99.38
+</td>
+<td style="text-align: center;">
+99.11
+</td>
+<td style="text-align: center;">
+99.61
+</td>
+<td style="text-align: center;">
+99.19
+</td>
+<td style="text-align: center;">
+99.51
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+Oxford-IIIT-Pets
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+94.43
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+93.02
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+94.73
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+93.09
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+94.82
+</td>
+</tr>
+<tr>
+<td rowspan="6" style="border-bottom: 2px solid black;">
+JFT-300M
+</td>
+<td>
+CIFAR-10
+</td>
+<td style="text-align: center;">
+99.00
+</td>
+<td style="text-align: center;">
+98.61
+</td>
+<td style="text-align: center;">
+99.38
+</td>
+<td style="text-align: center;">
+99.19
+</td>
+<td style="text-align: center;">
+99.50
+</td>
+</tr>
+<tr>
+<td>
+CIFAR-100
+</td>
+<td style="text-align: center;">
+91.87
+</td>
+<td style="text-align: center;">
+90.49
+</td>
+<td style="text-align: center;">
+94.04
+</td>
+<td style="text-align: center;">
+92.52
+</td>
+<td style="text-align: center;">
+94.55
+</td>
+</tr>
+<tr>
+<td>
+ImageNet
+</td>
+<td style="text-align: center;">
+84.15
+</td>
+<td style="text-align: center;">
+80.73
+</td>
+<td style="text-align: center;">
+87.12
+</td>
+<td style="text-align: center;">
+84.37
+</td>
+<td style="text-align: center;">
+88.04
+</td>
+</tr>
+<tr>
+<td>
+ImageNet ReaL
+</td>
+<td style="text-align: center;">
+88.85
+</td>
+<td style="text-align: center;">
+86.27
+</td>
+<td style="text-align: center;">
+89.99
+</td>
+<td style="text-align: center;">
+88.28
+</td>
+<td style="text-align: center;">
+90.33
+</td>
+</tr>
+<tr>
+<td>
+Oxford Flowers-102
+</td>
+<td style="text-align: center;">
+99.56
+</td>
+<td style="text-align: center;">
+99.27
+</td>
+<td style="text-align: center;">
+99.56
+</td>
+<td style="text-align: center;">
+99.45
+</td>
+<td style="text-align: center;">
+99.68
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Oxford-IIIT-Pets
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+95.80
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+93.40
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+97.11
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+95.83
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+97.56
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scaling-study">4.4 Scaling Study</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/finetune_vs_compute2.webp"
+alt="Figure 5: Performance versus pre-training compute for different architectures: Vision Transformers, ResNets, and hybrids. Vision Transformers generally outperform ResNets with the same computational budget. Hybrids improve upon pure Transformers for smaller model sizes, but the gap vanishes for larger models." />
+<figcaption aria-hidden="true">Figure 5: Performance versus pre-training
+compute for different architectures: Vision Transformers, ResNets, and
+hybrids. Vision Transformers generally outperform ResNets with the same
+computational budget. Hybrids improve upon pure Transformers for smaller
+model sizes, but the gap vanishes for larger models.</figcaption>
+</figure>
+<table>
+<caption style="text-align: left;">
+Table 6: Detailed results of model scaling experiments. These correspond
+to Figure 5 in the main paper. We show transfer accuracy on several
+datasets, as well as the pre-training compute (in exaFLOPs).
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+name
+</th>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Epochs
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ImageNet
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+ImageNet ReaL
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+CIFAR-10
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+CIFAR-100
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Pets
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Flowers
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+exaFLOPs
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ViT-B/32
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+80.73
+</td>
+<td style="text-align: center;">
+86.27
+</td>
+<td style="text-align: center;">
+98.61
+</td>
+<td style="text-align: center;">
+90.49
+</td>
+<td style="text-align: center;">
+93.40
+</td>
+<td style="text-align: center;">
+99.27
+</td>
+<td style="text-align: center;">
+55
+</td>
+</tr>
+<tr>
+<td>
+ViT-B/16
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+84.15
+</td>
+<td style="text-align: center;">
+88.85
+</td>
+<td style="text-align: center;">
+99.00
+</td>
+<td style="text-align: center;">
+91.87
+</td>
+<td style="text-align: center;">
+95.80
+</td>
+<td style="text-align: center;">
+99.56
+</td>
+<td style="text-align: center;">
+224
+</td>
+</tr>
+<tr>
+<td>
+ViT-L/32
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+84.37
+</td>
+<td style="text-align: center;">
+88.28
+</td>
+<td style="text-align: center;">
+99.19
+</td>
+<td style="text-align: center;">
+92.52
+</td>
+<td style="text-align: center;">
+95.83
+</td>
+<td style="text-align: center;">
+99.45
+</td>
+<td style="text-align: center;">
+196
+</td>
+</tr>
+<tr>
+<td>
+ViT-L/16
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+86.30
+</td>
+<td style="text-align: center;">
+89.43
+</td>
+<td style="text-align: center;">
+99.38
+</td>
+<td style="text-align: center;">
+93.46
+</td>
+<td style="text-align: center;">
+96.81
+</td>
+<td style="text-align: center;">
+99.66
+</td>
+<td style="text-align: center;">
+783
+</td>
+</tr>
+<tr>
+<td>
+ViT-L/16
+</td>
+<td>
+14
+</td>
+<td style="text-align: center;">
+87.12
+</td>
+<td style="text-align: center;">
+89.99
+</td>
+<td style="text-align: center;">
+99.38
+</td>
+<td style="text-align: center;">
+94.04
+</td>
+<td style="text-align: center;">
+97.11
+</td>
+<td style="text-align: center;">
+99.56
+</td>
+<td style="text-align: center;">
+1567
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+ViT-H/14
+</td>
+<td style="border-bottom: 1px solid black;">
+14
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+88.08
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+90.36
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+99.50
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+94.71
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+97.11
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+99.71
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+4262
+</td>
+</tr>
+<tr>
+<td>
+ResNet50x1
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+77.54
+</td>
+<td style="text-align: center;">
+84.56
+</td>
+<td style="text-align: center;">
+97.67
+</td>
+<td style="text-align: center;">
+86.07
+</td>
+<td style="text-align: center;">
+91.11
+</td>
+<td style="text-align: center;">
+94.26
+</td>
+<td style="text-align: center;">
+50
+</td>
+</tr>
+<tr>
+<td>
+ResNet50x2
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+82.12
+</td>
+<td style="text-align: center;">
+87.94
+</td>
+<td style="text-align: center;">
+98.29
+</td>
+<td style="text-align: center;">
+89.20
+</td>
+<td style="text-align: center;">
+93.43
+</td>
+<td style="text-align: center;">
+97.02
+</td>
+<td style="text-align: center;">
+199
+</td>
+</tr>
+<tr>
+<td>
+ResNet101x1
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+80.67
+</td>
+<td style="text-align: center;">
+87.07
+</td>
+<td style="text-align: center;">
+98.48
+</td>
+<td style="text-align: center;">
+89.17
+</td>
+<td style="text-align: center;">
+94.08
+</td>
+<td style="text-align: center;">
+95.95
+</td>
+<td style="text-align: center;">
+96
+</td>
+</tr>
+<tr>
+<td>
+ResNet152x1
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+81.88
+</td>
+<td style="text-align: center;">
+87.96
+</td>
+<td style="text-align: center;">
+98.82
+</td>
+<td style="text-align: center;">
+90.22
+</td>
+<td style="text-align: center;">
+94.17
+</td>
+<td style="text-align: center;">
+96.94
+</td>
+<td style="text-align: center;">
+141
+</td>
+</tr>
+<tr>
+<td>
+ResNet152x2
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+84.97
+</td>
+<td style="text-align: center;">
+89.69
+</td>
+<td style="text-align: center;">
+99.06
+</td>
+<td style="text-align: center;">
+92.05
+</td>
+<td style="text-align: center;">
+95.37
+</td>
+<td style="text-align: center;">
+98.62
+</td>
+<td style="text-align: center;">
+563
+</td>
+</tr>
+<tr>
+<td>
+ResNet152x2
+</td>
+<td>
+14
+</td>
+<td style="text-align: center;">
+85.56
+</td>
+<td style="text-align: center;">
+89.89
+</td>
+<td style="text-align: center;">
+99.24
+</td>
+<td style="text-align: center;">
+91.92
+</td>
+<td style="text-align: center;">
+95.75
+</td>
+<td style="text-align: center;">
+98.75
+</td>
+<td style="text-align: center;">
+1126
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+ResNet200x3
+</td>
+<td style="border-bottom: 1px solid black;">
+14
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+87.22
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+90.15
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+99.34
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+93.53
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+96.32
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+99.04
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+3306
+</td>
+</tr>
+<tr>
+<td>
+R50x1+ViT-B/32
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+84.90
+</td>
+<td style="text-align: center;">
+89.15
+</td>
+<td style="text-align: center;">
+99.01
+</td>
+<td style="text-align: center;">
+92.24
+</td>
+<td style="text-align: center;">
+95.75
+</td>
+<td style="text-align: center;">
+99.46
+</td>
+<td style="text-align: center;">
+106
+</td>
+</tr>
+<tr>
+<td>
+R50x1+ViT-B/16
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+85.58
+</td>
+<td style="text-align: center;">
+89.65
+</td>
+<td style="text-align: center;">
+99.14
+</td>
+<td style="text-align: center;">
+92.63
+</td>
+<td style="text-align: center;">
+96.65
+</td>
+<td style="text-align: center;">
+99.40
+</td>
+<td style="text-align: center;">
+274
+</td>
+</tr>
+<tr>
+<td>
+R50x1+ViT-L/32
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+85.68
+</td>
+<td style="text-align: center;">
+89.04
+</td>
+<td style="text-align: center;">
+99.24
+</td>
+<td style="text-align: center;">
+92.93
+</td>
+<td style="text-align: center;">
+96.97
+</td>
+<td style="text-align: center;">
+99.43
+</td>
+<td style="text-align: center;">
+246
+</td>
+</tr>
+<tr>
+<td>
+R50x1+ViT-L/16
+</td>
+<td>
+7
+</td>
+<td style="text-align: center;">
+86.60
+</td>
+<td style="text-align: center;">
+89.72
+</td>
+<td style="text-align: center;">
+99.18
+</td>
+<td style="text-align: center;">
+93.64
+</td>
+<td style="text-align: center;">
+97.03
+</td>
+<td style="text-align: center;">
+99.40
+</td>
+<td style="text-align: center;">
+859
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+R50x1+ViT-L/16
+</td>
+<td style="border-bottom: 2px solid black;">
+14
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+87.12
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+89.76
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+99.31
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+93.89
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+97.36
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+99.11
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+1668
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="inspecting-vision-transformer">4.5 Inspecting Vision
+Transformer</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/20201002_selected_attention_examples.webp"
+alt="Figure 6: Representative examples of attention from the output token to the input space. See Appendix D.7 for details." />
+<figcaption aria-hidden="true">Figure 6: Representative examples of
+attention from the output token to the input space. See Appendix D.7 for
+details.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/fig7.webp"
+alt="Figure 7: Left: Filters of the initial linear embedding of RGB values of ViT-L/32. Center: Similarity of position embeddings of ViT-L/32. Tiles show the cosine similarity between the position embedding of the patch with the indicated row and column and the position embeddings of all other patches. Right: Size of attended area by head and network depth. Each dot shows the mean attention distance across images for one of 16 heads at one layer. See Appendix D.7 for details." />
+<figcaption aria-hidden="true">Figure 7: Left: Filters of the initial
+linear embedding of RGB values of ViT-L/32. Center: Similarity of
+position embeddings of ViT-L/32. Tiles show the cosine similarity
+between the position embedding of the patch with the indicated row and
+column and the position embeddings of all other patches. Right: Size of
+attended area by head and network depth. Each dot shows the mean
+attention distance across images for one of 16 heads at one layer. See
+Appendix D.7 for details.</figcaption>
+</figure>
+<h3 id="self-supervision">4.6 Self-supervision</h3>
+<h2 id="conclusion">5 Conclusion</h2>
+<h2 id="appendix">Appendix</h2>
+<h3 id="a-multihead-self-attention">A Multihead Self-attention</h3>
+<h3 id="b-experiment-details">B Experiment Details</h3>
+<h4 id="b.1-training">B.1 Training</h4>
+<table>
+<caption style="text-align: left;">
+Table 3: Hyperparameters for training. All models are trained with a
+batch size of 4096 and learning rate warmup of 10k steps. For ImageNet
+we found it beneficial to additionally apply gradient clipping at global
+norm 1. Training resolution is 224.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Models
+</th>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Dataset
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Epochs
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Base LR
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+LR decay
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Weight decay
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Dropout
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ViT-B/{16,32}
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+8 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+ViT-L/32
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+6 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+ViT-L/16
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7/14
+</td>
+<td style="text-align: center;">
+4 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+ViT-H/14
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+14
+</td>
+<td style="text-align: center;">
+3 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+R50x{1,2}
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+10<sup>-3</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+R101x1
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+8 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+R152x{1,2}
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+6 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+R50+ViT-B/{16,32}
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+8 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+R50+ViT-L/32
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7
+</td>
+<td style="text-align: center;">
+2 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+R50+ViT-L/16
+</td>
+<td>
+JFT-300M
+</td>
+<td style="text-align: center;">
+7/14
+</td>
+<td style="text-align: center;">
+4 · 10<sup>-4</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+<td style="text-align: center;">
+0.0
+</td>
+</tr>
+<tr>
+<td>
+ViT-B/{16,32}
+</td>
+<td>
+ImageNet-21k
+</td>
+<td style="text-align: center;">
+90
+</td>
+<td style="text-align: center;">
+10<sup>-3</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.03
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+</tr>
+<tr>
+<td>
+ViT-L/{16,32}
+</td>
+<td>
+ImageNet-21k
+</td>
+<td style="text-align: center;">
+30/90
+</td>
+<td style="text-align: center;">
+10<sup>-3</sup>
+</td>
+<td style="text-align: center;">
+linear
+</td>
+<td style="text-align: center;">
+0.03
+</td>
+<td style="text-align: center;">
+0.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+ViT-∗
+</td>
+<td style="border-bottom: 2px solid black;">
+ImageNet
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+300
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+3 · 10<sup>-3</sup>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+cosine
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.1
+</td>
+</tr>
+</tbody>
+</table>
+<h5 id="b.1.1-fine-tuning">B.1.1 Fine-tuning</h5>
+<table>
+<caption style="text-align: left;">
+Table 4: Hyperparameters for fine-tuning. All models are fine-tuned with
+cosine learning rate decay, a batch size of 512, no weight decay, and
+grad clipping at global norm 1. If not mentioned otherwise, fine-tuning
+resolution is 384.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Dataset
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Steps
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Base LR
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ImageNet
+</td>
+<td style="text-align: center;">
+20000
+</td>
+<td style="text-align: center;">
+{0.003, 0.01, 0.03, 0.06}
+</td>
+</tr>
+<tr>
+<td>
+CIFAR100
+</td>
+<td style="text-align: center;">
+10000
+</td>
+<td style="text-align: center;">
+{0.001, 0.003, 0.01, 0.03}
+</td>
+</tr>
+<tr>
+<td>
+CIFAR10
+</td>
+<td style="text-align: center;">
+10000
+</td>
+<td style="text-align: center;">
+{0.001, 0.003, 0.01, 0.03}
+</td>
+</tr>
+<tr>
+<td>
+Oxford-IIIT Pets
+</td>
+<td style="text-align: center;">
+500
+</td>
+<td style="text-align: center;">
+{0.001, 0.003, 0.01, 0.03}
+</td>
+</tr>
+<tr>
+<td>
+Oxford Flowers-102
+</td>
+<td style="text-align: center;">
+500
+</td>
+<td style="text-align: center;">
+{0.001, 0.003, 0.01, 0.03}
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+VTAB (19 tasks)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+2500
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.01
+</td>
+</tr>
+</tbody>
+</table>
+<h5 id="b.1.2-self-supervision">B.1.2 Self-supervision</h5>
+<h3 id="c-additional-results">C Additional Results</h3>
+<h3 id="d-additional-analyses">D Additional Analyses</h3>
+<h4 id="d.1-sgd-vs.-adam-for-resnets">D.1 Sgd Vs. Adam For Resnets</h4>
+<table>
+<caption>
+Table 7: Fine-tuning ResNet models pre-trained with Adam and SGD.
+</caption>
+<thead>
+<tr>
+<th rowspan="2" style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Dataset
+</th>
+<th colspan="2" style="text-align: center; border-top: 2px solid black;">
+ResNet50
+</th>
+<th colspan="2" style="text-align: center; border-top: 2px solid black;">
+ResNet152x2
+</th>
+</tr>
+<tr>
+<th style="text-align: center; border-bottom: 1px solid black;">
+Adam
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+SGD
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+Adam
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+SGD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ImageNet
+</td>
+<td style="text-align: center;">
+77.54
+</td>
+<td style="text-align: center;">
+78.24
+</td>
+<td style="text-align: center;">
+84.97
+</td>
+<td style="text-align: center;">
+84.37
+</td>
+</tr>
+<tr>
+<td>
+CIFAR10
+</td>
+<td style="text-align: center;">
+97.67
+</td>
+<td style="text-align: center;">
+97.46
+</td>
+<td style="text-align: center;">
+99.06
+</td>
+<td style="text-align: center;">
+99.07
+</td>
+</tr>
+<tr>
+<td>
+CIFAR100
+</td>
+<td style="text-align: center;">
+86.07
+</td>
+<td style="text-align: center;">
+85.17
+</td>
+<td style="text-align: center;">
+92.05
+</td>
+<td style="text-align: center;">
+91.06
+</td>
+</tr>
+<tr>
+<td>
+Oxford-IIIT Pets
+</td>
+<td style="text-align: center;">
+91.11
+</td>
+<td style="text-align: center;">
+91.00
+</td>
+<td style="text-align: center;">
+95.37
+</td>
+<td style="text-align: center;">
+94.79
+</td>
+</tr>
+<tr>
+<td>
+Oxford Flowers-102
+</td>
+<td style="text-align: center;">
+94.26
+</td>
+<td style="text-align: center;">
+92.06
+</td>
+<td style="text-align: center;">
+98.62
+</td>
+<td style="text-align: center;">
+99.32
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Average
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+89.33
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+88.79
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+94.01
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+93.72
+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="d.2-transformer-shape">D.2 Transformer Shape</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/fig8.webp"
+alt="Figure 8: Scaling different model dimensions of the Vision Transformer." />
+<figcaption aria-hidden="true">Figure 8: Scaling different model
+dimensions of the Vision Transformer.</figcaption>
+</figure>
+<h4 id="d.3-head-type-and-class-token">D.3 Head Type And Class
+Token</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/head_tokens.webp"
+alt="Figure 9: Comparison of class-token and global average pooling classifiers. Both work similarly well, but require different learning-rates." />
+<figcaption aria-hidden="true">Figure 9: Comparison of class-token and
+global average pooling classifiers. Both work similarly well, but
+require different learning-rates.</figcaption>
+</figure>
+<h4 id="d.4-positional-embedding">D.4 Positional Embedding</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/fig10.webp"
+alt="Figure 10: Position embeddings of models trained with different hyperparameters." />
+<figcaption aria-hidden="true">Figure 10: Position embeddings of models
+trained with different hyperparameters.</figcaption>
+</figure>
+<table>
+<caption style="text-align: left;">
+Table 8: Results of the ablation study on positional embeddings with
+ViT-B/16 model evaluated on ImageNet 5-shot linear.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Pos. Emb.
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Default/Stem
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Every Layer
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Every Layer-Shared
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+No Pos. Emb.
+</td>
+<td style="text-align: center;">
+0.61382
+</td>
+<td style="text-align: center;">
+N/A
+</td>
+<td style="text-align: center;">
+N/A
+</td>
+</tr>
+<tr>
+<td>
+1-D Pos. Emb.
+</td>
+<td style="text-align: center;">
+0.64206
+</td>
+<td style="text-align: center;">
+0.63964
+</td>
+<td style="text-align: center;">
+0.64292
+</td>
+</tr>
+<tr>
+<td>
+2-D Pos. Emb.
+</td>
+<td style="text-align: center;">
+0.64001
+</td>
+<td style="text-align: center;">
+0.64046
+</td>
+<td style="text-align: center;">
+0.64022
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Rel. Pos. Emb.
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+0.64032
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+N/A
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+N/A
+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="d.5-empirical-computational-costs">D.5 Empirical Computational
+Costs</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/img_sec_core.webp"
+alt="Figure 12: Left: Real wall-clock timings of various architectures across input sizes. ViT models have speed comparable to similar ResNets. Right: Largest per-core batch-size fitting on device with various architectures across input sizes. ViT models are clearly more memory-efficient." />
+<figcaption aria-hidden="true">Figure 12: Left: Real wall-clock timings
+of various architectures across input sizes. ViT models have speed
+comparable to similar ResNets. Right: Largest per-core batch-size
+fitting on device with various architectures across input sizes. ViT
+models are clearly more memory-efficient.</figcaption>
+</figure>
+<h4 id="d.6-axial-attention">D.6 Axial Attention</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/fig13.webp"
+alt="Figure 13: Performance of Axial-Attention based models, in terms of top-1 accuracy on ImageNet 5-shot linear, versus their speed in terms of number of FLOPs." />
+<figcaption aria-hidden="true">Figure 13: Performance of Axial-Attention
+based models, in terms of top-1 accuracy on ImageNet 5-shot linear,
+versus their speed in terms of number of FLOPs.</figcaption>
+</figure>
+<h4 id="d.7-attention-distance">D.7 Attention Distance</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/20201001_attention_distance_by_depth.webp"
+alt="Figure 11: Size of attended area by head and network depth. Attention distance was computed for 128 example images by averaging the distance between the query pixel and all other pixels, weighted by the attention weight. Each dot shows the mean attention distance across images for one of 16 heads at one layer. Image width is 224 pixels." />
+<figcaption aria-hidden="true">Figure 11: Size of attended area by head
+and network depth. Attention distance was computed for 128 example
+images by averaging the distance between the query pixel and all other
+pixels, weighted by the attention weight. Each dot shows the mean
+attention distance across images for one of 16 heads at one layer. Image
+width is 224 pixels.</figcaption>
+</figure>
+<h4 id="d.8-attention-maps">D.8 Attention Maps</h4>
+<h4 id="d.9-objectnet-results">D.9 Objectnet Results</h4>
+<h4 id="d.10-vtab-breakdown">D.10 VTAB Breakdown</h4>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy/20201002_batch_attention_examples_compressed.webp"
+alt="Figure 14: Further example attention maps as in Figure 6 (random selection)." />
+<figcaption aria-hidden="true">Figure 14: Further example attention maps
+as in Figure 6 (random selection).</figcaption>
+</figure>
+<table>
+<caption>
+Table 9: Breakdown of VTAB-1k performance across tasks.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Caltech101
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+CIFAR-100
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+DTD
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Flowers102
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Pets
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Sun397
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+SVHN
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Camelyon
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+EuroSAT
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Resisc45
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Retinopathy
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Clevr-Count
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Clevr-Dist
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+DMLab
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+dSprites-Loc
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+dSprites-Ori
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+KITTI-Dist
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+sNORB-Azim
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+sNORB-Elev
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Mean
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+ViT-H/14 (JFT)
+</td>
+<td style="text-align: center;">
+95.3
+</td>
+<td style="text-align: center;">
+85.5
+</td>
+<td style="text-align: center;">
+75.2
+</td>
+<td style="text-align: center;">
+99.7
+</td>
+<td style="text-align: center;">
+97.2
+</td>
+<td style="text-align: center;">
+65.0
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+88.9
+</td>
+<td style="text-align: center;">
+83.3
+</td>
+<td style="text-align: center;">
+96.7
+</td>
+<td style="text-align: center;">
+91.4
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+76.6
+</td>
+<td style="text-align: center;">
+91.7
+</td>
+<td style="text-align: center;">
+63.8
+</td>
+<td style="text-align: center;">
+53.1
+</td>
+<td style="text-align: center;">
+79.4
+</td>
+<td style="text-align: center;">
+63.3
+</td>
+<td style="text-align: center;">
+84.5
+</td>
+<td style="text-align: center;">
+33.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+51.2
+</td>
+<td style="text-align: center;">
+77.6
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+ViT-L/16 (JFT)
+</td>
+<td style="text-align: center;">
+95.4
+</td>
+<td style="text-align: center;">
+81.9
+</td>
+<td style="text-align: center;">
+74.3
+</td>
+<td style="text-align: center;">
+99.7
+</td>
+<td style="text-align: center;">
+96.7
+</td>
+<td style="text-align: center;">
+63.5
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+87.4
+</td>
+<td style="text-align: center;">
+83.6
+</td>
+<td style="text-align: center;">
+96.5
+</td>
+<td style="text-align: center;">
+89.7
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+77.1
+</td>
+<td style="text-align: center;">
+86.4
+</td>
+<td style="text-align: center;">
+63.1
+</td>
+<td style="text-align: center;">
+49.7
+</td>
+<td style="text-align: center;">
+74.5
+</td>
+<td style="text-align: center;">
+60.5
+</td>
+<td style="text-align: center;">
+82.2
+</td>
+<td style="text-align: center;">
+36.2
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+51.1
+</td>
+<td style="text-align: center;">
+76.3
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+ViT-L/16 (I21k)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+90.8
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+84.1
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+74.1
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+99.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+92.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+61.0
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+80.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+82.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+95.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+85.2
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+75.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+70.3
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+56.1
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+41.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+74.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+64.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+79.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+30.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+41.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+72.7
+</td>
+</tr>
+</tbody>
+</table>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2010.11929" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html" title="【论文笔记】An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale">https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2021ICLR/" rel="tag"><i class="fa fa-tag"></i> 2021ICLR</a>
+              <a href="/tags/Attention/" rel="tag"><i class="fa fa-tag"></i> Attention</a>
+              <a href="/tags/ViT/" rel="tag"><i class="fa fa-tag"></i> ViT</a>
+              <a href="/tags/Oral/" rel="tag"><i class="fa fa-tag"></i> Oral</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/paper-reading/2017/attention-is-all-you-need_2023_Vaswani.html" rel="prev" title="【论文笔记】Attention Is All You Need">
+                  <i class="fa fa-angle-left"></i> 【论文笔记】Attention Is All You Need
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/paper-reading/2021/emerging-properties-in-self-supervised-vision-transformers_2021_Caron.html" rel="next" title="【论文笔记】Emerging Properties in Self-Supervised Vision Transformers">
+                  【论文笔记】Emerging Properties in Self-Supervised Vision Transformers <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2020/an-image-is-worth-16x16-words-transformers-for-image-recognition-at-scale_2021_Dosovitskiy.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

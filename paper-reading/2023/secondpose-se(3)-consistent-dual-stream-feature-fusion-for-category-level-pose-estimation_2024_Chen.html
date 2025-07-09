@@ -1,0 +1,2308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://img.032802.xyz/logo.webp">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://img.032802.xyz/logo.webp">
+  <link rel="mask-icon" href="https://img.032802.xyz/logo.webp" color="#222">
+  <meta name="google-site-verification" content="4aWmB8Q57Phm14T7Z2Y6_LbdCwonYdcWwSWVn9VKoHY">
+  <meta name="msvalidate.01" content="90E5A0CCE16329AE72C18C4332F541B0">
+  <meta name="baidu-site-verification" content="codeva-7IL5gMIbni">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.032802.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":true,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Category-level object pose estimation, aiming to predict the 6D pose and 3D size of objects from known categories, typically struggles with large intra-class shape variation. Existing works utilizing">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【论文笔记】SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose Estimation">
+<meta property="og:url" content="https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html">
+<meta property="og:site_name" content="Karl的博客">
+<meta property="og:description" content="Category-level object pose estimation, aiming to predict the 6D pose and 3D size of objects from known categories, typically struggles with large intra-class shape variation. Existing works utilizing">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-01T02:18:03.000Z">
+<meta property="article:modified_time" content="2025-03-01T02:18:03.000Z">
+<meta property="article:author" content="Karl">
+<meta property="article:tag" content="2024CVPR">
+<meta property="article:tag" content="Object Pose Estimation">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html","path":"paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html","title":"【论文笔记】SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose Estimation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【论文笔记】SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose Estimation | Karl的博客</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;eba0e9933f39438c90a3a5417bdc88f5&quot;}'></script>
+
+  <script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q43mw72e69");
+</script>
+
+
+  <script async defer data-website-id="36e39f74-37bc-447c-ac21-0d8bc8e87bfc" src="https://umami.032802.xyz/script.js" data-host-url="https://umami.032802.xyz"></script>
+
+<link rel="dns-prefetch" href="https://waline.032802.xyz">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Karl的博客" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="Karl的博客" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Karl的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-comments"><a href="/comments/" rel="section"><i class="fa fa-comments fa-fw"></i>留言板</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">64</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-travellings"><span class="exturl" data-url="aHR0cHM6Ly93d3cudHJhdmVsbGluZ3MuY24vZ28uaHRtbA=="><i class="fa fa-train-subway fa-fw"></i>开往</span></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#secondpose-se3-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation"><span class="nav-text">SecondPose:
+SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose
+Estimation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#related-works"><span class="nav-text">2. Related Works</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-text">3. Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#overview"><span class="nav-text">3.1. Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#semantic-category-prior-from-dinov2"><span class="nav-text">3.2. Semantic Category
+Prior From DINOv2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dinov2-is-an-implicit-rotation-learner"><span class="nav-text">DINOv2 is an implicit
+rotation learner</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deeper-dinov2-features"><span class="nav-text">Deeper DINOv2 features</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#direct-pose-estimation-from-dinov2"><span class="nav-text">Direct pose estimation from
+DINOv2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-geometric-features"><span class="nav-text">3.3. Hierarchical Geometric
+Features</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#point-pair-features-ppfs"><span class="nav-text">Point Pair Features PPFs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#geometric-feature-panel"><span class="nav-text">Geometric Feature Panel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#from-single-to-hierarchical-panels"><span class="nav-text">From Single to Hierarchical
+Panels</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#se3-consistent-feature-fusion"><span class="nav-text">3.4. SE(3)-Consistent Feature
+Fusion</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fusion-strategy"><span class="nav-text">Fusion Strategy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#advantages-of-se3-consistent-fusion"><span class="nav-text">Advantages of
+SE(3)-Consistent Fusion</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secondpose-training-and-inference"><span class="nav-text">3.5. SecondPose Training and
+Inference</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiment"><span class="nav-text">4. Experiment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#experimental-setup"><span class="nav-text">4.1. Experimental Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comparison-with-state-of-the-art-methods"><span class="nav-text">4.2. Comparison with
+State-of-the-Art Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limitations"><span class="nav-text">4.3. Limitations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ablation-studies"><span class="nav-text">4.4. Ablation Studies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-text">5. Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#supplementary-material"><span class="nav-text">Supplementary Material</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a.-implementation-details"><span class="nav-text">A. Implementation Details</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b.-further-explanations-of-the-pipeline"><span class="nav-text">B. Further Explanations
+of the Pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c.-more-experimental-results-on-housecat6d"><span class="nav-text">C. More Experimental
+Results on HouseCat6D</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d.-failure-cases-and-limitations"><span class="nav-text">D. Failure Cases and
+Limitations</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Karl"
+      src="https://img.032802.xyz/profile.webp">
+  <p class="site-author-name" itemprop="name">Karl</p>
+  <div class="site-description" itemprop="description">不积跬步无以至千里</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2thcmx0YW4wMzI4" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;karltan0328"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFkbWluQDAzMjgwMi54eXo=" title="E-Mail → mailto:admin@032802.xyz"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly91bWFtaS4wMzI4MDIueHl6L3NoYXJlL2Fab21QNGpkZzAyb1NDZFEvYmxvZy4wMzI4MDIueHl6" title="Umami → https:&#x2F;&#x2F;umami.032802.xyz&#x2F;share&#x2F;aZomP4jdg02oSCdQ&#x2F;blog.032802.xyz"><i class="fa fa-chart-column fa-fw"></i>Umami</span>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wb3J0YWwucnVucm9hZC5jbG91ZC8=" title="https:&#x2F;&#x2F;portal.runroad.cloud&#x2F;">乐子云</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9kb2NzL2dldHRpbmctc3RhcnRlZC8=" title="https:&#x2F;&#x2F;theme-next.js.org&#x2F;docs&#x2F;getting-started&#x2F;">NexT Docs</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9wYXBlcmNvcGlsb3QuY29tLw==" title="https:&#x2F;&#x2F;papercopilot.com&#x2F;">Paper Copilot</span>
+            </li>
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGVlcC1tbC5jb20v" title="https:&#x2F;&#x2F;www.deep-ml.com&#x2F;">Deep-ML</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+        <div class="pjax">
+        <div class="sidebar-inner sidebar-post-related">
+          <div class="animated">
+              <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相关文章
+  </div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/instance-adaptive-and-geometric-aware-keypoint-learning-for-category-level-6d-object-pose-estimation_2024_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-19</time>
+        <br>
+      【论文笔记】Instance-Adaptive and Geometric-Aware Keypoint Learning for Category-Level 6D Object Pose Estimation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/unopose-unseen-object-pose-estimation-with-an-unposed-rgb-d-reference-image_2025_Liu.html" rel="bookmark">
+        <time class="popular-posts-time">2025-05-19</time>
+        <br>
+      【论文笔记】UNOPose: Unseen Object Pose Estimation with  an Unposed RGB-D Reference Image
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2023/vi-net-boosting-category-level-6d-object-pose-estimation-via-learning-decoupled-rotations-on-the-spherical-representations_2023_Lin.html" rel="bookmark">
+        <time class="popular-posts-time">2025-04-01</time>
+        <br>
+      【论文笔记】VI-Net: Boosting Category-level 6D Object Pose Estimation via Learning Decoupled Rotations on the Spherical Representations
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/2024/mrc-net-6-dof-pose-estimation-with-multiscale-residual-correlation_2024_Li.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-20</time>
+        <br>
+      【论文笔记】MRC-Net: 6-DoF Pose Estimation with MultiScale Residual Correlation
+      </a>
+    </li>
+    <li class="popular-posts-item">
+      <a class="popular-posts-link" href="/paper-reading/paper-reading-records.html" rel="bookmark">
+        <time class="popular-posts-time">2025-02-22</time>
+        <br>
+      论文阅读记录
+      </a>
+    </li>
+  </ul>
+
+          </div>
+        </div>
+        </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://img.032802.xyz/profile.webp">
+      <meta itemprop="name" content="Karl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Karl的博客">
+      <meta itemprop="description" content="不积跬步无以至千里">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【论文笔记】SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose Estimation | Karl的博客">
+      <meta itemprop="description" content="Category-level object pose estimation, aiming to predict the 6D pose and 3D size of objects from known categories, typically struggles with large intra-class shape variation. Existing works utilizing mean shapes often fall short of capturing this variation. To address this issue, we present SecondPose, a novel approach integrating object-specific geometric features with semantic category priors from DINOv2. Leveraging the advantage of DINOv2 in providing SE(3)-consistent semantic features, we hierarchically extract two types of SE(3)-invariant geometric features to further encapsulate local-to-global object-specific information. These geometric features are then point-aligned with DINOv2 features to establish a consistent object representation under SE(3) transformations, facilitating the mapping from camera space to the pre-defined canonical space, thus further enhancing pose estimation. Extensive experiments on NOCS-REAL275 demonstrate that SecondPose achieves a 12.4% leap forward over the state-of-the-art. Moreover, on a more complex dataset HouseCat6D which provides photometrically challenging objects, SecondPose still surpasses other competitors by a large margin.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【论文笔记】SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose Estimation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-01 10:18:03" itemprop="dateCreated datePublished" datetime="2025-03-01T10:18:03+08:00">2025-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">读万卷书</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>27 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Category-level object pose estimation, aiming to predict the 6D pose and 3D size of objects from known categories, typically struggles with large intra-class shape variation. Existing works utilizing mean shapes often fall short of capturing this variation. To address this issue, we present SecondPose, a novel approach integrating object-specific geometric features with semantic category priors from DINOv2. Leveraging the advantage of DINOv2 in providing SE(3)-consistent semantic features, we hierarchically extract two types of SE(3)-invariant geometric features to further encapsulate local-to-global object-specific information. These geometric features are then point-aligned with DINOv2 features to establish a consistent object representation under SE(3) transformations, facilitating the mapping from camera space to the pre-defined canonical space, thus further enhancing pose estimation. Extensive experiments on NOCS-REAL275 demonstrate that SecondPose achieves a 12.4% leap forward over the state-of-the-art. Moreover, on a more complex dataset HouseCat6D which provides photometrically challenging objects, SecondPose still surpasses other competitors by a large margin.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1
+id="secondpose-se3-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation">SecondPose:
+SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose
+Estimation</h1>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 7%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 50%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方法</th>
+<th style="text-align: center;">类型</th>
+<th style="text-align: center;">训练输入</th>
+<th style="text-align: center;">推理输入</th>
+<th style="text-align: center;">输出</th>
+<th style="text-align: center;">pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">SecondPose</td>
+<td style="text-align: center;">类别级</td>
+<td style="text-align: center;">RGBD</td>
+<td style="text-align: center;">RGBD</td>
+<td style="text-align: center;">绝对<span
+class="math inline">\(\mathbf{R}, \mathbf{t}, \mathbf{s}\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2025.03.01：使用DINOv2提取RGB特征，使用HP-PPF提取分层次的点云特征，同时也用上了RGB的原始图像，除此之外，方法训练了两个网络，一个网络预测旋转<span
+class="math inline">\(\mathbf{R}\)</span>，另一个网络训练<span
+class="math inline">\(\mathbf{t}\)</span>和<span
+class="math inline">\(\mathbf{s}\)</span>。在训练时，预测旋转<span
+class="math inline">\(\mathbf{R}\)</span>的网络会使用数据集中的真实<span
+class="math inline">\(\mathbf{t}\)</span>和<span
+class="math inline">\(\mathbf{s}\)</span>作为输入，预测<span
+class="math inline">\(\mathbf{R}\)</span>；预测<span
+class="math inline">\(\mathbf{t}\)</span>和<span
+class="math inline">\(\mathbf{s}\)</span>的网络会使用数据集中的真实<span
+class="math inline">\(\mathbf{R}\)</span>作为输入，预测<span
+class="math inline">\(\mathbf{t}\)</span>和<span
+class="math inline">\(\mathbf{s}\)</span>。</li>
+</ul>
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">1. Introduction</h2>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/second_teaser.webp"
+alt="Figure 1. Categorical SE(3)-consistent features. We visualize our fused features by PCA. Colored points highlight the most corresponding parts, where our proposed feature achieves consistent alignment cross instances (left vs. middle) and maintains consistency on the same instance of different poses (middle vs. right)." />
+<figcaption aria-hidden="true">Figure 1. Categorical SE(3)-consistent
+features. We visualize our fused features by PCA. Colored points
+highlight the most corresponding parts, where our proposed feature
+achieves consistent alignment cross instances (left vs. middle) and
+maintains consistency on the same instance of different poses (middle
+vs. right).</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/pipe.webp"
+alt="Figure 2. Illustration of SecondPose. Semantic features are extracted using the DINOv2 model (A), and the HP-PPF feature is computed on the point cloud (B). These features, combined with RGB values, are fused into our SECOND feature F_f (C) using stream-specific modules L_s, L_g, L_c, and a shared module L_f for concatenated features. The resulting fused features, in conjunction with the point cloud, are utilized for pose estimation (D)." />
+<figcaption aria-hidden="true">Figure 2. Illustration of SecondPose.
+Semantic features are extracted using the DINOv2 model (A), and the
+HP-PPF feature is computed on the point cloud (B). These features,
+combined with RGB values, are fused into our SECOND feature <span
+class="math inline">\(F_f\)</span> (C) using stream-specific modules
+<span class="math inline">\(L_s\)</span>, <span
+class="math inline">\(L_g\)</span>, <span
+class="math inline">\(L_c\)</span>, and a shared module <span
+class="math inline">\(L_f\)</span> for concatenated features. The
+resulting fused features, in conjunction with the point cloud, are
+utilized for pose estimation (D).</figcaption>
+</figure>
+<p>To summarize, our main contributions are threefold:</p>
+<ol type="1">
+<li>We present SecondPose, the first method to directly fuse
+object-specific hierarchical geometric features with semantic DINOv2
+features for category-level pose estimation.</li>
+<li>Our SE(3)-consistent dual-stream feature fusion strategy yields a
+unified object representation that is robust under SE(3)
+transformations, better suited for downstream pose estimation.</li>
+<li>Extensive evaluation proves that our SE(3)-consistent fusion
+strategy significantly boosts pose estimation performance even under
+severe occlusion and clutter, enabling real-world applications.</li>
+</ol>
+<h2 id="related-works">2. Related Works</h2>
+<h2 id="method">3. Method</h2>
+<p>SecondPose的目标是从单张RGB-D图像中估计物体的9DoF位姿。具体来说，给定一张从一组已知类别中捕捉到目标物体的RGB-D图像，我们的目标是恢复其完整的9DoF物体位姿，包括<span
+class="math inline">\(R \in SO(3)\)</span>、三维平移向量<span
+class="math inline">\(t \in \mathbb{R}^3\)</span>以及三维度量尺寸<span
+class="math inline">\(s \in \mathbb{R}^3\)</span>。</p>
+<h3 id="overview">3.1. Overview</h3>
+<p>如图2所示，SecondPose主要由三个模块组成，用于从单张RGB-D输入图像中预测物体位姿，即：</p>
+<ol type="1">
+<li>提取相关的几何特征<span
+class="math inline">\(F_g\)</span>和语义特征<span
+class="math inline">\(F_s\)</span>；</li>
+<li>进行双流特征融合，以构建与特殊欧几里得群SE(3)一致的物体表示<span
+class="math inline">\(F_f\)</span>；</li>
+<li>根据所提取的表示进行最终的位姿回归。</li>
+</ol>
+<h3 id="semantic-category-prior-from-dinov2">3.2. Semantic Category
+Prior From DINOv2</h3>
+<h4 id="dinov2-is-an-implicit-rotation-learner">DINOv2 is an implicit
+rotation learner</h4>
+<p>我们使用DINOv2作为我们的图像特征提取器。正如“A Tale of Two Features:
+Stable Diffusion Complements DINO for Zero-Shot Semantic
+Correspondence”中所示，DINOv2能够从RGB图像中提取具有语义感知的信息，这些信息可以被很好地用于建立零样本语义对应关系，这使得它成为一种用于提取丰富语义信息的出色方法。</p>
+<p>至于估计三维旋转，这种额外的具有语义感知的信息能够显著提升性能。举例来说，设想在模型空间中，<span
+class="math inline">\(z\)</span>轴通常指向物体的顶部，<span
+class="math inline">\(y\)</span>轴总是指向物体的正面，而<span
+class="math inline">\(x\)</span>轴总是指向物体的左侧。利用DINOv2所提供的语义信息，模型能够更轻松地识别物体的顶部、正面和左侧，从而使旋转估计变成一项简单得多的任务。此外，DINOv2的特征还包含了关于物体的全局信息，包括物体的类别和位姿。因此，这样的信息可以作为我们方法的一个良好的全局先验条件。</p>
+<h4 id="deeper-dinov2-features">Deeper DINOv2 features</h4>
+<p>我们使用来自最后一层（第11层）的facet
+token的特征作为我们提取的语义特征。从本质上讲，“A Tale of Two Features:
+Stable Diffusion Complements DINO for Zero-Shot Semantic
+Correspondence”已经证明，更深层的特征展现出了最佳的语义匹配性能，因此在不同物体间的语义对应方面提供了更高的一致性。此外，更深层的特征还拥有更全面的语义信息。相关的可视化内容如图2.A所示。</p>
+<h4 id="direct-pose-estimation-from-dinov2">Direct pose estimation from
+DINOv2</h4>
+<p>如前所述，将DINOv2特征与反投影点进行临时融合存在一些缺点。首先，DINOv2仅从RGB图像中提取信息，因此，其包含的几何信息是有限的。其次，由于我们使用DINOv2更深层的特征来获得更全面的表示，局部的详细信息在一定程度上会变得模糊。为了在这些方面补充DINOv2的特征，我们因此需要将它们与包含局部信息的几何特征相结合，以获得更强的描述能力。</p>
+<h3 id="hierarchical-geometric-features">3.3. Hierarchical Geometric
+Features</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/geo.webp"
+alt="Figure 3. Hierarchical panel-based geometric features. The inner panel contains points that are close to the point of interest, and outer panels contain points far from the point of interest." />
+<figcaption aria-hidden="true">Figure 3. Hierarchical panel-based
+geometric features. The inner panel contains points that are close to
+the point of interest, and outer panels contain points far from the
+point of interest.</figcaption>
+</figure>
+<p>该数据流管道如图2.B所示。在这个数据流中，我们的几何嵌入是基于计算成对且具有SE(3)等变性的点对特征（PPFs）。我们通过聚合感兴趣点与其以该点为中心的多个邻域块中的邻域点之间的PPFs，构建出具有SE(3)不变性的坐标表示。我们将每个邻域块中对应的SE(3)不变性坐标表示进行分层拼接，以增强我们的几何特征HP-PPF的表示能力。图3.c展示了HP-PPF的可视化结果。</p>
+<h4 id="point-pair-features-ppfs">Point Pair Features PPFs</h4>
+<p>图3.a展示了一个全面的示例。给定一个表示为<span
+class="math inline">\(P\)</span>的物体点云，我们考虑每一对点<span
+class="math inline">\((p_i, p_j)\)</span>，其中<span
+class="math inline">\(p_i, p_j \in P\)</span>。对于每个点，分别在<span
+class="math inline">\(p_i\)</span>和<span
+class="math inline">\(p_j\)</span>处计算局部法向量<span
+class="math inline">\(n_i\)</span>和<span
+class="math inline">\(n_j\)</span>。<span
+class="math inline">\(p_i\)</span>和<span
+class="math inline">\(p_j\)</span>之间最终的成对特征定义如下：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq1}
+    f_{i, j} = [d_{i, j}, \alpha_{i, j}, \beta_{i, j}, \theta_{i, j}],
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(d_{i, j} = \Vert p_j -
+p_i\Vert\)</span>描述了点<span class="math inline">\(p_i\)</span>和<span
+class="math inline">\(p_j\)</span>之间的欧几里得距离。<span
+class="math inline">\(\alpha_{i, j} = \angle(n_i, p_j -
+p_i)\)</span>表示点<span
+class="math inline">\(p_i\)</span>处的法向量<span
+class="math inline">\(n_i\)</span>与从<span
+class="math inline">\(p_i\)</span>指向<span
+class="math inline">\(p_j\)</span>的向量之间的角度偏差。<span
+class="math inline">\(\beta_{i, j} = \angle(n_j, p_j -
+p_i)\)</span>表示点<span
+class="math inline">\(p_j\)</span>处的法向量<span
+class="math inline">\(n_j\)</span>与上述从<span
+class="math inline">\(p_i\)</span>指向<span
+class="math inline">\(p_j\)</span>的向量所夹的角。<span
+class="math inline">\(\theta_{i, j} = \angle(n_j,
+n_i)\)</span>分别表示点<span class="math inline">\(p_j\)</span>和<span
+class="math inline">\(p_i\)</span>处的法向量<span
+class="math inline">\(n_j\)</span>和<span
+class="math inline">\(n_i\)</span>之间的角度差异。请注意，由于其具有局部性，这个描述符在特殊欧几里得群SE(3)变换下是不变的。</p>
+<h4 id="geometric-feature-panel">Geometric Feature Panel</h4>
+<p>基于点对特征（PPFs），我们提出了基于邻域块的PPFs来构建我们的几何表示，这在保持局部性优点的同时扩大了感知范围。对于点云<span
+class="math inline">\(P\)</span>中的每个点<span
+class="math inline">\(p_i\)</span>，存在一个支撑邻域块<span
+class="math inline">\(\mathcal{S}^i \subseteq
+P\)</span>，其元素数量为<span class="math inline">\(s_i =
+|\mathcal{S}^i|\)</span>。对于所有的<span class="math inline">\(p_j \in
+\mathcal{S}^i\)</span>，我们计算<span
+class="math inline">\(p_i\)</span>和<span
+class="math inline">\(p_j\)</span>之间的PPF <span
+class="math inline">\(f_{i, j}\)</span>，通过求平均值得到<span
+class="math inline">\(p_i\)</span>的局部坐标表示<span
+class="math inline">\(f_l^i\)</span>：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq2}
+    f_l^i = \frac{1}{s_i}(\sum_j d_{i, j}, \sum_j \alpha_{i, j}, \sum_j
+\beta_{i, j}, \sum_j \theta_{i, j}).
+\end{equation}
+\]</span></p>
+<h4 id="from-single-to-hierarchical-panels">From Single to Hierarchical
+Panels</h4>
+<p>尽管邻域块内的均值聚合能够考虑到相邻点，但固有的局部表示限制了其表征能力，因为在限定感知范围时，法向量<span
+class="math inline">\(n_i\)</span>、<span
+class="math inline">\(n_j\)</span>所带来的特征存在噪声。受卷积神经网络（CNNs）从局部到全局提取分层特征的启发，我们从局部到全局对多个邻域块进行分层采样，如图3.b所示。具体来说，对于一个元素数量为<span
+class="math inline">\(|P|\)</span>的点集<span
+class="math inline">\(P\)</span>，对于满足<span class="math inline">\(0
+= k_0 &lt; k_1 &lt; k_2 &lt; \cdots &lt; k_l = |P| -
+1\)</span>的整数<span class="math inline">\((k_0, k_1, k_2, \cdots,
+k_l)\)</span>，对于<span class="math inline">\(p_i \in
+P\)</span>，我们首先将其到点集<span
+class="math inline">\(P\)</span>中其他任意点的距离按从小到大的顺序进行排序：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq3}
+    r_{i, j} = sort(d_{i, j})
+\end{equation}
+\]</span></p>
+<p>并且构建支撑邻域块：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq4}
+    \mathcal{S}^{i, m} = \{p_j \in \mathbf{P}|k_{m - 1} &lt; r_{i, j}
+\leq k_m\}, 1 \leq m \leq l,
+\end{equation}
+\]</span></p>
+<p>其中<span
+class="math inline">\(l\)</span>是所使用邻域块的数量。然后，我们为每个邻域块<span
+class="math inline">\(\mathcal{S}^{i,
+m}\)</span>计算相应的位姿不变坐标表示<span class="math inline">\(f^{i,
+m}\)</span>，并将它们拼接起来，以得到逐点的几何特征，其形式为：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq5}
+    f_g^i = f_l^{i, 1} \oplus f_l^{i, 2} \oplus \cdots \oplus f_l^{i,
+l}.
+\end{equation}
+\]</span></p>
+<p>因此，当<span
+class="math inline">\(k\)</span>值较小时，支撑邻域块由离感兴趣点较近的点组成；而当<span
+class="math inline">\(k\)</span>值较大时，支撑邻域块由离感兴趣点较远的点组成。通过拼接不同尺度邻域块计算得到的特征，我们能够以一种平衡局部几何特征细节和全局实例级形状信息的方式利用几何特征。我们将在第4节通过实验表明，我们的设计比常见的单邻域块描述符表现更优。</p>
+<h3 id="se3-consistent-feature-fusion">3.4. SE(3)-Consistent Feature
+Fusion</h3>
+<h4 id="fusion-strategy">Fusion Strategy</h4>
+<p>如图2.C所示，我们将DINOv2特征、几何特征和RGB值进行融合。具体而言，我们以VI-Net作为位姿估计器的示例，首先将每个特征投影到每个特征流<span
+class="math inline">\(\mathcal{F}\)</span>，并将三维点云<span
+class="math inline">\(P = \{p_i\}\)</span>投影到一个球形特征图<span
+class="math inline">\(F\)</span>上。为此，我们按照VI-Net的方法，沿着方位角和仰角轴将球体均匀划分为<span
+class="math inline">\(W \times
+H\)</span>个区域。我们将距离最远的点的特征分配给每个区域。当该区域内没有点时，我们将该区域的值设为0。对于表示几何特征、DINOv2特征和各自RGB值的每个特征图<span
+class="math inline">\(F_i \in \{F_g, F_s,
+F_c\}\)</span>，我们使用一个单独的ResNet模型<span
+class="math inline">\(\mathcal{L}_i\)</span>作为特征提取器。然后将这些单独的特征提取器的输出进行拼接，作为另一个ResNet的输入以进行特征融合，得到也记为SECOND的特征<span
+class="math inline">\(F_f\)</span>，</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq6}
+    F_f = \mathcal{L}_f(\mathcal{L}_g(F_g) \oplus \mathcal{L}_s(F_s)
+\oplus \mathcal{L}_c(F_c)).
+\end{equation}
+\]</span></p>
+<h4 id="advantages-of-se3-consistent-fusion">Advantages of
+SE(3)-Consistent Fusion</h4>
+<p>设计一种与SE(3)一致的融合方法是提升我们方法质量的关键部分。对于三维旋转，我们正在学习一个从点云及其特征空间<span
+class="math inline">\((P, F) \in \mathbb{R}^{n \times 3} \times
+\mathbb{R}^{n \times C}\)</span>到三维旋转空间<span
+class="math inline">\(R \in SO(3)\)</span>的映射</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq7}
+    \Phi: \mathbb{R}^{n \times 3} \times \mathbb{R}^{n \times C} \mapsto
+SO(3).
+\end{equation}
+\]</span></p>
+<p>这个映射<span
+class="math inline">\(\Phi\)</span>应确保具有旋转等变性，即</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq8}
+    \Phi(R_x P, \psi_{R_x}(F)) = R_x\Phi(P, F), \forall R_x \in SO(3),
+\end{equation}
+\]</span></p>
+<p>其中<span class="math inline">\(\psi_{R_x}\)</span>是当点云绕<span
+class="math inline">\(R_x\)</span>旋转时应用于特征的变换。这种旋转等变关系对于所学模型在未见数据上实现良好泛化至关重要。如果模型结构中不嵌入这种等变性，就需要通过大量数据来学习这些关系，而这会受到数据规模的限制。我们设计的与SE(3)一致的特征近似具有旋转不变性，因此</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq9}
+    \psi_{R_x}(F) \approx F, \forall R_x \in SO(3),
+\end{equation}
+\]</span></p>
+<p>这消除了式<span class="math inline">\(\eqref{eq8}\)</span>中<span
+class="math inline">\(\psi_{R_x}\)</span>的影响，从而使旋转等变关系的学习变得更容易。</p>
+<h3 id="secondpose-training-and-inference">3.5. SecondPose Training and
+Inference</h3>
+<p>参考VI-Net，我们采用轻量级的PointNet++作为平移和尺寸估计头。给定一张RGB-D图像，与VI-Net类似，我们首先使用Mask-RCNN分割出感兴趣的物体。然后，我们从带有RGB特征<span
+class="math inline">\(F_c\)</span>的反投影三维点云<span
+class="math inline">\(P \in \mathbb{R}^{n \times
+3}\)</span>中随机选取<span
+class="math inline">\(N\)</span>个点，并利用这些点来估计平移和尺寸，如图2.D所示。</p>
+<p>因此，我们方法的核心是针对更具挑战性的三维旋转估计任务进行开发。本质上，我们分别训练一个translation-size网络和一个旋转网络。对于translation-size网络，我们对尺寸和平移都采用L1损失</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq10}
+    L_{ts} = \lambda_t|t_{pred} - t_{gt}| + \lambda_s|s_{pred} -
+s_{gt}|.
+\end{equation}
+\]</span></p>
+<p>对于三维旋转，我们直接预测一个9维的旋转矩阵，并通过L1损失对其进行优化</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq11}
+    L_R = |R_{pred} - R_{gt}|.
+\end{equation}
+\]</span></p>
+<p>在训练过程中，在进行旋转估计之前，使用真实的平移和尺寸信息对点云进行中心化和归一化处理；而在推理过程中，则使用预测得到的尺寸和平移信息进行归一化处理。</p>
+<h2 id="experiment">4. Experiment</h2>
+<h3 id="experimental-setup">4.1. Experimental Setup</h3>
+<h3 id="comparison-with-state-of-the-art-methods">4.2. Comparison with
+State-of-the-Art Methods</h3>
+<table>
+<caption style="text-align: left; caption-side: bottom;">
+Table 1. Quantitative comparisons of different methods for
+category-level 6D object pose estimation on REAL275 [44]. '<sup>∗</sup>'
+denotes the CATRE [29] IoU metrics. The best results are in bold, and
+the second best results are underlined.
+</caption>
+<thead>
+<tr>
+<th rowspan="2" style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Method<br>Name
+</th>
+<th rowspan="2" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Mean<br>Shape Priors
+</th>
+<th colspan="5" style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+REAL275
+</th>
+</tr>
+<tr>
+<th style="text-align: center; border-bottom: 1px solid black;">
+IoU<sub>75</sub><sup>∗</sup>
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+SPD [39]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+27.0
+</td>
+<td style="text-align: center;">
+19.3
+</td>
+<td style="text-align: center;">
+21.4
+</td>
+<td style="text-align: center;">
+43.2
+</td>
+<td style="text-align: center;">
+54.1
+</td>
+</tr>
+<tr>
+<td>
+CR-Net [45]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+33.2
+</td>
+<td style="text-align: center;">
+27.8
+</td>
+<td style="text-align: center;">
+34.3
+</td>
+<td style="text-align: center;">
+47.2
+</td>
+<td style="text-align: center;">
+60.8
+</td>
+</tr>
+<tr>
+<td>
+CenterSnap-R [17]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+29.1
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+64.3
+</td>
+</tr>
+<tr>
+<td>
+ACR-Pose [11]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+31.6
+</td>
+<td style="text-align: center;">
+36.9
+</td>
+<td style="text-align: center;">
+54.8
+</td>
+<td style="text-align: center;">
+65.9
+</td>
+</tr>
+<tr>
+<td>
+SAR-Net [22]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+31.6
+</td>
+<td style="text-align: center;">
+42.3
+</td>
+<td style="text-align: center;">
+50.3
+</td>
+<td style="text-align: center;">
+68.3
+</td>
+</tr>
+<tr>
+<td>
+SSP-Pose [58]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+34.7
+</td>
+<td style="text-align: center;">
+44.6
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+77.8
+</td>
+</tr>
+<tr>
+<td>
+SGPA [3]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+37.1
+</td>
+<td style="text-align: center;">
+35.9
+</td>
+<td style="text-align: center;">
+39.6
+</td>
+<td style="text-align: center;">
+61.3
+</td>
+<td style="text-align: center;">
+70.7
+</td>
+</tr>
+<tr>
+<td>
+RBP-Pose [57]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+38.2
+</td>
+<td style="text-align: center;">
+48.1
+</td>
+<td style="text-align: center;">
+63.1
+</td>
+<td style="text-align: center;">
+79.2
+</td>
+</tr>
+<tr>
+<td>
+SPD + CATRE [29]
+</td>
+<td style="text-align: center;">
+✓
+</td>
+<td style="text-align: center;">
+43.6
+</td>
+<td style="text-align: center;">
+45.8
+</td>
+<td style="text-align: center;">
+54.4
+</td>
+<td style="text-align: center;">
+61.4
+</td>
+<td style="text-align: center;">
+73.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+DPDN [25]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+✓
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+-
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+46.0
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+50.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+70.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+78.4
+</td>
+</tr>
+<tr>
+<td>
+FS-Net [5]
+</td>
+<td style="text-align: center;">
+✗
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+28.2
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+60.8
+</td>
+</tr>
+<tr>
+<td>
+DualPoseNet [26]
+</td>
+<td style="text-align: center;">
+✗
+</td>
+<td style="text-align: center;">
+30.8
+</td>
+<td style="text-align: center;">
+29.3
+</td>
+<td style="text-align: center;">
+35.9
+</td>
+<td style="text-align: center;">
+50.0
+</td>
+<td style="text-align: center;">
+66.8
+</td>
+</tr>
+<tr>
+<td>
+GPV-Pose [8]
+</td>
+<td style="text-align: center;">
+✗
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+32.0
+</td>
+<td style="text-align: center;">
+42.9
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+73.3
+</td>
+</tr>
+<tr>
+<td>
+SS-ConvNet [23]
+</td>
+<td style="text-align: center;">
+✗
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+36.6
+</td>
+<td style="text-align: center;">
+43.4
+</td>
+<td style="text-align: center;">
+52.6
+</td>
+<td style="text-align: center;">
+63.5
+</td>
+</tr>
+<tr>
+<td>
+HS-Pose [59]
+</td>
+<td style="text-align: center;">
+✗
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+46.5
+</td>
+<td style="text-align: center;">
+55.2
+</td>
+<td style="text-align: center;">
+68.6
+</td>
+<td style="text-align: center;">
+<u>82.7</u>
+</td>
+</tr>
+<tr>
+<td>
+IST-Net [28]
+</td>
+<td style="text-align: center;">
+✗
+</td>
+<td style="text-align: center;">
+-
+</td>
+<td style="text-align: center;">
+47.5
+</td>
+<td style="text-align: center;">
+53.4
+</td>
+<td style="text-align: center;">
+<u>72.1</u>
+</td>
+<td style="text-align: center;">
+80.5
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+VI-Net [27]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+✗
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<u>48.3</u>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<u>50.0</u>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<u>57.6</u>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+70.8
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+82.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+SecondPose (Ours)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+Semantic Priors
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>49.7</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>56.2</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>63.6</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>74.7</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>86.0</b>
+</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/qualitative.webp"
+alt="Figure 4. Qualitative comparison on REAL275 [44]. We compare our prediction with ground truth and the prediction of our baseline, VI-Net [27]. Our approach achieves significantly higher precision in rotation estimation." />
+<figcaption aria-hidden="true">Figure 4. Qualitative comparison on
+REAL275 [44]. We compare our prediction with ground truth and the
+prediction of our baseline, VI-Net [27]. Our approach achieves
+significantly higher precision in rotation estimation.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/qualitative_housecat.webp"
+alt="Figure 5. Qualitative comparison on HouseCat6D [18]. We compare our prediction with ground truth and the prediction of our baseline, VI-Net [27]." />
+<figcaption aria-hidden="true">Figure 5. Qualitative comparison on
+HouseCat6D [18]. We compare our prediction with ground truth and the
+prediction of our baseline, VI-Net [27].</figcaption>
+</figure>
+<table>
+<caption style="caption-side: bottom;">
+Table 2. Overall and class-wise evaluation of 3D IoU(at 25%, 50%) on the
+dataset HouseCat6D [18]. The best results are in bold.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Approach
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+IoU<sub>25</sub> / IoU<sub>50</sub>
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Bottle
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Box
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Can
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Cup
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Remote
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Teapot
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Cutlery
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Glass
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Tube
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Shoe
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-right: 1px solid black;">
+NOCS [44]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+50.0 / 21.2
+</td>
+<td style="text-align: center;">
+41.9 / 5.0
+</td>
+<td style="text-align: center;">
+43.3 / 6.5
+</td>
+<td style="text-align: center;">
+81.9 / 62.4
+</td>
+<td style="text-align: center;">
+68.8 / 2.0
+</td>
+<td style="text-align: center;">
+81.8 / 59.8
+</td>
+<td style="text-align: center;">
+24.3 / 0.1
+</td>
+<td style="text-align: center;">
+14.7 / 6.0
+</td>
+<td style="text-align: center;">
+95.4 / 49.6
+</td>
+<td style="text-align: center;">
+21.0 / 4.6
+</td>
+<td style="text-align: center;">
+26.4 / 16.5
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+FS-Net [5]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+74.9 / 48.0
+</td>
+<td style="text-align: center;">
+65.3 / 45.0
+</td>
+<td style="text-align: center;">
+31.7 / 1.2
+</td>
+<td style="text-align: center;">
+98.3 / 73.8
+</td>
+<td style="text-align: center;">
+96.4 / 68.1
+</td>
+<td style="text-align: center;">
+65.6 / 46.8
+</td>
+<td style="text-align: center;">
+69.9 / 59.8
+</td>
+<td style="text-align: center;">
+71.0 / 51.6
+</td>
+<td style="text-align: center;">
+99.4 / 32.4
+</td>
+<td style="text-align: center;">
+79.7 / 46.0
+</td>
+<td style="text-align: center;">
+71.4 / 55.4
+</td>
+</tr>
+<tr>
+<td style="border-right: 1px solid black;">
+GPV-Pose [8]
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+74.9 / 50.7
+</td>
+<td style="text-align: center;">
+66.8 / 45.6
+</td>
+<td style="text-align: center;">
+31.4 / 1.1
+</td>
+<td style="text-align: center;">
+98.6 / 75.2
+</td>
+<td style="text-align: center;">
+96.7 / 69.0
+</td>
+<td style="text-align: center;">
+65.7 / 46.9
+</td>
+<td style="text-align: center;">
+75.4 / 61.6
+</td>
+<td style="text-align: center;">
+70.9 / 52.0
+</td>
+<td style="text-align: center;">
+99.6 / 62.7
+</td>
+<td style="text-align: center;">
+76.9 / 42.4
+</td>
+<td style="text-align: center;">
+67.4 / 50.2
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+VI-Net [27]
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+80.7 / 56.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+90.6 / 79.6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+44.8 / 12.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<b>99.0</b> / 67.0
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+96.7 / 72.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<b>54.9</b> / 17.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+52.6 / 47.3
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+89.2 / <b>76.4</b>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+99.1 / <b>93.7</b>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+<b>94.9</b> / <b>36.0</b>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+85.2 / 62.4
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+<b>SecondPose (Ours)</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+<b>83.7</b> / <b>66.1</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>94.5</b> / <b>79.8</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>54.5</b> / <b>23.7</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+98.5 / <b>93.2</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>99.8</b> / <b>82.9</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+53.6 / <b>35.4</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>81.0</b> / <b>71.0</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>93.5</b> / 74.4
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>99.3</b> / 92.5
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+75.6 / 35.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>86.9</b> / <b>73.0</b>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="limitations">4.3. Limitations</h3>
+<h3 id="ablation-studies">4.4. Ablation Studies</h3>
+<table>
+<caption style="caption-side: bottom;">
+Table 3. Ablation Study on REAL275 [44]. '<sup>∗</sup>' denotes the
+CATRE [29] IoU metrics.
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Row
+</th>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+Method
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+IoU<sub>75</sub>∗
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border-bottom: 1px solid black;">
+A0
+</td>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+SecondPose (baseline)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+49.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+56.2
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+63.6
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+74.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+86.0
+</td>
+</tr>
+<tr>
+<td>
+B0
+</td>
+<td style="border-right: 1px solid black;">
+w/o semantic
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+48.0
+</td>
+<td style="text-align: center;">
+51.1
+</td>
+<td style="text-align: center;">
+58.9
+</td>
+<td style="text-align: center;">
+71.6
+</td>
+<td style="text-align: center;">
+82.4
+</td>
+</tr>
+<tr>
+<td>
+B1
+</td>
+<td style="border-right: 1px solid black;">
+w/o geometric
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.5
+</td>
+<td style="text-align: center;">
+55.1
+</td>
+<td style="text-align: center;">
+62.3
+</td>
+<td style="text-align: center;">
+73.7
+</td>
+<td style="text-align: center;">
+84.8
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+B2
+</td>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+w/o semantic+geometric
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+48.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+49.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+57.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+70.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+80.8
+</td>
+</tr>
+<tr>
+<td>
+C0
+</td>
+<td style="border-right: 1px solid black;">
+w/o d in Eq. <span class="math inline">\(\eqref{eq1}\)</span>
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.1
+</td>
+<td style="text-align: center;">
+55.1
+</td>
+<td style="text-align: center;">
+63.1
+</td>
+<td style="text-align: center;">
+73.7
+</td>
+<td style="text-align: center;">
+85.0
+</td>
+</tr>
+<tr>
+<td>
+C1
+</td>
+<td style="border-right: 1px solid black;">
+w/o <span class="math inline">\(\alpha\)</span> in Eq. <span
+class="math inline">\(\eqref{eq1}\)</span>
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.3
+</td>
+<td style="text-align: center;">
+54.7
+</td>
+<td style="text-align: center;">
+62.8
+</td>
+<td style="text-align: center;">
+73.1
+</td>
+<td style="text-align: center;">
+84.7
+</td>
+</tr>
+<tr>
+<td>
+C2
+</td>
+<td style="border-right: 1px solid black;">
+w/o <span class="math inline">\(\beta\)</span> in Eq. <span
+class="math inline">\(\eqref{eq1}\)</span>
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.6
+</td>
+<td style="text-align: center;">
+54.8
+</td>
+<td style="text-align: center;">
+62.7
+</td>
+<td style="text-align: center;">
+74.6
+</td>
+<td style="text-align: center;">
+86.7
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+C3
+</td>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+w/o <span class="math inline">\(\theta\)</span> in Eq. <span
+class="math inline">\(\eqref{eq1}\)</span>
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+49.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+55.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+63.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+74.2
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+85.6
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+D0
+</td>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+KNN Panel (10 nearest neighbors)
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+49.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+55.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+63.1
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+73.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+85.5
+</td>
+</tr>
+<tr>
+<td>
+E0
+</td>
+<td style="border-right: 1px solid black;">
+random rotation 5°
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.7
+</td>
+<td style="text-align: center;">
+56.1
+</td>
+<td style="text-align: center;">
+63.4
+</td>
+<td style="text-align: center;">
+74.6
+</td>
+<td style="text-align: center;">
+85.9
+</td>
+</tr>
+<tr>
+<td>
+E1
+</td>
+<td style="border-right: 1px solid black;">
+random rotation 10°
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.4
+</td>
+<td style="text-align: center;">
+55.8
+</td>
+<td style="text-align: center;">
+63.5
+</td>
+<td style="text-align: center;">
+74.4
+</td>
+<td style="text-align: center;">
+85.8
+</td>
+</tr>
+<tr>
+<td>
+E2
+</td>
+<td style="border-right: 1px solid black;">
+random rotation 15°
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+48.5
+</td>
+<td style="text-align: center;">
+55.4
+</td>
+<td style="text-align: center;">
+63.0
+</td>
+<td style="text-align: center;">
+73.9
+</td>
+<td style="text-align: center;">
+85.4
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+E3
+</td>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+random rotation 20°
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+47.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+54.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+62.4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+73.2
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+85.1
+</td>
+</tr>
+<tr>
+<td>
+F0
+</td>
+<td style="border-right: 1px solid black;">
+manual occlusion n = 16
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.7
+</td>
+<td style="text-align: center;">
+56.0
+</td>
+<td style="text-align: center;">
+63.6
+</td>
+<td style="text-align: center;">
+74.8
+</td>
+<td style="text-align: center;">
+86.2
+</td>
+</tr>
+<tr>
+<td>
+F1
+</td>
+<td style="border-right: 1px solid black;">
+manual occlusion n = 8
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.5
+</td>
+<td style="text-align: center;">
+55.7
+</td>
+<td style="text-align: center;">
+63.2
+</td>
+<td style="text-align: center;">
+74.3
+</td>
+<td style="text-align: center;">
+85.6
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 1px solid black;">
+F2
+</td>
+<td style="border-bottom: 1px solid black; border-right: 1px solid black;">
+manual occlusion n = 4
+</td>
+<td style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black;">
+46.7
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+52.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+60.9
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+71.5
+</td>
+<td style="text-align: center; border-bottom: 1px solid black;">
+84.6
+</td>
+</tr>
+<tr>
+<td>
+G0
+</td>
+<td style="border-right: 1px solid black;">
+random perturbation s = 0.002
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.7
+</td>
+<td style="text-align: center;">
+56.1
+</td>
+<td style="text-align: center;">
+63.6
+</td>
+<td style="text-align: center;">
+74.6
+</td>
+<td style="text-align: center;">
+85.8
+</td>
+</tr>
+<tr>
+<td>
+G1
+</td>
+<td style="border-right: 1px solid black;">
+random perturbation s = 0.005
+</td>
+<td style="text-align: center; border-right: 1px solid black;">
+49.6
+</td>
+<td style="text-align: center;">
+55.8
+</td>
+<td style="text-align: center;">
+63.4
+</td>
+<td style="text-align: center;">
+74.4
+</td>
+<td style="text-align: center;">
+86.0
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+G2
+</td>
+<td style="border-bottom: 2px solid black; border-right: 1px solid black;">
+random perturbation s = 0.01
+</td>
+<td style="text-align: center; border-bottom: 2px solid black; border-right: 1px solid black;">
+45.9
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+53.7
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+62.6
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+73.4
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+86.1
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">5. Conclusion</h2>
+<h2 id="supplementary-material">Supplementary Material</h2>
+<h3 id="a.-implementation-details">A. Implementation Details</h3>
+<table>
+<caption style="caption-side: bottom;">
+Table 4. Parameter Count
+</caption>
+<thead>
+<tr>
+<th style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Number of Parameters
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Trainable
+</th>
+<th style="text-align: center; border-top: 2px solid black; border-bottom: 1px solid black;">
+Frozen
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+VI-Net
+</td>
+<td style="text-align: center;">
+27,311,368
+</td>
+<td style="text-align: center;">
+0
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Ours
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+33,639,561
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+22,056,576
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b.-further-explanations-of-the-pipeline">B. Further Explanations
+of the Pipeline</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/feature_fusion.webp"
+alt="Figure 6. Feature Fusion We illustrate the fusion process with annotated approximately equivalent and approximately invariant features." />
+<figcaption aria-hidden="true">Figure 6. Feature Fusion We illustrate
+the fusion process with annotated approximately equivalent and
+approximately invariant features.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/feature_big_1.webp"
+alt="Figure 7. Feature Maps We fuse features of RGB, DINOv2 and HP-PPF into a 2D feature map that is approximately SE(3)-equivariant." />
+<figcaption aria-hidden="true">Figure 7. Feature Maps We fuse features
+of RGB, DINOv2 and HP-PPF into a 2D feature map that is approximately
+SE(3)-equivariant.</figcaption>
+</figure>
+<h3 id="c.-more-experimental-results-on-housecat6d">C. More Experimental
+Results on HouseCat6D</h3>
+<table>
+<caption style="caption-side: bottom;">
+Table 5. Quantitative comparisons of different methods for
+category-level 6D object pose estimation on HouseCat6D [19].
+</caption>
+<thead>
+<tr>
+<th rowspan="2" style="border-top: 2px solid black; border-bottom: 1px solid black;">
+Method
+</th>
+<th colspan="5" style="text-align: center; border-top: 2px solid black;">
+HouseCat6D
+</th>
+</tr>
+<tr>
+<th style="text-align: center; border-bottom: 1px solid black;">
+IoU<sub>75</sub>
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5° 2 cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+5° 5 cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10° 2 cm
+</th>
+<th style="text-align: center; border-bottom: 1px solid black;">
+10° 5 cm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+FS-Net [5]
+</td>
+<td style="text-align: center;">
+14.8
+</td>
+<td style="text-align: center;">
+3.3
+</td>
+<td style="text-align: center;">
+4.2
+</td>
+<td style="text-align: center;">
+17.1
+</td>
+<td style="text-align: center;">
+21.6
+</td>
+</tr>
+<tr>
+<td>
+GPV-Pose [8]
+</td>
+<td style="text-align: center;">
+15.2
+</td>
+<td style="text-align: center;">
+3.5
+</td>
+<td style="text-align: center;">
+4.6
+</td>
+<td style="text-align: center;">
+17.8
+</td>
+<td style="text-align: center;">
+22.7
+</td>
+</tr>
+<tr>
+<td>
+VI-Net [27]
+</td>
+<td style="text-align: center;">
+20.4
+</td>
+<td style="text-align: center;">
+8.4
+</td>
+<td style="text-align: center;">
+10.3
+</td>
+<td style="text-align: center;">
+20.5
+</td>
+<td style="text-align: center;">
+29.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+SecondPose (Ours)
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>24.9</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>11.0</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>13.4</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>25.3</b>
+</td>
+<td style="text-align: center; border-bottom: 2px solid black;">
+<b>35.7</b>
+</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/category.webp"
+alt="Figure 10. Categorical results on HouseCat6D. We visualize the comparison of our IoU25 and IoU50 results on HouseCat6D with those of VI-Net." />
+<figcaption aria-hidden="true">Figure 10. Categorical results on
+HouseCat6D. We visualize the comparison of our IoU25 and IoU50 results
+on HouseCat6D with those of VI-Net.</figcaption>
+</figure>
+<h3 id="d.-failure-cases-and-limitations">D. Failure Cases and
+Limitations</h3>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/fail_house.webp"
+alt="Figure 8. Failure cases in HouseCat6D. We illustrate common failure scenarios on HouseCat6D. (A) depicts instances of transparent items; (B) showcases items with pronounced selfocclusion; (C) the tube represents items with high reflectivity; (D) illustrates failures attributed to atypical shapes." />
+<figcaption aria-hidden="true">Figure 8. Failure cases in HouseCat6D. We
+illustrate common failure scenarios on HouseCat6D. (A) depicts instances
+of transparent items; (B) showcases items with pronounced selfocclusion;
+(C) the tube represents items with high reflectivity; (D) illustrates
+failures attributed to atypical shapes.</figcaption>
+</figure>
+<figure>
+<img
+src="https://img.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen/fail_real.webp"
+alt="Figure 9. Failure cases in REAL275. We illustrate common failure scenarios on HouseCat6D. (A) represents failure due to wrong instance segmentation; (B)-(D) illustrates failures due to wrong prediction of the y-axis." />
+<figcaption aria-hidden="true">Figure 9. Failure cases in REAL275. We
+illustrate common failure scenarios on HouseCat6D. (A) represents
+failure due to wrong instance segmentation; (B)-(D) illustrates failures
+due to wrong prediction of the y-axis.</figcaption>
+</figure>
+<div class="pdf-container" data-target="https://arxiv.org/pdf/2311.11125" data-height="500px"></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="https://img.032802.xyz/alipay.webp" alt="Karl 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Karl
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html" title="【论文笔记】SecondPose: SE(3)-Consistent Dual-Stream Feature Fusion for Category-Level Pose Estimation">https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/2024CVPR/" rel="tag"><i class="fa fa-tag"></i> 2024CVPR</a>
+              <a href="/tags/Object-Pose-Estimation/" rel="tag"><i class="fa fa-tag"></i> Object Pose Estimation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/vps-review/legendvps-sg-bgp-512m.html" rel="prev" title="【VPS测评】LegendVPS - SG-BGP-512M">
+                  <i class="fa fa-angle-left"></i> 【VPS测评】LegendVPS - SG-BGP-512M
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/vps-review/netcup-vps-piko-g11s-12m.html" rel="next" title="【VPS测评】netcup - VPS piko G11s 12M">
+                  【VPS测评】netcup - VPS piko G11s 12M <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Karl</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">174k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:33</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.3.0/pdfobject.min.js","integrity":"sha256-JJZNsid68vnh3/zyj0lY9BN5ynxVX/12XgOa1TlaYN0="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.min.js","integrity":"sha256-G8ouPAnw4zzMbnAenHnVz6h9XpKbNdOkrqTh7AadyHs="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script class="next-config" data-name="wavedrom" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js","integrity":"sha256-INLAoJc6quTNfiMWkGZniYO2cxE8mHpddnLow1m6RFs="}}</script>
+  <script class="next-config" data-name="wavedrom_skin" type="application/json">{"enable":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js","integrity":"sha256-fduc/Zszk5ezWws2uInY/ALWVmIrmV6VTgXbsYSReFI="}}</script>
+  <script src="/js/third-party/tags/wavedrom.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://blog.032802.xyz/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.032802.xyz","cssUrl":"https://unpkg.com/@waline/client@v3/dist/waline.css","commentCount":true,"pageview":false,"locale":{"placeholder":"请畅所欲言！"},"emoji":["https://unpkg.com/@waline/emojis@1.2.0/bmoji","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji","https://unpkg.com/@waline/emojis@1.2.0/tw-body","https://unpkg.com/@waline/emojis@1.2.0/tw-food","https://unpkg.com/@waline/emojis@1.2.0/tw-natural","https://unpkg.com/@waline/emojis@1.2.0/tw-object","https://unpkg.com/@waline/emojis@1.2.0/tw-symbol","https://unpkg.com/@waline/emojis@1.2.0/tw-people","https://unpkg.com/@waline/emojis@1.2.0/tw-sport","https://unpkg.com/@waline/emojis@1.2.0/tw-time","https://unpkg.com/@waline/emojis@1.2.0/tw-travel","https://unpkg.com/@waline/emojis@1.2.0/tw-weather","https://unpkg.com/@waline/emojis@1.2.0/tw-flag"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"login":"disable","pageSize":10,"el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/paper-reading/2023/secondpose-se(3)-consistent-dual-stream-feature-fusion-for-category-level-pose-estimation_2024_Chen.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
